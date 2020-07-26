@@ -133,7 +133,6 @@ export default {
                 }
             } else {
                 // first time we don't check the date
-                console.log(this.filter(newNotifications))
                 this.notifications = this.filter(newNotifications).slice(0, 7)
             }
         },
@@ -169,21 +168,12 @@ export default {
             return ''
         },
         getNotificationTypeImage(n) {
-            return generateUrl('/svg/core/actions/sound?color=' + this.themingColor)
-        },
-        getNotificationActionChar(n) {
-            if (['Issue', 'MergeRequest'].includes(n.target_type)) {
-                if (['approval_required', 'assigned'].includes(n.action_name)) {
-                    return '👁'
-                } else if (['directly_addressed', 'mentioned'].includes(n.action_name)) {
-                    return '🗨'
-                } else if (n.action_name === 'marked') {
-                    return '✅'
-                } else if (['build_failed', 'unmergeable'].includes(n.action_name)) {
-                    return '❎'
-                }
+            if (n.type_lookup_id === 2 || n.type === 'update') {
+                return generateUrl('/svg/core/actions/rename?color=' + this.themingColor)
+            } else if (n.type_lookup_id === 3 || n.type === 'create') {
+                return generateUrl('/svg/core/actions/add?color=' + this.themingColor)
             }
-            return ''
+            return generateUrl('/svg/core/actions/sound?color=' + this.themingColor)
         },
         getSubline(n) {
             return this.getAuthorFullName(n) + ' #' + n.o_id
