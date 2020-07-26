@@ -92,8 +92,20 @@ class ZammadAPIService {
         return $result;
     }
 
-    public function getZammadAvatar($url) {
-        return file_get_contents($url);
+    // authenticated request to get an image from zammad
+    public function getZammadAvatar($image, $url, $accessToken, $authType) {
+        $authHeader = ($authType === 'access') ? 'Token token=' : 'Bearer ';
+        $options = [
+            'http' => [
+                'header'  => 'Authorization: ' . $authHeader . $accessToken .
+                    "\r\nUser-Agent: Nextcloud Zammad integration",
+                'method' => 'GET',
+            ]
+        ];
+
+        $url = $url . '/api/v1/users/image/' . $image;
+        $context = stream_context_create($options);
+        return file_get_contents($url, false, $context);
     }
 
     public function request($url, $accessToken, $authType, $endPoint, $params = [], $method = 'GET') {

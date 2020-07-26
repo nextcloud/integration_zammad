@@ -5,7 +5,7 @@
                 <a :href="getNotificationTarget(n)" target="_blank" class="notification-list__entry">
                     <Avatar v-if="n.image"
                         class="project-avatar"
-                        :url="getNotificationImage(n)"
+                        :url="getAuthorAvatarUrl(n)"
                         />
                     <Avatar v-else
                         class="project-avatar"
@@ -146,9 +146,6 @@ export default {
         getUniqueKey(n) {
             return n.id + ':' + n.updated_at
         },
-        getNotificationImage(n) {
-            return ''
-        },
         getAuthorShortName(n) {
             if (!n.firstname && !n.lastname) {
                 return '?'
@@ -161,8 +158,8 @@ export default {
             return n.firstname + ' ' + n.lastname
         },
         getAuthorAvatarUrl(n) {
-            return (n.author && n.author.avatar_url) ?
-                    generateUrl('/apps/zammad/avatar?') + encodeURIComponent('url') + '=' + encodeURIComponent(n.author.avatar_url) :
+            return (n.image) ?
+                    generateUrl('/apps/zammad/avatar?') + encodeURIComponent('image') + '=' + encodeURIComponent(n.image) :
                     ''
         },
         getNotificationProjectName(n) {

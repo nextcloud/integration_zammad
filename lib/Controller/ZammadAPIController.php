@@ -76,8 +76,10 @@ class ZammadAPIController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function getZammadAvatar($url) {
-        return new DataDisplayResponse($this->zammadAPIService->getZammadAvatar($url));
+    public function getZammadAvatar($image) {
+        return new DataDisplayResponse(
+            $this->zammadAPIService->getZammadAvatar($image, $this->zammadUrl, $this->accessToken, $this->tokenType)
+        );
     }
 
     /**
@@ -88,8 +90,7 @@ class ZammadAPIController extends Controller {
         if ($this->accessToken === '') {
             return new DataResponse('', 400);
         }
-        $url = $this->zammadUrl;
-        $result = $this->zammadAPIService->getNotifications($url, $this->accessToken, $this->tokenType, $since);
+        $result = $this->zammadAPIService->getNotifications($this->zammadUrl, $this->accessToken, $this->tokenType, $since);
         if (is_array($result)) {
             $response = new DataResponse($result);
         } else {
