@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<info>
+    <id>zammad</id>
+    <name>Zammad</name>
+    <summary> </summary><description> </description>
+    <version>0.0.1</version>
+    <licence>agpl</licence>
+    <author>Julien Veyssier</author>
+    <namespace>Zammad</namespace>
+    <documentation>
+        <developer>https://nowhere.org/wikis/devdoc</developer>
+    </documentation>
+    <category>integration</category>
+    <website>https://github.com/nextcloud/zammad</website>
+    <bugs>https://github.com/nextcloud/zammad/issues</bugs>
+    <dependencies>
+        <database min-version="9.4">pgsql</database>
+        <database>sqlite</database>
+        <database min-version="5.5">mysql</database>
+        <nextcloud min-version="20" max-version="21"/>
+    </dependencies>
+    <settings>
+        <admin>OCA\Zammad\Settings\Admin</admin>
+        <admin-section>OCA\Zammad\Settings\AdminSection</admin-section>
+        <personal>OCA\Zammad\Settings\Personal</personal>
+        <personal-section>OCA\Zammad\Settings\PersonalSection</personal-section>
+    </settings>
+</info>

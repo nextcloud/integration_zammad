@@ -1,0 +1,7 @@
+.icon-zammad {
+    background-image: url(./../img/app-dark.svg);
+}
+
+body.dark .icon-zammad {
+    background-image: url(./../img/app.svg);
+}
