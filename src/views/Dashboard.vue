@@ -3,9 +3,13 @@
         <ul v-if="state === 'ok'" class="notification-list">
             <li v-for="n in notifications" :key="getUniqueKey(n)">
                 <a :href="getNotificationTarget(n)" target="_blank" class="notification-list__entry">
-                    <Avatar
+                    <Avatar v-if="n.image"
                         class="project-avatar"
                         :url="getNotificationImage(n)"
+                        />
+                    <Avatar v-else
+                        class="project-avatar"
+                        :user="getAuthorShortName(n)"
                         />
                     <img class="zammad-notification-icon" :src="getNotificationTypeImage(n)"/>
                     <div class="notification__details">
@@ -91,7 +95,7 @@ export default {
             }
             // then launch the loop
             this.fetchNotifications()
-            this.loop = setInterval(() => this.fetchNotifications(), 15000)
+            this.loop = setInterval(() => this.fetchNotifications(), 45000)
         },
         fetchNotifications() {
             const req = {}
@@ -129,6 +133,7 @@ export default {
                 }
             } else {
                 // first time we don't check the date
+                console.log(this.filter(newNotifications))
                 this.notifications = this.filter(newNotifications).slice(0, 7)
             }
         },
@@ -144,10 +149,16 @@ export default {
         getNotificationImage(n) {
             return ''
         },
+        getAuthorShortName(n) {
+            if (!n.firstname && !n.lastname) {
+                return '?'
+            } else {
+                return (n.firstname ? n.firstname[0] : '') +
+                    (n.lastname ? n.lastname[0] : '')
+            }
+        },
         getAuthorFullName(n) {
-            return n.author.name ?
-                (n.author.name + ' (@' + n.author.username + ')') :
-                n.author.username
+            return n.firstname + ' ' + n.lastname
         },
         getAuthorAvatarUrl(n) {
             return (n.author && n.author.avatar_url) ?
@@ -155,22 +166,9 @@ export default {
                     ''
         },
         getNotificationProjectName(n) {
-            return n.project.path_with_namespace
+            return ''
         },
         getNotificationContent(n) {
-            if (n.action_name === 'mentioned') {
-                return t('zammad', 'You were mentioned')
-            } else if (n.action_name === 'approval_required') {
-                return t('zammad', 'Your approval is required')
-            } else if (n.action_name === 'assigned') {
-                return t('zammad', 'You were assigned')
-            } else if (n.action_name === 'build_failed') {
-                return t('zammad', 'A build has failed')
-            } else if (n.action_name === 'marked') {
-                return t('zammad', 'Marked')
-            } else if (n.action_name === 'directly_addressed') {
-                return t('zammad', 'You were directly addressed')
-            }
             return ''
         },
         getNotificationTypeImage(n) {
@@ -191,10 +189,10 @@ export default {
             return ''
         },
         getSubline(n) {
-            return n.updated_at
+            return this.getAuthorFullName(n) + ' #' + n.o_id
         },
         getTargetTitle(n) {
-            return 'tick'
+            return n.title
         },
         getTargetIdentifier(n) {
             return n.o_id
