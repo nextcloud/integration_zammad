@@ -109,8 +109,7 @@ export default {
             const request_url = this.state.url + '/oauth/authorize?client_id=' + encodeURIComponent(this.state.client_id) +
                 '&redirect_uri=' + encodeURIComponent(redirect_uri) +
                 '&response_type=code' +
-                '&state=' + encodeURIComponent(oauth_state) +
-                '&scope=' + encodeURIComponent('read_user read_api read_repository read_registry')
+                '&state=' + encodeURIComponent(oauth_state)
 
             const req = {
                 values: {

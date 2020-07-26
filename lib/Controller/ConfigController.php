@@ -99,7 +99,8 @@ class ConfigController extends Controller {
 
         if ($clientID and $clientSecret and $configState !== '' and $configState === $state) {
             $redirect_uri = $this->urlGenerator->linkToRouteAbsolute('zammad.config.oauthRedirect');
-            $result = $this->requestOAuthAccessToken([
+            $zammadUrl = $this->config->getUserValue($this->userId, 'zammad', 'url', '');
+            $result = $this->requestOAuthAccessToken($zammadUrl, [
                 'client_id' => $clientID,
                 'client_secret' => $clientSecret,
                 'code' => $code,
@@ -109,6 +110,7 @@ class ConfigController extends Controller {
             if (is_array($result) and isset($result['access_token'])) {
                 $accessToken = $result['access_token'];
                 $this->config->setUserValue($this->userId, 'zammad', 'token', $accessToken);
+                $this->config->setUserValue($this->userId, 'zammad', 'token_type', 'oauth');
                 return new RedirectResponse(
                     $this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'linked-accounts']) .
                     '?zammadToken=success'
@@ -124,7 +126,7 @@ class ConfigController extends Controller {
         );
     }
 
-    private function requestOAuthAccessToken($params = [], $method = 'GET') {
+    private function requestOAuthAccessToken($url, $params = [], $method = 'GET') {
         try {
             $options = [
                 'http' => [
@@ -133,7 +135,7 @@ class ConfigController extends Controller {
                 ]
             ];
 
-            $url = 'https://zammad.com/oauth/token';
+            $url = $url . '/oauth/token';
             if (count($params) > 0) {
                 $paramsContent = http_build_query($params);
                 if ($method === 'GET') {

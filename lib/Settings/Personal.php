@@ -44,7 +44,8 @@ class Personal implements ISettings {
 
         // for OAuth
         $clientID = $this->config->getAppValue('zammad', 'client_id', '');
-        $clientSecret = ($this->config->getAppValue('zammad', 'client_secret', '') === '');
+        // don't expose the client secret to users
+        $clientSecret = ($this->config->getAppValue('zammad', 'client_secret', '') !== '');
         $oauthUrl = $this->config->getAppValue('zammad', 'oauth_instance_url', '');
 
         $userConfig = [
