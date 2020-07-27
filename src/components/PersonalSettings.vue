@@ -57,6 +57,7 @@ export default {
     data() {
         return {
             state: loadState('zammad', 'user-config'),
+            initialToken: loadState('zammad', 'user-config').token
         }
     },
 
@@ -89,9 +90,11 @@ export default {
                 values: {
                     token: this.state.token,
                     url: this.state.url,
-                    // if manually set, this is not an oauth access token
-                    token_type: 'access'
                 }
+            }
+            // if manually set, this is not an oauth access token
+            if (this.state.token !== this.initialToken) {
+                req.values['token_type'] = 'access'
             }
             const url = generateUrl('/apps/zammad/config')
             axios.put(url, req)
