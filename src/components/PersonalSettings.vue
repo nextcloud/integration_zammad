@@ -4,6 +4,9 @@
                 <a class="icon icon-zammad"></a>
                 {{ t('zammad', 'Zammad') }}
             </h2>
+            <p class="settings-hint">
+                {{ t('zammad', 'When you create an access token yourself, give it "TICKET -> AGENT" and "USER_PREFERENCES -> NOTIFICATIONS" permissions.') }}
+            </p>
             <div class="zammad-grid-form">
                 <label for="zammad-url">
                     <a class="icon icon-link"></a>

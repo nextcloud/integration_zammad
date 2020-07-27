@@ -4,13 +4,12 @@
                 <a class="icon icon-zammad"></a>
                 {{ t('zammad', 'Zammad') }}
             </h2>
-            <label>
+            <p class="settings-hint">
                 {{ t('zammad', 'If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and set the ID and secret here.') }}
                 <br/>
                 {{ t('zammad', 'Make sure you set the "redirect_uri" to') }}
-                <br/><b> {{ redirect_uri }} </b><br/>
-                {{ t('zammad', ' and give at least read_* permissions to the application.') }}
-            </label><br/><br/>
+                <br/><b> {{ redirect_uri }} </b>
+            </p>
             <div class="grid-form">
                 <label for="zammad-oauth-instance">
                     <a class="icon icon-link"></a>
@@ -20,20 +19,20 @@
                     :placeholder="t('zammad', 'Zammad address')" />
                 <label for="zammad-client-id">
                     <a class="icon icon-category-auth"></a>
-                    {{ t('zammad', 'zammad.com application ID') }}
+                    {{ t('zammad', 'Application ID') }}
                 </label>
                 <input id="zammad-client-id" type="password" v-model="state.client_id" @input="onInput"
                     :readonly="readonly"
                     @focus="readonly = false"
-                    :placeholder="t('zammad', 'ID or your zammad.com application')" />
+                    :placeholder="t('zammad', 'ID of your application')" />
                 <label for="zammad-client-secret">
                     <a class="icon icon-category-auth"></a>
-                    {{ t('zammad', 'zammad.com application secret') }}
+                    {{ t('zammad', 'Application secret') }}
                 </label>
                 <input id="zammad-client-secret" type="password" v-model="state.client_secret" @input="onInput"
                     :readonly="readonly"
                     @focus="readonly = false"
-                    :placeholder="t('zammad', 'Client secret or your zammad.com application')" />
+                    :placeholder="t('zammad', 'Client secret of your application')" />
             </div>
     </div>
 </template>
