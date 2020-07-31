@@ -77,9 +77,11 @@ class ZammadAPIController extends Controller {
      * @NoCSRFRequired
      */
     public function getZammadAvatar($image) {
-        return new DataDisplayResponse(
+        $response = new DataDisplayResponse(
             $this->zammadAPIService->getZammadAvatar($image, $this->zammadUrl, $this->accessToken, $this->tokenType)
         );
+        $response->cacheFor(60*60*24);
+        return $response;
     }
 
     /**
