@@ -65,8 +65,10 @@ class ZammadAPIService {
         // get details
         foreach ($result as $k => $v) {
             $details = $this->request($url, $accessToken, $authType, 'tickets/' . $v['o_id']);
-            $result[$k]['title'] = $details['title'];
-            $result[$k]['note'] = $details['note'];
+            if (is_array($details)) {
+                $result[$k]['title'] = $details['title'];
+                $result[$k]['note'] = $details['note'];
+            }
         }
         // get user details
         $userIds = [];
@@ -156,7 +158,7 @@ class ZammadAPIService {
             } else {
                 return json_decode($body, true);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->warning('Zammad API error : '.$e, array('app' => $this->appName));
             return $e;
         }
