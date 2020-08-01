@@ -58,8 +58,8 @@ class ZammadAPIService {
                 return $ts > $sinceTimestamp;
             });
         } else {
-            // take 7 most recent if no date filter
-            $result = array_slice($result, 0, 7);
+            // take 20 most recent if no date filter
+            $result = array_slice($result, 0, 20);
         }
         $result = array_values($result);
         // get details
