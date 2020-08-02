@@ -32,6 +32,8 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Controller;
 use OCP\Http\Client\IClientService;
 
+use OCA\Zammad\Service\ZammadAPIService;
+
 class ConfigController extends Controller {
 
 
@@ -51,6 +53,7 @@ class ConfigController extends Controller {
                                 IL10N $l,
                                 ILogger $logger,
                                 IClientService $clientService,
+                                ZammadAPIService $zammadAPIService,
                                 $userId) {
         parent::__construct($AppName, $request);
         $this->l = $l;
@@ -62,6 +65,7 @@ class ConfigController extends Controller {
         $this->urlGenerator = $urlGenerator;
         $this->logger = $logger;
         $this->clientService = $clientService;
+        $this->zammadAPIService = $zammadAPIService;
     }
 
     /**
@@ -103,7 +107,7 @@ class ConfigController extends Controller {
         if ($clientID and $clientSecret and $configState !== '' and $configState === $state) {
             $redirect_uri = $this->urlGenerator->linkToRouteAbsolute('zammad.config.oauthRedirect');
             $zammadUrl = $this->config->getUserValue($this->userId, 'zammad', 'url', '');
-            $result = $this->requestOAuthAccessToken($zammadUrl, [
+            $result = $this->zammadAPIService->requestOAuthAccessToken($zammadUrl, [
                 'client_id' => $clientID,
                 'client_secret' => $clientSecret,
                 'code' => $code,
@@ -114,6 +118,8 @@ class ConfigController extends Controller {
                 $accessToken = $result['access_token'];
                 $this->config->setUserValue($this->userId, 'zammad', 'token', $accessToken);
                 $this->config->setUserValue($this->userId, 'zammad', 'token_type', 'oauth');
+                $refreshToken = $result['refresh_token'];
+                $this->config->setUserValue($this->userId, 'zammad', 'refresh_token', $refreshToken);
                 return new RedirectResponse(
                     $this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'linked-accounts']) .
                     '?zammadToken=success'
@@ -127,48 +133,6 @@ class ConfigController extends Controller {
             $this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'linked-accounts']) .
             '?zammadToken=error&message=' . urlencode($result)
         );
-    }
-
-    private function requestOAuthAccessToken($url, $params = [], $method = 'GET') {
-        $client = $this->clientService->newClient();
-        try {
-            $url = $url . '/oauth/token';
-            $options = [
-                'headers' => [
-                    'User-Agent'  => 'Nextcloud Zammad integration',
-                ]
-            ];
-
-            if (count($params) > 0) {
-                if ($method === 'GET') {
-                    $paramsContent = http_build_query($params);
-                    $url .= '?' . $paramsContent;
-                } else {
-                    $options['body'] = $params;
-                }
-            }
-
-            if ($method === 'GET') {
-                $response = $client->get($url, $options);
-            } else if ($method === 'POST') {
-                $response = $client->post($url, $options);
-            } else if ($method === 'PUT') {
-                $response = $client->put($url, $options);
-            } else if ($method === 'DELETE') {
-                $response = $client->delete($url, $options);
-            }
-            $body = $response->getBody();
-            $respCode = $response->getStatusCode();
-
-            if ($respCode >= 400) {
-                return $this->l->t('OAuth access token refused');
-            } else {
-                return json_decode($body, true);
-            }
-        } catch (\Exception $e) {
-            $this->logger->warning('Zammad OAuth error : '.$e, array('app' => $this->appName));
-            return $e;
-        }
     }
 
 }

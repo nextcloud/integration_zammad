@@ -60,6 +60,9 @@ class ZammadAPIController extends Controller {
         $this->zammadAPIService = $zammadAPIService;
         $this->accessToken = $this->config->getUserValue($this->userId, 'zammad', 'token', '');
         $this->tokenType = $this->config->getUserValue($this->userId, 'zammad', 'token_type', '');
+        $this->refreshToken = $this->config->getUserValue($this->userId, 'zammad', 'refresh_token', '');
+        $this->clientID = $this->config->getAppValue('zammad', 'client_id', '');
+        $this->clientSecret = $this->config->getAppValue('zammad', 'client_secret', '');
         $this->zammadUrl = $this->config->getUserValue($this->userId, 'zammad', 'url', '');
     }
 
@@ -78,7 +81,9 @@ class ZammadAPIController extends Controller {
      */
     public function getZammadAvatar($image) {
         $response = new DataDisplayResponse(
-            $this->zammadAPIService->getZammadAvatar($image, $this->zammadUrl, $this->accessToken, $this->tokenType)
+            $this->zammadAPIService->getZammadAvatar(
+                $this->zammadUrl, $this->accessToken, $this->tokenType, $this->refreshToken, $this->clientID, $this->clientSecret, $image
+            )
         );
         $response->cacheFor(60*60*24);
         return $response;
@@ -92,7 +97,9 @@ class ZammadAPIController extends Controller {
         if ($this->accessToken === '') {
             return new DataResponse('', 400);
         }
-        $result = $this->zammadAPIService->getNotifications($this->zammadUrl, $this->accessToken, $this->tokenType, $since);
+        $result = $this->zammadAPIService->getNotifications(
+            $this->zammadUrl, $this->accessToken, $this->tokenType, $this->refreshToken, $this->clientID, $this->clientSecret, $since
+        );
         if (is_array($result)) {
             $response = new DataResponse($result);
         } else {

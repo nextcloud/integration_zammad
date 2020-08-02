@@ -13,7 +13,9 @@ namespace OCA\Zammad\Service;
 
 use OCP\IL10N;
 use OCP\ILogger;
+use OCP\IConfig;
 use OCP\Http\Client\IClientService;
+use GuzzleHttp\Exception\ClientException;
 
 class ZammadAPIService {
 
@@ -27,20 +29,26 @@ class ZammadAPIService {
         string $appName,
         ILogger $logger,
         IL10N $l10n,
-        IClientService $clientService
+        IConfig $config,
+        IClientService $clientService,
+        $userId
     ) {
         $this->appName = $appName;
         $this->l10n = $l10n;
         $this->logger = $logger;
+        $this->config = $config;
         $this->clientService = $clientService;
         $this->client = $clientService->newClient();
+        $this->userId = $userId;
     }
 
-    public function getNotifications($url, $accessToken, $authType, $since = null) {
+    public function getNotifications($url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $since = null) {
         $params = [
             'state' => 'pending',
         ];
-        $result = $this->request($url, $accessToken, $authType, 'online_notifications', $params);
+        $result = $this->request(
+            $url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, 'online_notifications', $params
+        );
         if (!is_array($result)) {
             return $result;
         }
@@ -64,7 +72,9 @@ class ZammadAPIService {
         $result = array_values($result);
         // get details
         foreach ($result as $k => $v) {
-            $details = $this->request($url, $accessToken, $authType, 'tickets/' . $v['o_id']);
+            $details = $this->request(
+                $url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, 'tickets/' . $v['o_id']
+            );
             if (is_array($details)) {
                 $result[$k]['title'] = $details['title'];
                 $result[$k]['note'] = $details['note'];
@@ -79,7 +89,9 @@ class ZammadAPIService {
         }
         $userDetails = [];
         foreach ($userIds as $uid) {
-            $user = $this->request($url, $accessToken, $authType, 'users/' . $uid);
+            $user = $this->request(
+                $url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, 'users/' . $uid
+            );
             $userDetails[$uid] = [
                 'firstname' => $user['firstname'],
                 'lastname' => $user['lastname'],
@@ -99,7 +111,7 @@ class ZammadAPIService {
     }
 
     // authenticated request to get an image from zammad
-    public function getZammadAvatar($image, $url, $accessToken, $authType) {
+    public function getZammadAvatar($url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $image) {
         $url = $url . '/api/v1/users/image/' . $image;
         $authHeader = ($authType === 'access') ? 'Token token=' : 'Bearer ';
         $options = [
@@ -111,9 +123,9 @@ class ZammadAPIService {
         return $this->client->get($url, $options)->getBody();
     }
 
-    public function request($url, $accessToken, $authType, $endPoint, $params = [], $method = 'GET') {
+    public function request($zammadUrl, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $endPoint, $params = [], $method = 'GET') {
         try {
-            $url = $url . '/api/v1/' . $endPoint;
+            $url = $zammadUrl . '/api/v1/' . $endPoint;
             $authHeader = ($authType === 'access') ? 'Token token=' : 'Bearer ';
             $options = [
                 'headers' => [
@@ -158,8 +170,70 @@ class ZammadAPIService {
             } else {
                 return json_decode($body, true);
             }
-        } catch (\Throwable $e) {
+        } catch (ClientException $e) {
             $this->logger->warning('Zammad API error : '.$e, array('app' => $this->appName));
+            $response = $e->getResponse();
+            $body = (string) $response->getBody();
+            // refresh token if it's invalid and we are using oauth
+            if ($authType === 'oauth' and strpos($body, 'Invalid token!') !== false) {
+                $this->logger->warning('Trying to REFRESH the access token', array('app' => $this->appName));
+                // try to refresh the token
+                $result = $this->requestOAuthAccessToken($zammadUrl, [
+                    'client_id' => $clientID,
+                    'client_secret' => $clientSecret,
+                    'grant_type' => 'refresh_token',
+                    'refresh_token' => $refreshToken,
+                ], 'POST');
+                if (is_array($result) and isset($result['access_token'])) {
+                    $accessToken = $result['access_token'];
+                    $this->config->setUserValue($this->userId, 'zammad', 'token', $accessToken);
+                    // retry the request with new access token
+                    return $this->request(
+                        $zammadUrl, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $endPoint, $params, $method
+                    );
+                }
+            }
+            return $e;
+        }
+    }
+
+    public function requestOAuthAccessToken($url, $params = [], $method = 'GET') {
+        try {
+            $url = $url . '/oauth/token';
+            $options = [
+                'headers' => [
+                    'User-Agent'  => 'Nextcloud Zammad integration',
+                ]
+            ];
+
+            if (count($params) > 0) {
+                if ($method === 'GET') {
+                    $paramsContent = http_build_query($params);
+                    $url .= '?' . $paramsContent;
+                } else {
+                    $options['body'] = $params;
+                }
+            }
+
+            if ($method === 'GET') {
+                $response = $this->client->get($url, $options);
+            } else if ($method === 'POST') {
+                $response = $this->client->post($url, $options);
+            } else if ($method === 'PUT') {
+                $response = $this->client->put($url, $options);
+            } else if ($method === 'DELETE') {
+                $response = $this->client->delete($url, $options);
+            }
+            $body = $response->getBody();
+            $respCode = $response->getStatusCode();
+
+            if ($respCode >= 400) {
+                return $this->l10n->t('OAuth access token refused');
+            } else {
+                return json_decode($body, true);
+            }
+        } catch (\Exception $e) {
+            $this->logger->warning('Zammad OAuth error : '.$e, array('app' => $this->appName));
             return $e;
         }
     }
