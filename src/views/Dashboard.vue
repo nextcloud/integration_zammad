@@ -165,9 +165,9 @@ export default {
         },
         getNotificationTypeImage(n) {
             if (n.type_lookup_id === 2 || n.type === 'update') {
-                return generateUrl('/svg/core/actions/rename?color=' + this.themingColor)
+                return generateUrl('/svg/zammad/rename?color=ffffff')
             } else if (n.type_lookup_id === 3 || n.type === 'create') {
-                return generateUrl('/svg/core/actions/add?color=' + this.themingColor)
+                return generateUrl('/svg/zammad/add?color=ffffff')
             }
             return generateUrl('/svg/core/actions/sound?color=' + this.themingColor)
         },
