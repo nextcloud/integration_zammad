@@ -1,7 +1,6 @@
 <template>
     <DashboardWidget :items="items"
-          :showMore="true"
-          @moreClicked="onMoreClick"
+          :showMoreUrl="showMoreUrl"
           :loading="state === 'loading'">
         <template v-slot:empty-content>
             <div v-if="state === 'no-token'">
@@ -58,6 +57,9 @@ export default {
     },
 
     computed: {
+        showMoreUrl() {
+            return this.zammadUrl + '/#dashboard'
+        },
         items() {
             return this.notifications.map((n) => {
                 return {
@@ -182,10 +184,6 @@ export default {
         },
         getFormattedDate(n) {
             return moment(n.updated_at).locale(this.locale).format('LLL')
-        },
-        onMoreClick() {
-            const win = window.open(this.zammadUrl + '/#dashboard', '_blank')
-            win.focus()
         },
     },
 }
