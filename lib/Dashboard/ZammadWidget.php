@@ -23,9 +23,10 @@
 
 namespace OCA\Zammad\Dashboard;
 
+use OCP\Dashboard\IWidget;
 use OCP\IL10N;
 
-class ZammadPanel implements \OCP\Dashboard\IPanel {
+class ZammadWidget implements IWidget {
 
 	/** @var IL10N */
 	private $l10n;

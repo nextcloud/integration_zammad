@@ -18,7 +18,7 @@ use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 
 use OCA\Zammad\Controller\PageController;
-use OCA\Zammad\Dashboard\ZammadPanel;
+use OCA\Zammad\Dashboard\ZammadWidget;
 
 /**
  * Class Application
@@ -39,7 +39,7 @@ class Application extends App implements IBootstrap {
     }
 
     public function register(IRegistrationContext $context): void {
-        $context->registerDashboardPanel(ZammadPanel::class);
+        $context->registerDashboardWidget(ZammadWidget::class);
     }
 
     public function boot(IBootContext $context): void {
