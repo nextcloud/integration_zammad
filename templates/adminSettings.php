@@ -1,5 +1,5 @@
 <?php
-script('zammad', 'adminSettings');
+script('zammad', 'zammad-adminSettings');
 ?>
 
 <div id="zammad_prefs"></div>

@@ -76,7 +76,7 @@ class ZammadWidget implements IWidget {
 	 * @inheritDoc
 	 */
 	public function load(): void {
-        \OC_Util::addScript('zammad', 'dashboard');
+        \OC_Util::addScript('zammad', 'zammad-dashboard');
         \OC_Util::addStyle('zammad', 'dashboard');
     }
 }
