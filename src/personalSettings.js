@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+/* jshint esversion: 6 */
 
 /**
  * Nextcloud - zammad
@@ -18,6 +18,6 @@ import PersonalSettings from './components/PersonalSettings'
 'use strict'
 
 new Vue({
-    el: "#zammad_prefs",
-    render: h => h(PersonalSettings),
+	el: '#zammad_prefs',
+	render: h => h(PersonalSettings),
 })

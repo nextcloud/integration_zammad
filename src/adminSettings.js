@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+/* jshint esversion: 6 */
 
 /**
  * Nextcloud - zammad
@@ -18,6 +18,6 @@ import AdminSettings from './components/AdminSettings'
 'use strict'
 
 new Vue({
-    el: "#zammad_prefs",
-    render: h => h(AdminSettings),
+	el: '#zammad_prefs',
+	render: h => h(AdminSettings),
 })
