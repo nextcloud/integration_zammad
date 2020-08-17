@@ -1,6 +1,7 @@
 <template>
 	<DashboardWidget :items="items"
 		:showMoreUrl="showMoreUrl"
+		:showMoreText="title"
 		:loading="state === 'loading'">
 		<template v-slot:empty-content>
 			<div v-if="state === 'no-token'">
@@ -35,7 +36,12 @@ export default {
 		DashboardWidget,
 	},
 
-	props: [],
+	props: {
+		title: {
+			type: String,
+			required: true,
+		},
+	},
 
 	data() {
 		return {

@@ -48,7 +48,7 @@ class ZammadWidget implements IWidget {
 	 * @inheritDoc
 	 */
 	public function getTitle(): string {
-        return $this->l10n->t('Zammad');
+        return $this->l10n->t('Zammad notifications');
         }
 
 	/**
