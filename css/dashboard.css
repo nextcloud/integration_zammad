@@ -2,6 +2,6 @@
     background-image: url(./../img/app-dark.svg);
 }
 
-body.dark .icon-zammad {
+body.theme--dark .icon-zammad {
     background-image: url(./../img/app.svg);
 }
