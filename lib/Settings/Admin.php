@@ -10,6 +10,8 @@ use OCP\Util;
 use OCP\IURLGenerator;
 use OCP\IInitialStateService;
 
+use OCA\Zammad\AppInfo\Application;
+
 class Admin implements ISettings {
 
     private $request;
@@ -39,9 +41,9 @@ class Admin implements ISettings {
      * @return TemplateResponse
      */
     public function getForm() {
-        $clientID = $this->config->getAppValue('zammad', 'client_id', '');
-        $clientSecret = $this->config->getAppValue('zammad', 'client_secret', '');
-        $oauthUrl = $this->config->getAppValue('zammad', 'oauth_instance_url', '');
+        $clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
+        $clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
+        $oauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url', '');
 
         $adminConfig = [
             'client_id' => $clientID,
@@ -49,7 +51,7 @@ class Admin implements ISettings {
             'oauth_instance_url' => $oauthUrl
         ];
         $this->initialStateService->provideInitialState($this->appName, 'admin-config', $adminConfig);
-        return new TemplateResponse('zammad', 'adminSettings');
+        return new TemplateResponse(Application::APP_ID, 'adminSettings');
     }
 
     public function getSection() {

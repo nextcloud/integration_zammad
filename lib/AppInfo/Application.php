@@ -27,13 +27,15 @@ use OCA\Zammad\Dashboard\ZammadWidget;
  */
 class Application extends App implements IBootstrap {
 
+    public const APP_ID = 'integration_zammad';
+
     /**
      * Constructor
      *
      * @param array $urlParams
      */
     public function __construct(array $urlParams = []) {
-        parent::__construct('zammad', $urlParams);
+        parent::__construct(self::APP_ID, $urlParams);
 
         $container = $this->getContainer();
     }

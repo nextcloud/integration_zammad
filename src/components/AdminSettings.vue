@@ -2,44 +2,44 @@
 	<div id="zammad_prefs" class="section">
 		<h2>
 			<a class="icon icon-zammad" />
-			{{ t('zammad', 'Zammad') }}
+			{{ t('integration_zammad', 'Zammad integration') }}
 		</h2>
 		<p class="settings-hint">
-			{{ t('zammad', 'If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and set the ID and secret here.') }}
+			{{ t('integration_zammad', 'If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and set the ID and secret here.') }}
 			<br>
-			{{ t('zammad', 'Make sure you set the "redirect_uri" to') }}
+			{{ t('integration_zammad', 'Make sure you set the "redirect_uri" to') }}
 			<br><b> {{ redirect_uri }} </b>
 		</p>
 		<div class="grid-form">
 			<label for="zammad-oauth-instance">
 				<a class="icon icon-link" />
-				{{ t('zammad', 'Zammad instance address') }}
+				{{ t('integration_zammad', 'Zammad instance address') }}
 			</label>
 			<input id="zammad-oauth-instance"
 				v-model="state.oauth_instance_url"
 				type="text"
-				:placeholder="t('zammad', 'Zammad address')"
+				:placeholder="t('integration_zammad', 'Zammad address')"
 				@input="onInput">
 			<label for="zammad-client-id">
 				<a class="icon icon-category-auth" />
-				{{ t('zammad', 'Application ID') }}
+				{{ t('integration_zammad', 'Application ID') }}
 			</label>
 			<input id="zammad-client-id"
 				v-model="state.client_id"
 				type="password"
 				:readonly="readonly"
-				:placeholder="t('zammad', 'ID of your application')"
+				:placeholder="t('integration_zammad', 'ID of your application')"
 				@focus="readonly = false"
 				@input="onInput">
 			<label for="zammad-client-secret">
 				<a class="icon icon-category-auth" />
-				{{ t('zammad', 'Application secret') }}
+				{{ t('integration_zammad', 'Application secret') }}
 			</label>
 			<input id="zammad-client-secret"
 				v-model="state.client_secret"
 				type="password"
 				:readonly="readonly"
-				:placeholder="t('zammad', 'Client secret of your application')"
+				:placeholder="t('integration_zammad', 'Client secret of your application')"
 				@focus="readonly = false"
 				@input="onInput">
 		</div>
@@ -63,10 +63,10 @@ export default {
 
 	data() {
 		return {
-			state: loadState('zammad', 'admin-config'),
+			state: loadState('integration_zammad', 'admin-config'),
 			// to prevent some browsers to fill fields with remembered passwords
 			readonly: true,
-			redirect_uri: OC.getProtocol() + '://' + OC.getHostName() + generateUrl('/apps/zammad/oauth-redirect'),
+			redirect_uri: OC.getProtocol() + '://' + OC.getHostName() + generateUrl('/apps/integration_zammad/oauth-redirect'),
 		}
 	},
 
@@ -91,14 +91,14 @@ export default {
 					oauth_instance_url: this.state.oauth_instance_url,
 				},
 			}
-			const url = generateUrl('/apps/zammad/admin-config')
+			const url = generateUrl('/apps/integration_zammad/admin-config')
 			axios.put(url, req)
 				.then((response) => {
-					showSuccess(t('zammad', 'Zammad admin options saved.'))
+					showSuccess(t('integration_zammad', 'Zammad admin options saved.'))
 				})
 				.catch((error) => {
 					showError(
-						t('zammad', 'Failed to save Zammad admin options')
+						t('integration_zammad', 'Failed to save Zammad admin options')
 						+ ': ' + error.response.request.responseText
 					)
 				})

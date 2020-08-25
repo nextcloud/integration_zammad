@@ -6,17 +6,17 @@
 		<template v-slot:empty-content>
 			<div v-if="state === 'no-token'">
 				<a :href="settingsUrl">
-					{{ t('zammad', 'Click here to configure the access to your Zammad account.') }}
+					{{ t('integration_zammad', 'Click here to configure the access to your Zammad account.') }}
 				</a>
 			</div>
 			<div v-else-if="state === 'error'">
 				<a :href="settingsUrl">
-					{{ t('zammad', 'Incorrect access token.') }}
-					{{ t('zammad', 'Click here to configure the access to your Zammad account.') }}
+					{{ t('integration_zammad', 'Incorrect access token.') }}
+					{{ t('integration_zammad', 'Click here to configure the access to your Zammad account.') }}
 				</a>
 			</div>
 			<div v-else-if="state === 'ok'">
-				{{ t('zammad', 'Nothing to show') }}
+				{{ t('integration_zammad', 'Nothing to show') }}
 			</div>
 		</template>
 	</DashboardWidget>
@@ -91,7 +91,7 @@ export default {
 		async launchLoop() {
 			// get zammad URL first
 			try {
-				const response = await axios.get(generateUrl('/apps/zammad/url'))
+				const response = await axios.get(generateUrl('/apps/integration_zammad/url'))
 				this.zammadUrl = response.data.replace(/\/+$/, '')
 			} catch (error) {
 				console.debug(error)
@@ -107,7 +107,7 @@ export default {
 					since: this.lastDate,
 				}
 			}
-			axios.get(generateUrl('/apps/zammad/notifications'), req).then((response) => {
+			axios.get(generateUrl('/apps/integration_zammad/notifications'), req).then((response) => {
 				this.processNotifications(response.data)
 				this.state = 'ok'
 			}).catch((error) => {
@@ -115,7 +115,7 @@ export default {
 				if (error.response && error.response.status === 400) {
 					this.state = 'no-token'
 				} else if (error.response && error.response.status === 401) {
-					showError(t('zammad', 'Failed to get Zammad notifications.'))
+					showError(t('integration_zammad', 'Failed to get Zammad notifications.'))
 					this.state = 'error'
 				} else {
 					// there was an error in notif processing
@@ -161,7 +161,7 @@ export default {
 		},
 		getAuthorAvatarUrl(n) {
 			return (n.image)
-				? generateUrl('/apps/zammad/avatar?') + encodeURIComponent('image') + '=' + encodeURIComponent(n.image)
+				? generateUrl('/apps/integration_zammad/avatar?') + encodeURIComponent('image') + '=' + encodeURIComponent(n.image)
 				: ''
 		},
 		getNotificationProjectName(n) {
@@ -172,9 +172,9 @@ export default {
 		},
 		getNotificationTypeImage(n) {
 			if (n.type_lookup_id === 2 || n.type === 'update') {
-				return generateUrl('/svg/zammad/rename?color=ffffff')
+				return generateUrl('/svg/integration_zammad/rename?color=ffffff')
 			} else if (n.type_lookup_id === 3 || n.type === 'create') {
-				return generateUrl('/svg/zammad/add?color=ffffff')
+				return generateUrl('/svg/integration_zammad/add?color=ffffff')
 			}
 			return generateUrl('/svg/core/actions/sound?color=' + this.themingColor)
 		},

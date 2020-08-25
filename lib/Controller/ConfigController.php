@@ -33,6 +33,7 @@ use OCP\AppFramework\Controller;
 use OCP\Http\Client\IClientService;
 
 use OCA\Zammad\Service\ZammadAPIService;
+use OCA\Zammad\AppInfo\Application;
 
 class ConfigController extends Controller {
 
@@ -74,7 +75,7 @@ class ConfigController extends Controller {
      */
     public function setConfig($values) {
         foreach ($values as $key => $value) {
-            $this->config->setUserValue($this->userId, 'zammad', $key, $value);
+            $this->config->setUserValue($this->userId, Application::APP_ID, $key, $value);
         }
         $response = new DataResponse(1);
         return $response;
@@ -85,7 +86,7 @@ class ConfigController extends Controller {
      */
     public function setAdminConfig($values) {
         foreach ($values as $key => $value) {
-            $this->config->setAppValue('zammad', $key, $value);
+            $this->config->setAppValue(Application::APP_ID, $key, $value);
         }
         $response = new DataResponse(1);
         return $response;
@@ -97,16 +98,16 @@ class ConfigController extends Controller {
      * @NoCSRFRequired
      */
     public function oauthRedirect($code, $state) {
-        $configState = $this->config->getUserValue($this->userId, 'zammad', 'oauth_state', '');
-        $clientID = $this->config->getAppValue('zammad', 'client_id', '');
-        $clientSecret = $this->config->getAppValue('zammad', 'client_secret', '');
+        $configState = $this->config->getUserValue($this->userId, Application::APP_ID, 'oauth_state', '');
+        $clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
+        $clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
 
         // anyway, reset state
-        $this->config->setUserValue($this->userId, 'zammad', 'oauth_state', '');
+        $this->config->setUserValue($this->userId, Application::APP_ID, 'oauth_state', '');
 
         if ($clientID and $clientSecret and $configState !== '' and $configState === $state) {
-            $redirect_uri = $this->urlGenerator->linkToRouteAbsolute('zammad.config.oauthRedirect');
-            $zammadUrl = $this->config->getUserValue($this->userId, 'zammad', 'url', '');
+            $redirect_uri = $this->urlGenerator->linkToRouteAbsolute('integration_zammad.config.oauthRedirect');
+            $zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url', '');
             $result = $this->zammadAPIService->requestOAuthAccessToken($zammadUrl, [
                 'client_id' => $clientID,
                 'client_secret' => $clientSecret,
@@ -116,10 +117,10 @@ class ConfigController extends Controller {
             ], 'POST');
             if (is_array($result) and isset($result['access_token'])) {
                 $accessToken = $result['access_token'];
-                $this->config->setUserValue($this->userId, 'zammad', 'token', $accessToken);
-                $this->config->setUserValue($this->userId, 'zammad', 'token_type', 'oauth');
+                $this->config->setUserValue($this->userId, Application::APP_ID, 'token', $accessToken);
+                $this->config->setUserValue($this->userId, Application::APP_ID, 'token_type', 'oauth');
                 $refreshToken = $result['refresh_token'];
-                $this->config->setUserValue($this->userId, 'zammad', 'refresh_token', $refreshToken);
+                $this->config->setUserValue($this->userId, Application::APP_ID, 'refresh_token', $refreshToken);
                 return new RedirectResponse(
                     $this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'linked-accounts']) .
                     '?zammadToken=success'

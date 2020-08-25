@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <info>
-    <id>zammad</id>
-    <name>Zammad</name>
+    <id>integration_zammad</id>
+    <name>Zammad integration</name>
     <summary> </summary><description> </description>
     <version>0.0.1</version>
     <licence>agpl</licence>
     <author>Julien Veyssier</author>
     <namespace>Zammad</namespace>
     <documentation>
-        <developer>https://nowhere.org/wikis/devdoc</developer>
+        <developer>https://github.com/nextcloud/integration_zammad/wikis/devdoc</developer>
     </documentation>
     <category>integration</category>
-    <website>https://github.com/nextcloud/zammad</website>
-    <bugs>https://github.com/nextcloud/zammad/issues</bugs>
+    <website>https://github.com/nextcloud/integration_zammad</website>
+    <bugs>https://github.com/nextcloud/integration_zammad/issues</bugs>
     <dependencies>
         <database min-version="9.4">pgsql</database>
         <database>sqlite</database>

@@ -17,6 +17,8 @@ use OCP\IConfig;
 use OCP\Http\Client\IClientService;
 use GuzzleHttp\Exception\ClientException;
 
+use OCA\Zammad\AppInfo\Application;
+
 class ZammadAPIService {
 
     private $l10n;
@@ -187,7 +189,7 @@ class ZammadAPIService {
                 ], 'POST');
                 if (is_array($result) and isset($result['access_token'])) {
                     $accessToken = $result['access_token'];
-                    $this->config->setUserValue($this->userId, 'zammad', 'token', $accessToken);
+                    $this->config->setUserValue($this->userId, Application::APP_ID, 'token', $accessToken);
                     // retry the request with new access token
                     return $this->request(
                         $zammadUrl, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $endPoint, $params, $method

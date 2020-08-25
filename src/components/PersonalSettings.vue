@@ -2,34 +2,34 @@
 	<div id="zammad_prefs" class="section">
 		<h2>
 			<a class="icon icon-zammad" />
-			{{ t('zammad', 'Zammad') }}
+			{{ t('integration_zammad', 'Zammad integration') }}
 		</h2>
 		<p class="settings-hint">
-			{{ t('zammad', 'When you create an access token yourself, give it "TICKET -> AGENT" and "USER_PREFERENCES -> NOTIFICATIONS" permissions.') }}
+			{{ t('integration_zammad', 'When you create an access token yourself, give it "TICKET -> AGENT" and "USER_PREFERENCES -> NOTIFICATIONS" permissions.') }}
 		</p>
 		<div class="zammad-grid-form">
 			<label for="zammad-url">
 				<a class="icon icon-link" />
-				{{ t('zammad', 'Zammad instance address') }}
+				{{ t('integration_zammad', 'Zammad instance address') }}
 			</label>
 			<input id="zammad-url"
 				v-model="state.url"
 				type="text"
-				:placeholder="t('zammad', 'https://my.zammad.org')"
+				:placeholder="t('integration_zammad', 'https://my.zammad.org')"
 				@input="onInput">
 			<button v-if="showOAuth" id="zammad-oauth" @click="onOAuthClick">
 				<span class="icon icon-external" />
-				{{ t('zammad', 'Get access with OAuth') }}
+				{{ t('integration_zammad', 'Get access with OAuth') }}
 			</button>
 			<span v-else />
 			<label for="zammad-token">
 				<a class="icon icon-category-auth" />
-				{{ t('zammad', 'Zammad access token') }}
+				{{ t('integration_zammad', 'Zammad access token') }}
 			</label>
 			<input id="zammad-token"
 				v-model="state.token"
 				type="password"
-				:placeholder="t('zammad', 'Get a token in Zammad settings')"
+				:placeholder="t('integration_zammad', 'Get a token in Zammad settings')"
 				@input="onInput">
 		</div>
 	</div>
@@ -52,8 +52,8 @@ export default {
 
 	data() {
 		return {
-			state: loadState('zammad', 'user-config'),
-			initialToken: loadState('zammad', 'user-config').token,
+			state: loadState('integration_zammad', 'user-config'),
+			initialToken: loadState('integration_zammad', 'user-config').token,
 		}
 	},
 
@@ -70,12 +70,13 @@ export default {
 
 	mounted() {
 		const paramString = window.location.search.substr(1)
+		// eslint-disable-next-line
 		const urlParams = new URLSearchParams(paramString)
 		const zmToken = urlParams.get('zammadToken')
 		if (zmToken === 'success') {
-			showSuccess(t('zammad', 'OAuth access token successfully retrieved!'))
+			showSuccess(t('integration_zammad', 'OAuth access token successfully retrieved!'))
 		} else if (zmToken === 'error') {
-			showError(t('zammad', 'OAuth access token could not be obtained:') + ' ' + urlParams.get('message'))
+			showError(t('integration_zammad', 'OAuth access token could not be obtained:') + ' ' + urlParams.get('message'))
 		}
 	},
 
@@ -104,14 +105,14 @@ export default {
 			if (this.state.token !== this.initialToken) {
 				req.values.token_type = 'access'
 			}
-			const url = generateUrl('/apps/zammad/config')
+			const url = generateUrl('/apps/integration_zammad/config')
 			axios.put(url, req)
 				.then((response) => {
-					showSuccess(t('zammad', 'Zammad options saved.'))
+					showSuccess(t('integration_zammad', 'Zammad options saved.'))
 				})
 				.catch((error) => {
 					showError(
-						t('zammad', 'Failed to save Zammad options')
+						t('integration_zammad', 'Failed to save Zammad options')
 						+ ': ' + error.response.request.responseText
 					)
 				})
@@ -119,7 +120,7 @@ export default {
 				})
 		},
 		onOAuthClick() {
-			const redirectEndpoint = generateUrl('/apps/zammad/oauth-redirect')
+			const redirectEndpoint = generateUrl('/apps/integration_zammad/oauth-redirect')
 			const redirectUri = OC.getProtocol() + '://' + OC.getHostName() + redirectEndpoint
 			const oauthState = Math.random().toString(36).substring(3)
 			const requestUrl = this.state.url + '/oauth/authorize?client_id=' + encodeURIComponent(this.state.client_id)
@@ -132,14 +133,14 @@ export default {
 					oauth_state: oauthState,
 				},
 			}
-			const url = generateUrl('/apps/zammad/config')
+			const url = generateUrl('/apps/integration_zammad/config')
 			axios.put(url, req)
 				.then((response) => {
 					window.location.replace(requestUrl)
 				})
 				.catch((error) => {
 					showError(
-						t('zammad', 'Failed to save Zammad OAuth state')
+						t('integration_zammad', 'Failed to save Zammad OAuth state')
 						+ ': ' + error.response.request.responseText
 					)
 				})

@@ -31,6 +31,7 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Controller;
 
 use OCA\Zammad\Service\ZammadAPIService;
+use OCA\Zammad\AppInfo\Application;
 
 class ZammadAPIController extends Controller {
 
@@ -58,12 +59,12 @@ class ZammadAPIController extends Controller {
         $this->config = $config;
         $this->logger = $logger;
         $this->zammadAPIService = $zammadAPIService;
-        $this->accessToken = $this->config->getUserValue($this->userId, 'zammad', 'token', '');
-        $this->tokenType = $this->config->getUserValue($this->userId, 'zammad', 'token_type', '');
-        $this->refreshToken = $this->config->getUserValue($this->userId, 'zammad', 'refresh_token', '');
-        $this->clientID = $this->config->getAppValue('zammad', 'client_id', '');
-        $this->clientSecret = $this->config->getAppValue('zammad', 'client_secret', '');
-        $this->zammadUrl = $this->config->getUserValue($this->userId, 'zammad', 'url', '');
+        $this->accessToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'token', '');
+        $this->tokenType = $this->config->getUserValue($this->userId, Application::APP_ID, 'token_type', '');
+        $this->refreshToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'refresh_token', '');
+        $this->clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
+        $this->clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
+        $this->zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url', '');
     }
 
     /**
