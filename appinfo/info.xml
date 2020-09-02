@@ -4,12 +4,12 @@
     <name>Zammad integration</name>
     <summary>Integration of Zammad user support/ticketing solution</summary>
     <description><![CDATA[Zammad integration provides a dashboard widget displaying your important notifications.]]></description>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <licence>agpl</licence>
     <author>Julien Veyssier</author>
     <namespace>Zammad</namespace>
     <documentation>
-        <developer>https://github.com/eneiluj/integration_zammad/wikis/devdoc</developer>
+        <developer>https://github.com/eneiluj/integration_zammad/wikis</developer>
     </documentation>
     <category>integration</category>
     <category>dashboard</category>
