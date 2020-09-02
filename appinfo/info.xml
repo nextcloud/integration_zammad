@@ -2,17 +2,20 @@
 <info>
     <id>integration_zammad</id>
     <name>Zammad integration</name>
-    <summary> </summary><description> </description>
+    <summary>Integration of Zammad user support/ticketing solution</summary>
+    <description><![CDATA[Zammad integration provides a dashboard widget displaying your important notifications.]]></description>
     <version>0.0.1</version>
     <licence>agpl</licence>
     <author>Julien Veyssier</author>
     <namespace>Zammad</namespace>
     <documentation>
-        <developer>https://github.com/nextcloud/integration_zammad/wikis/devdoc</developer>
+        <developer>https://github.com/eneiluj/integration_zammad/wikis/devdoc</developer>
     </documentation>
     <category>integration</category>
-    <website>https://github.com/nextcloud/integration_zammad</website>
-    <bugs>https://github.com/nextcloud/integration_zammad/issues</bugs>
+    <category>dashboard</category>
+    <website>https://github.com/eneiluj/integration_zammad</website>
+    <bugs>https://github.com/eneiluj/integration_zammad/issues</bugs>
+    <screenshot>https://github.com/eneiluj/integration_zammad/raw/master/img/screenshot1.jpg</screenshot>
     <dependencies>
         <database min-version="9.4">pgsql</database>
         <database>sqlite</database>

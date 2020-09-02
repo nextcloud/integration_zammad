@@ -1,7 +1,7 @@
 <template>
 	<DashboardWidget :items="items"
-		:showMoreUrl="showMoreUrl"
-		:showMoreText="title"
+		:show-more-url="showMoreUrl"
+		:show-more-text="title"
 		:loading="state === 'loading'">
 		<template v-slot:empty-content>
 			<div v-if="state === 'no-token'">
