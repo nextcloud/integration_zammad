@@ -32,6 +32,15 @@
 				:placeholder="t('integration_zammad', 'Get a token in Zammad settings')"
 				@input="onInput">
 		</div>
+		<div id="zammad-search-block">
+			<input
+				id="search-zammad"
+				type="checkbox"
+				class="checkbox"
+				:checked="state.search_enabled"
+				@input="onSearchChange">
+			<label for="search-zammad">{{ t('integration_zammad', 'Enable unified search for tickets.') }}</label>
+		</div>
 	</div>
 </template>
 
@@ -81,6 +90,10 @@ export default {
 	},
 
 	methods: {
+		onSearchChange(e) {
+			this.state.search_enabled = e.target.checked
+			this.saveOptions()
+		},
 		onInput() {
 			const that = this
 			delay(function() {
@@ -99,6 +112,7 @@ export default {
 				values: {
 					token: this.state.token,
 					url: this.state.url,
+					search_enabled: this.state.search_enabled ? '1' : '0',
 				},
 			}
 			// if manually set, this is not an oauth access token
@@ -152,6 +166,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+#zammad-search-block {
+	margin-left: 30px;
+	margin-top: 30px;
+}
 .zammad-grid-form label {
 	line-height: 38px;
 }

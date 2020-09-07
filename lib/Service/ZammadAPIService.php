@@ -44,14 +44,16 @@ class ZammadAPIService {
         $this->userId = $userId;
     }
 
-    public function getNotifications($url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $since = null) {
+    public function getNotifications(string $url, string $accessToken, string $authType,
+                                    string $refreshToken, string $clientID, string $clientSecret,
+                                    $since = null): array {
         $params = [
             'state' => 'pending',
         ];
         $result = $this->request(
             $url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, 'online_notifications', $params
         );
-        if (!is_array($result)) {
+        if (isset($result['error'])) {
             return $result;
         }
         // filter seen ones
@@ -112,6 +114,26 @@ class ZammadAPIService {
         return $result;
     }
 
+    public function search(string $url, string $accessToken, string $authType,
+                            string $refreshToken, string $clientID, string $clientSecret,
+                            string $query): array {
+        $params = [
+            'query' => $query,
+            'limit' => 10,
+        ];
+        $searchResult = $this->request(
+            $url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, 'tickets/search', $params
+        );
+
+        $result = [];
+        if (isset($searchResult['assets']) && isset($searchResult['assets']['Ticket'])) {
+            foreach ($searchResult['assets']['Ticket'] as $id => $t) {
+                array_push($result, $t);
+            }
+        }
+        return $result;
+    }
+
     // authenticated request to get an image from zammad
     public function getZammadAvatar($url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $image) {
         $url = $url . '/api/v1/users/image/' . $image;
@@ -125,7 +147,9 @@ class ZammadAPIService {
         return $this->client->get($url, $options)->getBody();
     }
 
-    public function request($zammadUrl, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $endPoint, $params = [], $method = 'GET') {
+    public function request(string $zammadUrl, string $accessToken, string $authType, string $refreshToken,
+                            string $clientID, string $clientSecret,
+                            string $endPoint, array $params = [], string $method = 'GET'): array {
         try {
             $url = $zammadUrl . '/api/v1/' . $endPoint;
             $authHeader = ($authType === 'access') ? 'Token token=' : 'Bearer ';
@@ -168,7 +192,7 @@ class ZammadAPIService {
             $respCode = $response->getStatusCode();
 
             if ($respCode >= 400) {
-                return $this->l10n->t('Bad credentials');
+                return ['error' => $this->l10n->t('Bad credentials')];
             } else {
                 return json_decode($body, true);
             }
@@ -196,11 +220,11 @@ class ZammadAPIService {
                     );
                 }
             }
-            return $e;
+            return ['error' => $e->getMessage()];
         }
     }
 
-    public function requestOAuthAccessToken($url, $params = [], $method = 'GET') {
+    public function requestOAuthAccessToken(string $url, array $params = [], string $method = 'GET'): array {
         try {
             $url = $url . '/oauth/token';
             $options = [
@@ -231,13 +255,13 @@ class ZammadAPIService {
             $respCode = $response->getStatusCode();
 
             if ($respCode >= 400) {
-                return $this->l10n->t('OAuth access token refused');
+                return ['error' => $this->l10n->t('OAuth access token refused')];
             } else {
                 return json_decode($body, true);
             }
         } catch (\Exception $e) {
             $this->logger->warning('Zammad OAuth error : '.$e, array('app' => $this->appName));
-            return $e;
+            return ['error' => $e->getMessage()];
         }
     }
 

@@ -101,7 +101,7 @@ class ZammadAPIController extends Controller {
         $result = $this->zammadAPIService->getNotifications(
             $this->zammadUrl, $this->accessToken, $this->tokenType, $this->refreshToken, $this->clientID, $this->clientSecret, $since
         );
-        if (is_array($result)) {
+        if (!isset($result['error'])) {
             $response = new DataResponse($result);
         } else {
             $response = new DataResponse($result, 401);

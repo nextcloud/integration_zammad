@@ -19,6 +19,7 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 
 use OCA\Zammad\Controller\PageController;
 use OCA\Zammad\Dashboard\ZammadWidget;
+use OCA\Zammad\Search\ZammadSearchProvider;
 
 /**
  * Class Application
@@ -42,6 +43,7 @@ class Application extends App implements IBootstrap {
 
     public function register(IRegistrationContext $context): void {
         $context->registerDashboardWidget(ZammadWidget::class);
+        $context->registerSearchProvider(ZammadSearchProvider::class);
     }
 
     public function boot(IBootContext $context): void {

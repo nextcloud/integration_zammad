@@ -115,7 +115,7 @@ class ConfigController extends Controller {
                 'redirect_uri' => $redirect_uri,
                 'grant_type' => 'authorization_code'
             ], 'POST');
-            if (is_array($result) and isset($result['access_token'])) {
+            if (isset($result['access_token'])) {
                 $accessToken = $result['access_token'];
                 $this->config->setUserValue($this->userId, Application::APP_ID, 'token', $accessToken);
                 $this->config->setUserValue($this->userId, Application::APP_ID, 'token_type', 'oauth');
@@ -126,7 +126,7 @@ class ConfigController extends Controller {
                     '?zammadToken=success'
                 );
             }
-            $result = $this->l->t('Error getting OAuth access token');
+            $result = $this->l->t('Error getting OAuth access token.') . ' ' . $result['error'];
         } else {
             $result = $this->l->t('Error during OAuth exchanges');
         }
