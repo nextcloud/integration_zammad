@@ -123,7 +123,7 @@ class ZammadSearchProvider implements IProvider {
 			return SearchResult::paginated($this->getName(), [], 0);
 		}
 
-		$searchResults = $this->service->search($zammadUrl, $accessToken, $tokenType, $refreshToken, $clientID, $clientSecret, $term);
+		$searchResults = $this->service->search($zammadUrl, $accessToken, $tokenType, $refreshToken, $clientID, $clientSecret, $user->getUID(), $term);
 
 		if (isset($searchResults['error'])) {
 			return SearchResult::paginated($this->getName(), [], 0);

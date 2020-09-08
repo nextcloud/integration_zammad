@@ -40,6 +40,15 @@
 				:checked="state.search_enabled"
 				@input="onSearchChange">
 			<label for="search-zammad">{{ t('integration_zammad', 'Enable unified search for tickets.') }}</label>
+			<br>
+			<br>
+			<input
+				id="notification-zammad"
+				type="checkbox"
+				class="checkbox"
+				:checked="state.notification_enabled"
+				@input="onNotificationChange">
+			<label for="notification-zammad">{{ t('integration_zammad', 'Enable notifications for open tickets.') }}</label>
 		</div>
 	</div>
 </template>
@@ -90,6 +99,10 @@ export default {
 	},
 
 	methods: {
+		onNotificationChange(e) {
+			this.state.notification_enabled = e.target.checked
+			this.saveOptions()
+		},
 		onSearchChange(e) {
 			this.state.search_enabled = e.target.checked
 			this.saveOptions()
@@ -113,6 +126,7 @@ export default {
 					token: this.state.token,
 					url: this.state.url,
 					search_enabled: this.state.search_enabled ? '1' : '0',
+					notification_enabled: this.state.notification_enabled ? '1' : '0',
 				},
 			}
 			// if manually set, this is not an oauth access token

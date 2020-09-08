@@ -71,7 +71,7 @@ class ZammadAPIController extends Controller {
      * get notification list
      * @NoAdminRequired
      */
-    public function getZammadUrl() {
+    public function getZammadUrl(): DataResponse {
         return new DataResponse($this->zammadUrl);
     }
 
@@ -80,7 +80,7 @@ class ZammadAPIController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function getZammadAvatar($image) {
+    public function getZammadAvatar($image): DataDisplayResponse {
         $response = new DataDisplayResponse(
             $this->zammadAPIService->getZammadAvatar(
                 $this->zammadUrl, $this->accessToken, $this->tokenType, $this->refreshToken, $this->clientID, $this->clientSecret, $image
@@ -94,12 +94,12 @@ class ZammadAPIController extends Controller {
      * get notifications list
      * @NoAdminRequired
      */
-    public function getNotifications($since = null) {
+    public function getNotifications(?string $since): DataResponse {
         if ($this->accessToken === '') {
             return new DataResponse('', 400);
         }
         $result = $this->zammadAPIService->getNotifications(
-            $this->zammadUrl, $this->accessToken, $this->tokenType, $this->refreshToken, $this->clientID, $this->clientSecret, $since
+            $this->zammadUrl, $this->accessToken, $this->tokenType, $this->refreshToken, $this->clientID, $this->clientSecret, $this->userId, $since, 7
         );
         if (!isset($result['error'])) {
             $response = new DataResponse($result);

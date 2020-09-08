@@ -14,6 +14,8 @@ namespace OCA\Zammad\Service;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IConfig;
+use OCP\IUserManager;
+use OCP\IUser;
 use OCP\Http\Client\IClientService;
 use GuzzleHttp\Exception\ClientException;
 
@@ -28,30 +30,82 @@ class ZammadAPIService {
      * Service to make requests to Zammad v3 (JSON) API
      */
     public function __construct (
+        IUserManager $userManager,
         string $appName,
         ILogger $logger,
         IL10N $l10n,
         IConfig $config,
-        IClientService $clientService,
-        $userId
+        IClientService $clientService
     ) {
         $this->appName = $appName;
         $this->l10n = $l10n;
         $this->logger = $logger;
         $this->config = $config;
+        $this->userManager = $userManager;
         $this->clientService = $clientService;
         $this->client = $clientService->newClient();
-        $this->userId = $userId;
+    }
+
+    /**
+     * triggered by a cron job
+     * notifies user of their number of new tickets
+     */
+    public function checkOpenTickets(): void {
+        $this->userManager->callForAllUsers(function (IUser $user) {
+            $this->checkOpenTicketsForUser($user->getUID());
+        });
+    }
+
+    private function checkOpenTicketsForUser(string $userId): void {
+        $accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token', '');
+        if ($accessToken) {
+            $tokenType = $this->config->getUserValue($userId, Application::APP_ID, 'token_type', '');
+            $refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token', '');
+            $clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
+            $clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
+            $zammadUrl = $this->config->getUserValue($userId, Application::APP_ID, 'url', '');
+            if ($clientID && $clientSecret && $zammadUrl) {
+                $lastNotificationCheck = $this->config->getUserValue($userId, Application::APP_ID, 'last_open_check', '');
+                $lastNotificationCheck = $lastNotificationCheck === '' ? null : $lastNotificationCheck;
+                // get the zammad user ID
+                $me = $this->request(
+                    $zammadUrl, $accessToken, $tokenType, $refreshToken, $clientID, $clientSecret, $userId, 'users/me'
+                );
+                if (isset($me['id'])) {
+                    $my_user_id = $me['id'];
+
+                    $notifications = $this->getNotifications(
+                        $zammadUrl, $accessToken, $tokenType, $refreshToken, $clientID, $clientSecret, $userId, $lastNotificationCheck
+                    );
+                    if (!isset($notifications['error']) && count($notifications) > 0) {
+                        $lastNotificationCheck = $notifications[0]['updated_at'];
+                        $this->config->setUserValue($userId, Application::APP_ID, 'last_open_check', $lastNotificationCheck);
+                        $nbOpen = 0;
+                        foreach ($notifications as $n) {
+                            $user_id = $n['user_id'];
+                            $state_id = $n['state_id'];
+                            $owner_id = $n['owner_id'];
+                            // TODO change that back
+                            //if ($owner_id === $my_user_id && $state_id === 1) {
+                            if ($state_id === 1) {
+                                $nbOpen++;
+                            }
+                        }
+                        error_log('NB OPEN for '.$me['lastname'].': '.$nbOpen);
+                    }
+                }
+            }
+        }
     }
 
     public function getNotifications(string $url, string $accessToken, string $authType,
-                                    string $refreshToken, string $clientID, string $clientSecret,
-                                    $since = null): array {
+                                    string $refreshToken, string $clientID, string $clientSecret, string $userId,
+                                    ?string $since, ?int $limit = null): array {
         $params = [
             'state' => 'pending',
         ];
         $result = $this->request(
-            $url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, 'online_notifications', $params
+            $url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, 'online_notifications', $params
         );
         if (isset($result['error'])) {
             return $result;
@@ -69,19 +123,22 @@ class ZammadAPIService {
                 $ts = $date->getTimestamp();
                 return $ts > $sinceTimestamp;
             });
-        } else {
-            // take 20 most recent if no date filter
-            $result = array_slice($result, 0, 20);
+        }
+        if ($limit) {
+            $result = array_slice($result, 0, $limit);
         }
         $result = array_values($result);
         // get details
         foreach ($result as $k => $v) {
             $details = $this->request(
-                $url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, 'tickets/' . $v['o_id']
+                $url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, 'tickets/' . $v['o_id']
             );
-            if (is_array($details)) {
+            if (!isset($details['error'])) {
                 $result[$k]['title'] = $details['title'];
                 $result[$k]['note'] = $details['note'];
+                $result[$k]['state_id'] = $details['state_id'];
+                $result[$k]['owner_id'] = $details['owner_id'];
+                $result[$k]['type'] = $details['type'];
             }
         }
         // get user details
@@ -94,7 +151,7 @@ class ZammadAPIService {
         $userDetails = [];
         foreach ($userIds as $uid) {
             $user = $this->request(
-                $url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, 'users/' . $uid
+                $url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, 'users/' . $uid
             );
             $userDetails[$uid] = [
                 'firstname' => $user['firstname'],
@@ -115,14 +172,17 @@ class ZammadAPIService {
     }
 
     public function search(string $url, string $accessToken, string $authType,
-                            string $refreshToken, string $clientID, string $clientSecret,
+                            string $refreshToken, string $clientID, string $clientSecret, string $userId,
                             string $query): array {
+        // TODEEEELLLL
+        $this->checkOpenTickets();
+
         $params = [
             'query' => $query,
             'limit' => 10,
         ];
         $searchResult = $this->request(
-            $url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, 'tickets/search', $params
+            $url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, 'tickets/search', $params
         );
 
         $result = [];
@@ -135,7 +195,9 @@ class ZammadAPIService {
     }
 
     // authenticated request to get an image from zammad
-    public function getZammadAvatar($url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $image) {
+    public function getZammadAvatar(string $url,
+                                    string $accessToken, string $authType, string $refreshToken, string $clientID, string $clientSecret,
+                                    string $image): string {
         $url = $url . '/api/v1/users/image/' . $image;
         $authHeader = ($authType === 'access') ? 'Token token=' : 'Bearer ';
         $options = [
@@ -148,7 +210,7 @@ class ZammadAPIService {
     }
 
     public function request(string $zammadUrl, string $accessToken, string $authType, string $refreshToken,
-                            string $clientID, string $clientSecret,
+                            string $clientID, string $clientSecret, string $userId,
                             string $endPoint, array $params = [], string $method = 'GET'): array {
         try {
             $url = $zammadUrl . '/api/v1/' . $endPoint;
@@ -213,10 +275,10 @@ class ZammadAPIService {
                 ], 'POST');
                 if (is_array($result) and isset($result['access_token'])) {
                     $accessToken = $result['access_token'];
-                    $this->config->setUserValue($this->userId, Application::APP_ID, 'token', $accessToken);
+                    $this->config->setUserValue($userId, Application::APP_ID, 'token', $accessToken);
                     // retry the request with new access token
                     return $this->request(
-                        $zammadUrl, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $endPoint, $params, $method
+                        $zammadUrl, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, $endPoint, $params, $method
                     );
                 }
             }
