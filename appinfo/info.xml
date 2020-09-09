@@ -3,7 +3,7 @@
     <id>integration_zammad</id>
     <name>Zammad integration</name>
     <summary>Integration of Zammad user support/ticketing solution</summary>
-    <description><![CDATA[Zammad integration provides a dashboard widget displaying your important notifications.]]></description>
+    <description><![CDATA[Zammad integration provides a dashboard widget displaying your important notifications, a search provider and notifications for new open tickets.]]></description>
     <version>0.0.2</version>
     <licence>agpl</licence>
     <author>Julien Veyssier</author>
