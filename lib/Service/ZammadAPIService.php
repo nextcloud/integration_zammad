@@ -17,6 +17,7 @@ use OCP\IConfig;
 use OCP\IUserManager;
 use OCP\IUser;
 use OCP\Http\Client\IClientService;
+use OCP\Notification\IManager as INotificationManager;
 use GuzzleHttp\Exception\ClientException;
 
 use OCA\Zammad\AppInfo\Application;
@@ -29,20 +30,20 @@ class ZammadAPIService {
     /**
      * Service to make requests to Zammad v3 (JSON) API
      */
-    public function __construct (
-        IUserManager $userManager,
-        string $appName,
-        ILogger $logger,
-        IL10N $l10n,
-        IConfig $config,
-        IClientService $clientService
-    ) {
+    public function __construct (IUserManager $userManager,
+                                string $appName,
+                                ILogger $logger,
+                                IL10N $l10n,
+                                IConfig $config,
+                                INotificationManager $notificationManager,
+                                IClientService $clientService) {
         $this->appName = $appName;
         $this->l10n = $l10n;
         $this->logger = $logger;
         $this->config = $config;
         $this->userManager = $userManager;
         $this->clientService = $clientService;
+        $this->notificationManager = $notificationManager;
         $this->client = $clientService->newClient();
     }
 
@@ -85,22 +86,40 @@ class ZammadAPIService {
                             $user_id = $n['user_id'];
                             $state_id = $n['state_id'];
                             $owner_id = $n['owner_id'];
-                            // TODO change that back
-                            //if ($owner_id === $my_user_id && $state_id === 1) {
-                            if ($state_id === 1) {
+                            // if ($state_id === 1) {
+                            if ($owner_id === $my_user_id && $state_id === 1) {
                                 $nbOpen++;
                             }
                         }
                         error_log('NB OPEN for '.$me['lastname'].': '.$nbOpen);
+                        if ($nbOpen > 0) {
+                            $this->sendNCNotification($userId, 'new_open_tickets', [
+                                'nbOpen' => $nbOpen,
+                                'link' => $zammadUrl
+                            ]);
+                        }
                     }
                 }
             }
         }
     }
 
+    private function sendNCNotification(string $userId, string $subject, array $params): void {
+        $manager = $this->notificationManager;
+        $notification = $manager->createNotification();
+
+        $notification->setApp(Application::APP_ID)
+            ->setUser($userId)
+            ->setDateTime(new \DateTime())
+            ->setObject('dum', 'dum')
+            ->setSubject($subject, $params);
+
+        $manager->notify($notification);
+    }
+
     public function getNotifications(string $url, string $accessToken, string $authType,
                                     string $refreshToken, string $clientID, string $clientSecret, string $userId,
-                                    ?string $since, ?int $limit = null): array {
+                                    ?string $since = null, ?int $limit = null): array {
         $params = [
             'state' => 'pending',
         ];
@@ -174,9 +193,6 @@ class ZammadAPIService {
     public function search(string $url, string $accessToken, string $authType,
                             string $refreshToken, string $clientID, string $clientSecret, string $userId,
                             string $query): array {
-        // TODEEEELLLL
-        $this->checkOpenTickets();
-
         $params = [
             'query' => $query,
             'limit' => 10,
@@ -259,7 +275,7 @@ class ZammadAPIService {
                 return json_decode($body, true);
             }
         } catch (ClientException $e) {
-            $this->logger->warning('Zammad API error : '.$e, array('app' => $this->appName));
+            $this->logger->warning('Zammad API error : '.$e->getMessage(), array('app' => $this->appName));
             $response = $e->getResponse();
             $body = (string) $response->getBody();
             // refresh token if it's invalid and we are using oauth
@@ -322,7 +338,7 @@ class ZammadAPIService {
                 return json_decode($body, true);
             }
         } catch (\Exception $e) {
-            $this->logger->warning('Zammad OAuth error : '.$e, array('app' => $this->appName));
+            $this->logger->warning('Zammad OAuth error : '.$e->getMessage(), array('app' => $this->appName));
             return ['error' => $e->getMessage()];
         }
     }

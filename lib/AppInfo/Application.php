@@ -16,10 +16,12 @@ use OCP\AppFramework\IAppContainer;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
+use OCP\Notification\IManager as INotificationManager;
 
 use OCA\Zammad\Controller\PageController;
 use OCA\Zammad\Dashboard\ZammadWidget;
 use OCA\Zammad\Search\ZammadSearchProvider;
+use OCA\Zammad\Notification\Notifier;
 
 /**
  * Class Application
@@ -39,6 +41,8 @@ class Application extends App implements IBootstrap {
         parent::__construct(self::APP_ID, $urlParams);
 
         $container = $this->getContainer();
+        $manager = $container->query(INotificationManager::class);
+        $manager->registerNotifierService(Notifier::class);
     }
 
     public function register(IRegistrationContext $context): void {

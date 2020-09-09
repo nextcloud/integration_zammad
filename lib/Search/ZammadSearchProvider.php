@@ -105,9 +105,9 @@ class ZammadSearchProvider implements IProvider {
 		$offset = $query->getCursor();
 
 		$theme = $this->config->getUserValue($user->getUID(), 'accessibility', 'theme', '');
-		$thumbnailUrl = ($theme === 'dark') ?
-			$this->urlGenerator->imagePath(Application::APP_ID, 'app.svg') :
-			$this->urlGenerator->imagePath(Application::APP_ID, 'app-dark.svg');
+		$thumbnailUrl = ($theme === 'dark')
+			? $this->urlGenerator->imagePath(Application::APP_ID, 'app.svg')
+			: $this->urlGenerator->imagePath(Application::APP_ID, 'app-dark.svg');
 
 		$resultBills = [];
 
