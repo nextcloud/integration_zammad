@@ -7,48 +7,61 @@
 		<p class="settings-hint">
 			{{ t('integration_zammad', 'When you create an access token yourself, give it "TICKET -> AGENT" and "USER_PREFERENCES -> NOTIFICATIONS" permissions.') }}
 		</p>
-		<div class="zammad-grid-form">
-			<label for="zammad-url">
-				<a class="icon icon-link" />
-				{{ t('integration_zammad', 'Zammad instance address') }}
-			</label>
-			<input id="zammad-url"
-				v-model="state.url"
-				type="text"
-				:placeholder="t('integration_zammad', 'https://my.zammad.org')"
-				@input="onInput">
-			<button v-if="showOAuth" id="zammad-oauth" @click="onOAuthClick">
+		<div id="zammad-content">
+			<div class="zammad-grid-form">
+				<label for="zammad-url">
+					<a class="icon icon-link" />
+					{{ t('integration_zammad', 'Zammad instance address') }}
+				</label>
+				<input id="zammad-url"
+					v-model="state.url"
+					type="text"
+					:disabled="connected === true"
+					:placeholder="t('integration_zammad', 'https://my.zammad.org')"
+					@input="onInput">
+				<label for="zammad-token">
+					<a class="icon icon-category-auth" />
+					{{ t('integration_zammad', 'Zammad access token') }}
+				</label>
+				<input id="zammad-token"
+					v-model="state.token"
+					type="password"
+					:disabled="connected === true"
+					:placeholder="t('integration_zammad', 'Zammad access token')"
+					@input="onInput">
+			</div>
+			<button v-if="showOAuth && !connected" id="zammad-oauth" @click="onOAuthClick">
 				<span class="icon icon-external" />
-				{{ t('integration_zammad', 'Get access with OAuth') }}
+				{{ t('integration_zammad', 'Connect to Zammad') }}
 			</button>
-			<span v-else />
-			<label for="zammad-token">
-				<a class="icon icon-category-auth" />
-				{{ t('integration_zammad', 'Zammad access token') }}
-			</label>
-			<input id="zammad-token"
-				v-model="state.token"
-				type="password"
-				:placeholder="t('integration_zammad', 'Get a token in Zammad settings')"
-				@input="onInput">
-		</div>
-		<div id="zammad-search-block">
-			<input
-				id="search-zammad"
-				type="checkbox"
-				class="checkbox"
-				:checked="state.search_enabled"
-				@input="onSearchChange">
-			<label for="search-zammad">{{ t('integration_zammad', 'Enable unified search for tickets.') }}</label>
-			<br>
-			<br>
-			<input
-				id="notification-zammad"
-				type="checkbox"
-				class="checkbox"
-				:checked="state.notification_enabled"
-				@input="onNotificationChange">
-			<label for="notification-zammad">{{ t('integration_zammad', 'Enable notifications for open tickets.') }}</label>
+			<div v-if="connected" class="zammad-grid-form">
+				<label class="zammad-connected">
+					<a class="icon icon-checkmark-color" />
+					{{ t('integration_zammad', 'Connected as {user}', { user: state.user_name }) }}
+				</label>
+				<button id="zammad-rm-cred" @click="onLogoutClick">
+					<span class="icon icon-close" />
+					{{ t('integration_zammad', 'Disconnect from Zammad') }}
+				</button>
+			</div>
+			<div v-if="connected" id="zammad-search-block">
+				<input
+					id="search-zammad"
+					type="checkbox"
+					class="checkbox"
+					:checked="state.search_enabled"
+					@input="onSearchChange">
+				<label for="search-zammad">{{ t('integration_zammad', 'Enable unified search for tickets.') }}</label>
+				<br>
+				<br>
+				<input
+					id="notification-zammad"
+					type="checkbox"
+					class="checkbox"
+					:checked="state.notification_enabled"
+					@input="onNotificationChange">
+				<label for="notification-zammad">{{ t('integration_zammad', 'Enable notifications for open tickets.') }}</label>
+			</div>
 		</div>
 	</div>
 </template>
@@ -81,9 +94,11 @@ export default {
 				&& this.state.client_id
 				&& this.state.client_secret
 		},
-	},
-
-	watch: {
+		connected() {
+            return this.state.token && this.state.token !== ''
+                && this.state.url && this.state.url !== ''
+                && this.state.user_name && this.state.user_name !== ''
+        },
 	},
 
 	mounted() {
@@ -99,6 +114,10 @@ export default {
 	},
 
 	methods: {
+		onLogoutClick() {
+            this.state.token = ''
+            this.saveOptions()
+        },
 		onNotificationChange(e) {
 			this.state.notification_enabled = e.target.checked
 			this.saveOptions()
@@ -137,8 +156,15 @@ export default {
 			axios.put(url, req)
 				.then((response) => {
 					showSuccess(t('integration_zammad', 'Zammad options saved.'))
+					if (response.data.user_name !== undefined) {
+                        this.state.user_name = response.data.user_name
+                        if (this.state.token && response.data.user_name === '') {
+                            showError(t('integration_zammad', 'Incorrect access token'))
+                        }
+                    }
 				})
 				.catch((error) => {
+					console.debug(error)
 					showError(
 						t('integration_zammad', 'Failed to save Zammad options')
 						+ ': ' + error.response.request.responseText
@@ -181,7 +207,6 @@ export default {
 
 <style scoped lang="scss">
 #zammad-search-block {
-	margin-left: 30px;
 	margin-top: 30px;
 }
 .zammad-grid-form label {
@@ -191,10 +216,9 @@ export default {
 	width: 100%;
 }
 .zammad-grid-form {
-	max-width: 900px;
+	max-width: 600px;
 	display: grid;
-	grid-template: 1fr / 1fr 1fr 1fr;
-	margin-left: 30px;
+	grid-template: 1fr / 1fr 1fr;
 	button .icon {
 		margin-bottom: -1px;
 	}
@@ -214,5 +238,8 @@ export default {
 }
 body.dark .icon-zammad {
 	background-image: url(./../../img/app.svg);
+}
+#zammad-content {
+	margin-left: 40px;
 }
 </style>

@@ -73,18 +73,29 @@ class ConfigController extends Controller {
      * set config values
      * @NoAdminRequired
      */
-    public function setConfig($values) {
+    public function setConfig(array $values): DataResponse {
         foreach ($values as $key => $value) {
             $this->config->setUserValue($this->userId, Application::APP_ID, $key, $value);
         }
-        $response = new DataResponse(1);
-        return $response;
+        $result = [];
+
+        if (isset($values['token'])) {
+            if ($values['token'] && $values['token'] !== '') {
+                $userName = $this->storeUserInfo($values['token']);
+                $result['user_name'] = $userName;
+            } else {
+                $this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', '');
+                $this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', '');
+                $result['user_name'] = '';
+            }
+        }
+        return new DataResponse($result);
     }
 
     /**
      * set admin config values
      */
-    public function setAdminConfig($values) {
+    public function setAdminConfig(array $values): DataResponse {
         foreach ($values as $key => $value) {
             $this->config->setAppValue(Application::APP_ID, $key, $value);
         }
@@ -97,7 +108,7 @@ class ConfigController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function oauthRedirect($code, $state) {
+    public function oauthRedirect(string $code, string $state): RedirectResponse {
         $configState = $this->config->getUserValue($this->userId, Application::APP_ID, 'oauth_state', '');
         $clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
         $clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
@@ -121,6 +132,8 @@ class ConfigController extends Controller {
                 $this->config->setUserValue($this->userId, Application::APP_ID, 'token_type', 'oauth');
                 $refreshToken = $result['refresh_token'];
                 $this->config->setUserValue($this->userId, Application::APP_ID, 'refresh_token', $refreshToken);
+                // get user info
+                $this->storeUserInfo($accessToken);
                 return new RedirectResponse(
                     $this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'connected-accounts']) .
                     '?zammadToken=success'
@@ -136,4 +149,23 @@ class ConfigController extends Controller {
         );
     }
 
+    private function storeUserInfo(string $accessToken): string {
+        $tokenType = $this->config->getUserValue($this->userId, Application::APP_ID, 'token_type', '');
+        $refreshToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'refresh_token', '');
+        $clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
+        $clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
+        $zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url', '');
+
+        $info = $this->zammadAPIService->request($zammadUrl, $accessToken, $tokenType, $refreshToken, $clientID, $clientSecret, $this->userId, 'users/me');
+        if (isset($info['lastname']) && isset($info['firstname']) && isset($info['id'])) {
+            $fullName = $info['firstname'] . ' ' . $info['lastname'];
+            $this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', $info['id']);
+            $this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', $fullName);
+            return $fullName;
+        } else {
+            $this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', '');
+            $this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', '');
+            return '';
+        }
+    }
 }

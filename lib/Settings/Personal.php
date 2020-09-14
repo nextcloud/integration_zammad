@@ -42,6 +42,7 @@ class Personal implements ISettings {
      */
     public function getForm() {
         $token = $this->config->getUserValue($this->userId, Application::APP_ID, 'token', '');
+        $userName = $this->config->getUserValue($this->userId, Application::APP_ID, 'user_name', '');
         $url = $this->config->getUserValue($this->userId, Application::APP_ID, 'url', '');
         $searchEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'search_enabled', '0');
         $notificationEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'notification    _enabled', '0');
@@ -60,6 +61,7 @@ class Personal implements ISettings {
             'oauth_instance_url' => $oauthUrl,
             'search_enabled' => ($searchEnabled === '1'),
             'notification_enabled' => ($notificationEnabled === '1'),
+            'user_name' => $userName,
         ];
         $this->initialStateService->provideInitialState($this->appName, 'user-config', $userConfig);
         return new TemplateResponse(Application::APP_ID, 'personalSettings');
