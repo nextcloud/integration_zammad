@@ -68,7 +68,7 @@ class ZammadAPIController extends Controller {
     }
 
     /**
-     * get notification list
+     * get zammad instance URL
      * @NoAdminRequired
      */
     public function getZammadUrl(): DataResponse {

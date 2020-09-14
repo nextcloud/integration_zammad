@@ -122,7 +122,7 @@ class ConfigController extends Controller {
                 $refreshToken = $result['refresh_token'];
                 $this->config->setUserValue($this->userId, Application::APP_ID, 'refresh_token', $refreshToken);
                 return new RedirectResponse(
-                    $this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'linked-accounts']) .
+                    $this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'connected-accounts']) .
                     '?zammadToken=success'
                 );
             }
@@ -131,7 +131,7 @@ class ConfigController extends Controller {
             $result = $this->l->t('Error during OAuth exchanges');
         }
         return new RedirectResponse(
-            $this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'linked-accounts']) .
+            $this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'connected-accounts']) .
             '?zammadToken=error&message=' . urlencode($result)
         );
     }
