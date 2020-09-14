@@ -36,77 +36,77 @@ use OCA\Zammad\AppInfo\Application;
 class ZammadAPIController extends Controller {
 
 
-    private $userId;
-    private $config;
-    private $dbconnection;
-    private $dbtype;
+	private $userId;
+	private $config;
+	private $dbconnection;
+	private $dbtype;
 
-    public function __construct($AppName,
-                                IRequest $request,
-                                IServerContainer $serverContainer,
-                                IConfig $config,
-                                IL10N $l10n,
-                                IAppManager $appManager,
-                                IAppData $appData,
-                                ILogger $logger,
-                                ZammadAPIService $zammadAPIService,
-                                $userId) {
-        parent::__construct($AppName, $request);
-        $this->userId = $userId;
-        $this->l10n = $l10n;
-        $this->appData = $appData;
-        $this->serverContainer = $serverContainer;
-        $this->config = $config;
-        $this->logger = $logger;
-        $this->zammadAPIService = $zammadAPIService;
-        $this->accessToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'token', '');
-        $this->tokenType = $this->config->getUserValue($this->userId, Application::APP_ID, 'token_type', '');
-        $this->refreshToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'refresh_token', '');
-        $this->clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
-        $this->clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
-        $this->zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url', '');
-    }
+	public function __construct($AppName,
+								IRequest $request,
+								IServerContainer $serverContainer,
+								IConfig $config,
+								IL10N $l10n,
+								IAppManager $appManager,
+								IAppData $appData,
+								ILogger $logger,
+								ZammadAPIService $zammadAPIService,
+								$userId) {
+		parent::__construct($AppName, $request);
+		$this->userId = $userId;
+		$this->l10n = $l10n;
+		$this->appData = $appData;
+		$this->serverContainer = $serverContainer;
+		$this->config = $config;
+		$this->logger = $logger;
+		$this->zammadAPIService = $zammadAPIService;
+		$this->accessToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'token', '');
+		$this->tokenType = $this->config->getUserValue($this->userId, Application::APP_ID, 'token_type', '');
+		$this->refreshToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'refresh_token', '');
+		$this->clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
+		$this->clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
+		$this->zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url', '');
+	}
 
-    /**
-     * get zammad instance URL
-     * @NoAdminRequired
-     */
-    public function getZammadUrl(): DataResponse {
-        return new DataResponse($this->zammadUrl);
-    }
+	/**
+	 * get zammad instance URL
+	 * @NoAdminRequired
+	 */
+	public function getZammadUrl(): DataResponse {
+		return new DataResponse($this->zammadUrl);
+	}
 
-    /**
-     * get zammad user avatar
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     */
-    public function getZammadAvatar($image): DataDisplayResponse {
-        $response = new DataDisplayResponse(
-            $this->zammadAPIService->getZammadAvatar(
-                $this->zammadUrl, $this->accessToken, $this->tokenType, $this->refreshToken, $this->clientID, $this->clientSecret, $image
-            )
-        );
-        $response->cacheFor(60*60*24);
-        return $response;
-    }
+	/**
+	 * get zammad user avatar
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function getZammadAvatar($image): DataDisplayResponse {
+		$response = new DataDisplayResponse(
+			$this->zammadAPIService->getZammadAvatar(
+				$this->zammadUrl, $this->accessToken, $this->tokenType, $this->refreshToken, $this->clientID, $this->clientSecret, $image
+			)
+		);
+		$response->cacheFor(60*60*24);
+		return $response;
+	}
 
-    /**
-     * get notifications list
-     * @NoAdminRequired
-     */
-    public function getNotifications(?string $since): DataResponse {
-        if ($this->accessToken === '') {
-            return new DataResponse('', 400);
-        }
-        $result = $this->zammadAPIService->getNotifications(
-            $this->zammadUrl, $this->accessToken, $this->tokenType, $this->refreshToken, $this->clientID, $this->clientSecret, $this->userId, $since, 7
-        );
-        if (!isset($result['error'])) {
-            $response = new DataResponse($result);
-        } else {
-            $response = new DataResponse($result, 401);
-        }
-        return $response;
-    }
+	/**
+	 * get notifications list
+	 * @NoAdminRequired
+	 */
+	public function getNotifications(?string $since): DataResponse {
+		if ($this->accessToken === '') {
+			return new DataResponse('', 400);
+		}
+		$result = $this->zammadAPIService->getNotifications(
+			$this->zammadUrl, $this->accessToken, $this->tokenType, $this->refreshToken, $this->clientID, $this->clientSecret, $this->userId, $since, 7
+		);
+		if (!isset($result['error'])) {
+			$response = new DataResponse($result);
+		} else {
+			$response = new DataResponse($result, 401);
+		}
+		return $response;
+	}
 
 }

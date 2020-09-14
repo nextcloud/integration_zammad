@@ -111,11 +111,11 @@ class ZammadSearchProvider implements IProvider {
 
 		$resultBills = [];
 
-        $zammadUrl = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'url', '');
-        $accessToken = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'token', '');
-        $tokenType = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'token_type', '');
-        $refreshToken = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'refresh_token', '');
-        $clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
+		$zammadUrl = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'url', '');
+		$accessToken = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'token', '');
+		$tokenType = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'token_type', '');
+		$refreshToken = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'refresh_token', '');
+		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
 
 		$searchEnabled = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'search_enabled', '0') === '1';

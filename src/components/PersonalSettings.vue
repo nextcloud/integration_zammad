@@ -95,10 +95,10 @@ export default {
 				&& this.state.client_secret
 		},
 		connected() {
-            return this.state.token && this.state.token !== ''
-                && this.state.url && this.state.url !== ''
-                && this.state.user_name && this.state.user_name !== ''
-        },
+			return this.state.token && this.state.token !== ''
+				&& this.state.url && this.state.url !== ''
+				&& this.state.user_name && this.state.user_name !== ''
+		},
 	},
 
 	mounted() {
@@ -115,9 +115,9 @@ export default {
 
 	methods: {
 		onLogoutClick() {
-            this.state.token = ''
-            this.saveOptions()
-        },
+			this.state.token = ''
+			this.saveOptions()
+		},
 		onNotificationChange(e) {
 			this.state.notification_enabled = e.target.checked
 			this.saveOptions()
@@ -157,11 +157,11 @@ export default {
 				.then((response) => {
 					showSuccess(t('integration_zammad', 'Zammad options saved.'))
 					if (response.data.user_name !== undefined) {
-                        this.state.user_name = response.data.user_name
-                        if (this.state.token && response.data.user_name === '') {
-                            showError(t('integration_zammad', 'Incorrect access token'))
-                        }
-                    }
+						this.state.user_name = response.data.user_name
+						if (this.state.token && response.data.user_name === '') {
+							showError(t('integration_zammad', 'Incorrect access token'))
+						}
+					}
 				})
 				.catch((error) => {
 					console.debug(error)

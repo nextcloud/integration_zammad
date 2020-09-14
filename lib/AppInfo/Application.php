@@ -30,27 +30,27 @@ use OCA\Zammad\Notification\Notifier;
  */
 class Application extends App implements IBootstrap {
 
-    public const APP_ID = 'integration_zammad';
+	public const APP_ID = 'integration_zammad';
 
-    /**
-     * Constructor
-     *
-     * @param array $urlParams
-     */
-    public function __construct(array $urlParams = []) {
-        parent::__construct(self::APP_ID, $urlParams);
+	/**
+	 * Constructor
+	 *
+	 * @param array $urlParams
+	 */
+	public function __construct(array $urlParams = []) {
+		parent::__construct(self::APP_ID, $urlParams);
 
-        $container = $this->getContainer();
-        $manager = $container->query(INotificationManager::class);
-        $manager->registerNotifierService(Notifier::class);
-    }
+		$container = $this->getContainer();
+		$manager = $container->query(INotificationManager::class);
+		$manager->registerNotifierService(Notifier::class);
+	}
 
-    public function register(IRegistrationContext $context): void {
-        $context->registerDashboardWidget(ZammadWidget::class);
-        $context->registerSearchProvider(ZammadSearchProvider::class);
-    }
+	public function register(IRegistrationContext $context): void {
+		$context->registerDashboardWidget(ZammadWidget::class);
+		$context->registerSearchProvider(ZammadSearchProvider::class);
+	}
 
-    public function boot(IBootContext $context): void {
-    }
+	public function boot(IBootContext $context): void {
+	}
 }
 
