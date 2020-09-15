@@ -280,7 +280,7 @@ class ZammadAPIService {
 			$body = (string) $response->getBody();
 			// refresh token if it's invalid and we are using oauth
 			// response can be : 'OAuth2 token is expired!', 'Invalid token!' or 'Not authorized'
-			if ($authType === 'oauth' and strpos($body, 'OAuth2 token is expired') !== false) {
+			if ($authType === 'oauth' && strpos($body, 'OAuth2 token is expired') !== false) {
 				$this->logger->warning('Trying to REFRESH the access token', array('app' => $this->appName));
 				// try to refresh the token
 				$result = $this->requestOAuthAccessToken($zammadUrl, [
@@ -289,7 +289,7 @@ class ZammadAPIService {
 					'grant_type' => 'refresh_token',
 					'refresh_token' => $refreshToken,
 				], 'POST');
-				if (is_array($result) and isset($result['access_token'])) {
+				if (isset($result['access_token'])) {
 					$accessToken = $result['access_token'];
 					$this->config->setUserValue($userId, Application::APP_ID, 'token', $accessToken);
 					// retry the request with new access token
