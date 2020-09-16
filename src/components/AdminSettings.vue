@@ -5,10 +5,11 @@
 			{{ t('integration_zammad', 'Zammad integration') }}
 		</h2>
 		<p class="settings-hint">
-			{{ t('integration_zammad', 'If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and set the ID and secret here.') }}
-			<br>
-			{{ t('integration_zammad', 'Make sure you set the "redirect_uri" to') }}
-			<br><b> {{ redirect_uri }} </b>
+			{{ t('integration_zammad', 'If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below.') }}
+			<br><br>
+			<span class="icon icon-details" />
+			{{ t('integration_zammad', 'Make sure you set the "Callback URL" to') }}
+			<b> {{ redirect_uri }} </b>
 		</p>
 		<div class="grid-form">
 			<label for="zammad-oauth-instance">
