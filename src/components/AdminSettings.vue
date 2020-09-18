@@ -136,7 +136,7 @@ export default {
 	height: 23px;
 	margin-bottom: -4px;
 }
-body.dark .icon-zammad {
+body.theme--dark .icon-zammad {
 	background-image: url(./../../img/app.svg);
 }
 </style>
