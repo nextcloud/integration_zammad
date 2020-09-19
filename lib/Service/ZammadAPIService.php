@@ -195,7 +195,7 @@ class ZammadAPIService {
 							string $query): array {
 		$params = [
 			'query' => $query,
-			'limit' => 10,
+			'limit' => 20,
 		];
 		$searchResult = $this->request(
 			$url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, 'tickets/search', $params
@@ -205,6 +205,37 @@ class ZammadAPIService {
 		if (isset($searchResult['assets']) && isset($searchResult['assets']['Ticket'])) {
 			foreach ($searchResult['assets']['Ticket'] as $id => $t) {
 				array_push($result, $t);
+			}
+		}
+		// add owner information
+		$userIds = [];
+		$field = 'customer_id';
+		foreach ($result as $k => $v) {
+			if (!in_array($v[$field], $userIds)) {
+				array_push($userIds, $v[$field]);
+			}
+		}
+		$userDetails = [];
+		foreach ($userIds as $uid) {
+			$user = $this->request(
+				$url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, 'users/' . $uid
+			);
+			if (!isset($user['error'])) {
+				$userDetails[$uid] = [
+					'firstname' => $user['firstname'],
+					'lastname' => $user['lastname'],
+					'organization_id' => $user['organization_id'],
+					'image' => $user['image'],
+				];
+			}
+		}
+		foreach ($result as $k => $v) {
+			if (array_key_exists($v[$field], $userDetails)) {
+				$user = $userDetails[$v[$field]];
+				$result[$k]['u_firstname'] = $user['firstname'];
+				$result[$k]['u_lastname'] = $user['lastname'];
+				$result[$k]['u_organization_id'] = $user['organization_id'];
+				$result[$k]['u_image'] = $user['image'];
 			}
 		}
 		return $result;

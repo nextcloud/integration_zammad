@@ -103,13 +103,12 @@ class ZammadSearchProvider implements IProvider {
 		$limit = $query->getLimit();
 		$term = $query->getTerm();
 		$offset = $query->getCursor();
+		$offset = $offset ? intval($offset) : 0;
 
 		$theme = $this->config->getUserValue($user->getUID(), 'accessibility', 'theme', '');
 		$thumbnailUrl = ($theme === 'dark')
 			? $this->urlGenerator->imagePath(Application::APP_ID, 'app.svg')
 			: $this->urlGenerator->imagePath(Application::APP_ID, 'app-dark.svg');
-
-		$resultBills = [];
 
 		$zammadUrl = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'url', '');
 		$accessToken = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'token', '');
@@ -124,6 +123,7 @@ class ZammadSearchProvider implements IProvider {
 		}
 
 		$searchResults = $this->service->search($zammadUrl, $accessToken, $tokenType, $refreshToken, $clientID, $clientSecret, $user->getUID(), $term);
+		$searchResults = array_slice($searchResults, $offset, $limit);
 
 		if (isset($searchResults['error'])) {
 			return SearchResult::paginated($this->getName(), [], 0);
@@ -131,7 +131,7 @@ class ZammadSearchProvider implements IProvider {
 
 		$formattedResults = \array_map(function (array $entry) use ($thumbnailUrl, $zammadUrl): ZammadSearchResultEntry {
 			return new ZammadSearchResultEntry(
-				$thumbnailUrl,
+				$this->getThumbnailUrl($entry, $thumbnailUrl),
 				$this->getMainText($entry),
 				$this->getSubline($entry),
 				$this->getLinkToZammad($entry, $zammadUrl),
@@ -143,7 +143,7 @@ class ZammadSearchProvider implements IProvider {
 		return SearchResult::paginated(
 			$this->getName(),
 			$formattedResults,
-			$query->getCursor() + count($formattedResults)
+			$offset + $limit
 		);
 	}
 
@@ -158,7 +158,7 @@ class ZammadSearchProvider implements IProvider {
 	 * @return string
 	 */
 	protected function getSubline(array $entry): string {
-		return $this->l10n->t('Zammad ticket');
+		return $entry['u_firstname'] . ' ' . $entry['u_lastname'];
 	}
 
 	/**
@@ -168,4 +168,18 @@ class ZammadSearchProvider implements IProvider {
 		return $url . '/#ticket/zoom/' . $entry['id'];
 	}
 
+	/**
+	 * @return string
+	 */
+	protected function getThumbnailUrl(array $entry, string $thumbnailUrl): string {
+		$initials = null;
+		if ($entry['u_firstname'] && $entry['u_lastname']) {
+			$initials = $entry['u_firstname'][0] . $entry['u_lastname'][0];
+		}
+		return isset($entry['u_image'])
+			? $this->urlGenerator->linkToRoute('integration_zammad.zammadAPI.getZammadAvatar', []) . '?image=' . urlencode($entry['u_image'])
+			: ($initials
+				? $this->urlGenerator->linkToRouteAbsolute('core.GuestAvatar.getAvatar', ['guestName' => $initials, 'size' => 64])
+				: $thumbnailUrl);
+	}
 }
