@@ -56,8 +56,11 @@
 					:checked="state.search_enabled"
 					@input="onSearchChange">
 				<label for="search-zammad">{{ t('integration_zammad', 'Enable unified search for tickets.') }}</label>
-				<br>
-				<br>
+				<br><br>
+				<p class="settings-hint">
+					<span class="icon icon-details" />
+					{{ t('integration_zammad', 'Warning, everything you type in the search bar will be sent to your Zammad instance.') }}
+				</p>
 				<input
 					id="notification-zammad"
 					type="checkbox"
@@ -245,5 +248,8 @@ body.theme--dark .icon-zammad {
 }
 #zammad-content {
 	margin-left: 40px;
+}
+#zammad-search-block .icon {
+	width: 22px;
 }
 </style>
