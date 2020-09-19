@@ -207,6 +207,25 @@ class ZammadAPIService {
 				array_push($result, $t);
 			}
 		}
+		// get ticket state names
+		$states = $this->request(
+			$url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, 'ticket_states'
+		);
+		$statesById = [];
+		if (!isset($states['error'])) {
+			foreach ($states as $state) {
+				$id = $state['id'];
+				$name = $state['name'];
+				if ($id && $name) {
+					$statesById[$id] = $name;
+				}
+			}
+		}
+		foreach ($result as $k => $v) {
+			if (array_key_exists($v['state_id'], $statesById)) {
+				$result[$k]['state_name'] = $statesById[$v['state_id']];
+			}
+		}
 		// add owner information
 		$userIds = [];
 		$field = 'customer_id';

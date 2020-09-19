@@ -7,7 +7,7 @@
 		<p v-if="!showOAuth && !connected" class="settings-hint">
 			{{ t('integration_zammad', 'To create an access token yourself, go to the "Token Access" section of your Zammad profile page.') }}
 			<br>
-			{{ t('integration_zammad', 'Create a "Personal Access Token" and give it "TICKET -> AGENT" and "USER_PREFERENCES -> NOTIFICATIONS" permissions.') }}
+			{{ t('integration_zammad', 'Create a "Personal Access Token" and give it "TICKET -> AGENT", "ADMIN -> OBJECT" and "USER_PREFERENCES -> NOTIFICATIONS" permissions.') }}
 		</p>
 		<div id="zammad-content">
 			<div class="zammad-grid-form">

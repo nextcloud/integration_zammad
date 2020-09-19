@@ -158,7 +158,10 @@ class ZammadSearchProvider implements IProvider {
 	 * @return string
 	 */
 	protected function getSubline(array $entry): string {
-		return $entry['u_firstname'] . ' ' . $entry['u_lastname'];
+		$stateName = $entry['state_name']
+			? '[' . $entry['state_name'] . '] '
+			: '';
+		return $stateName . $entry['u_firstname'] . ' ' . $entry['u_lastname'];
 	}
 
 	/**
