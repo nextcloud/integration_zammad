@@ -158,10 +158,19 @@ class ZammadSearchProvider implements IProvider {
 	 * @return string
 	 */
 	protected function getSubline(array $entry): string {
-		$stateName = $entry['state_name']
-			? '[' . $entry['state_name'] . '] '
-			: '';
-		return $stateName . $entry['u_firstname'] . ' ' . $entry['u_lastname'];
+		$priorityName = $entry['priority_name']
+			? $entry['priority_name']
+			: $entry['priority_id'];
+		$prefix = $entry['state_name']
+			? '[' . $this->truncate($entry['state_name'], 10) . '/' . $priorityName . '] '
+			: '[' . $priorityName . '] ';
+		return $prefix . $entry['u_firstname'] . ' ' . $entry['u_lastname'];
+	}
+
+	private function truncate(string $s, int $len) {
+		return strlen($s) > $len
+			? substr($s, 0, $len) . '…'
+			: $s;
 	}
 
 	/**

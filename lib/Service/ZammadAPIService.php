@@ -226,6 +226,25 @@ class ZammadAPIService {
 				$result[$k]['state_name'] = $statesById[$v['state_id']];
 			}
 		}
+		// get ticket priority names
+		$prios = $this->request(
+			$url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, 'ticket_priorities'
+		);
+		$priosById = [];
+		if (!isset($prios['error'])) {
+			foreach ($prios as $prio) {
+				$id = $prio['id'];
+				$name = $prio['name'];
+				if ($id && $name) {
+					$priosById[$id] = $name;
+				}
+			}
+		}
+		foreach ($result as $k => $v) {
+			if (array_key_exists($v['priority_id'], $priosById)) {
+				$result[$k]['priority_name'] = $priosById[$v['priority_id']];
+			}
+		}
 		// add owner information
 		$userIds = [];
 		$field = 'customer_id';
