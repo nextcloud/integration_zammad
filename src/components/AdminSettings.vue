@@ -99,7 +99,7 @@ export default {
 				})
 				.catch((error) => {
 					showError(
-						t('integration_zammad', 'Failed to save Zammad admin options')
+						t('integration_zammad', 'Failed to save Zammad admin options.')
 						+ ': ' + error.response.request.responseText
 					)
 				})
