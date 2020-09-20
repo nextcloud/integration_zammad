@@ -57,7 +57,7 @@
 					@input="onSearchChange">
 				<label for="search-zammad">{{ t('integration_zammad', 'Enable unified search for tickets.') }}</label>
 				<br><br>
-				<p class="settings-hint">
+				<p v-if="state.search_enabled" class="settings-hint">
 					<span class="icon icon-details" />
 					{{ t('integration_zammad', 'Warning, everything you type in the search bar will be sent to your Zammad instance.') }}
 				</p>
