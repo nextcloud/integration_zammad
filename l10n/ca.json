@@ -1,0 +1,7 @@
+{ "translations": {
+    "Error during OAuth exchanges" : "Error durant els intercanvis d'OAuth",
+    "Bad credentials" : "Credencials dolentes",
+    "Connected accounts" : "Comptes connectades",
+    "Connected as {user}" : "S'ha connectat com a {usuari}"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}
