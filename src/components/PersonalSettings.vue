@@ -155,8 +155,9 @@ export default {
 					notification_enabled: this.state.notification_enabled ? '1' : '0',
 				},
 			}
-			// if manually set, this is not an oauth access token
-			if (this.state.token !== this.initialToken) {
+			if (this.showOAuth) {
+				req.values.token_type = 'oauth'
+			} else {
 				req.values.token_type = 'access'
 			}
 			const url = generateUrl('/apps/integration_zammad/config')
