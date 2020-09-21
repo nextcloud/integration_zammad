@@ -86,6 +86,9 @@ class ConfigController extends Controller {
 			} else {
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', '');
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', '');
+				$this->config->setUserValue($this->userId, Application::APP_ID, 'refresh_token', '');
+				$this->config->setUserValue($this->userId, Application::APP_ID, 'last_open_check', '');
+				$this->config->setUserValue($this->userId, Application::APP_ID, 'token_type', '');
 				$result['user_name'] = '';
 			}
 		}

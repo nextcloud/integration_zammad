@@ -1,7 +1,5 @@
-# Zammad Nextcloud application
+# Zammad integration into Nextcloud
 
-This app provides a dashboard widget to see your main Zammad notifications, a search provider and notifications for new open tickets.
+🦜 Interact with your tickets in Nextcloud!
 
-## Releases
-
-...
+This app provides a dashboard widget to see your main Zammad notifications, a search provider for tickets and notifications for new open tickets.
