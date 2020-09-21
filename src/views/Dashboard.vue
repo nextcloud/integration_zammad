@@ -79,9 +79,9 @@ export default {
 		},
 		emptyContentMessage() {
 			if (this.state === 'no-token') {
-				return t('integration_zammad', 'No Zammad account connected.')
+				return t('integration_zammad', 'No Zammad account connected')
 			} else if (this.state === 'error') {
-				return t('integration_zammad', 'Error connecting to Zammad.')
+				return t('integration_zammad', 'Error connecting to Zammad')
 			} else if (this.state === 'ok') {
 				return t('integration_zammad', 'No Zammad notifications!')
 			}
