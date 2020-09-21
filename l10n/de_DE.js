@@ -14,9 +14,8 @@ OC.L10N.register(
     "Connect to Zammad" : "Mit Zammad verbinden",
     "Connected as {user}" : "Verbunden als {user}",
     "Disconnect from Zammad" : "Bei Zammad abmelden",
+    "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Achtung, alles, was Du in die Suchleiste eingibst, wird an Deine Zammad-Instanz gesendet.",
     "Zammad options saved." : "Zammad-Einstellungen gespeichert.",
-    "Incorrect access token" : "Zugriffstoken nicht korrekt",
-    "Error connecting to Zammad" : "Fehler bei der Verbindung mit Zammad",
     "No Zammad notifications!" : "Keine Zammad-Benachrichtigungen!"
 },
 "nplurals=2; plural=(n != 1);");

@@ -11,7 +11,6 @@ OC.L10N.register(
     "ID of your application" : "ID della tua applicazione",
     "Application secret" : "Segreto applicazione",
     "Zammad admin options saved." : "Opzioni amministrative di Zammad salvate.",
-    "Failed to save Zammad admin options" : "Salvataggio delle opzioni amministrative di Zammad non riuscito",
     "https://my.zammad.org" : "https://mio.zammad.org",
     "Access token" : "Token di accesso",
     "Zammad access token" : "Token di accesso di Zammad",
@@ -19,9 +18,7 @@ OC.L10N.register(
     "Connected as {user}" : "Connesso come {user}",
     "Disconnect from Zammad" : "Disconnetti da Zammad",
     "Zammad options saved." : "Opzioni di Zammad salvate.",
-    "Incorrect access token" : "Token di accesso non corretto",
-    "Failed to save Zammad options" : "Salvataggio delle opzioni di Zammad non riuscito",
-    "Error connecting to Zammad" : "Errore durante la connessione a Zammad",
+    "Incorrect access token." : "Token di accesso non corretto.",
     "No Zammad notifications!" : "Nessuna notifica Zammad!"
 },
 "nplurals=2; plural=(n != 1);");

@@ -17,7 +17,6 @@
     "Application secret" : "Tajemství pro aplikaci",
     "Client secret of your application" : "Klientské tajemství nebo vaše aplikace",
     "Zammad admin options saved." : "Předvolby správy Zammad uloženy.",
-    "Failed to save Zammad admin options" : "Nepodařilo se uložit předvolby správy Zammad",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Přístupový token",
     "Zammad access token" : "Přístupový token do Zammad",
@@ -29,9 +28,7 @@
     "OAuth access token successfully retrieved!" : "OAuth přístupový token úspěšně obdržen!",
     "OAuth access token could not be obtained:" : "Nepodařilo se získat OAuth přístupový token:",
     "Zammad options saved." : "Předvolby pro Zammad uloženy.",
-    "Incorrect access token" : "Nesprávný přístupový token",
-    "Failed to save Zammad options" : "Nepodařilo se uložit předvolby pro Zammad",
-    "Failed to save Zammad OAuth state" : "Nepodařilo se uložit stav Zammad OAuth",
+    "Incorrect access token." : "Nesprávný přístupový token.",
     "Failed to get Zammad notifications." : "Nepodařilo se získat upozornění ze Zammad."
 },"pluralForm" :"nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;"
 }
