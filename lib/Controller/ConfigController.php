@@ -81,18 +81,23 @@ class ConfigController extends Controller {
 
 		if (isset($values['token'])) {
 			if ($values['token'] && $values['token'] !== '') {
-				$userName = $this->storeUserInfo($values['token']);
-				$result['user_name'] = $userName;
+				$result = $this->storeUserInfo($values['token']);
 			} else {
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', '');
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', '');
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'refresh_token', '');
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'last_open_check', '');
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'token_type', '');
-				$result['user_name'] = '';
+				$result = [
+					'user_name' => '',
+				];
 			}
 		}
-		return new DataResponse($result);
+		if ($result['error']) {
+			return new DataResponse($result, 401);
+		} else {
+			return new DataResponse($result);
+		}
 	}
 
 	/**
@@ -152,7 +157,7 @@ class ConfigController extends Controller {
 		);
 	}
 
-	private function storeUserInfo(string $accessToken): string {
+	private function storeUserInfo(string $accessToken): array {
 		$tokenType = $this->config->getUserValue($this->userId, Application::APP_ID, 'token_type', '');
 		$refreshToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'refresh_token', '');
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
@@ -164,11 +169,11 @@ class ConfigController extends Controller {
 			$fullName = $info['firstname'] . ' ' . $info['lastname'];
 			$this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', $info['id']);
 			$this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', $fullName);
-			return $fullName;
+			return ['user_name' => $fullName];
 		} else {
 			$this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', '');
 			$this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', '');
-			return '';
+			return $info;
 		}
 	}
 }
