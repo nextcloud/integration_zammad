@@ -72,6 +72,9 @@ class ConfigController extends Controller {
 	/**
 	 * set config values
 	 * @NoAdminRequired
+	 *
+	 * @param array $values
+	 * @return DataResponse
 	 */
 	public function setConfig(array $values): DataResponse {
 		foreach ($values as $key => $value) {
@@ -102,6 +105,9 @@ class ConfigController extends Controller {
 
 	/**
 	 * set admin config values
+	 *
+	 * @param array $values
+	 * @return DataResponse
 	 */
 	public function setAdminConfig(array $values): DataResponse {
 		foreach ($values as $key => $value) {
@@ -115,8 +121,12 @@ class ConfigController extends Controller {
 	 * receive oauth code and get oauth access token
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 *
+	 * @param string $code
+	 * @param string $state
+	 * @return RedirectResponse
 	 */
-	public function oauthRedirect(string $code, string $state): RedirectResponse {
+	public function oauthRedirect(string $code = '', string $state = ''): RedirectResponse {
 		$configState = $this->config->getUserValue($this->userId, Application::APP_ID, 'oauth_state', '');
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
@@ -157,6 +167,10 @@ class ConfigController extends Controller {
 		);
 	}
 
+	/**
+	 * @param string $accessToken
+	 * @return array
+	 */
 	private function storeUserInfo(string $accessToken): array {
 		$tokenType = $this->config->getUserValue($this->userId, Application::APP_ID, 'token_type', '');
 		$refreshToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'refresh_token', '');
@@ -165,7 +179,7 @@ class ConfigController extends Controller {
 		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url', '');
 
 		$info = $this->zammadAPIService->request($zammadUrl, $accessToken, $tokenType, $refreshToken, $clientID, $clientSecret, $this->userId, 'users/me');
-		if (isset($info['lastname']) && isset($info['firstname']) && isset($info['id'])) {
+		if (isset($info['lastname'], $info['firstname'], $info['id'])) {
 			$fullName = $info['firstname'] . ' ' . $info['lastname'];
 			$this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', $info['id']);
 			$this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', $fullName);

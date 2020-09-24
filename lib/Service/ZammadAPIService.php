@@ -50,6 +50,8 @@ class ZammadAPIService {
 	/**
 	 * triggered by a cron job
 	 * notifies user of their number of new tickets
+	 *
+	 * @return void
 	 */
 	public function checkOpenTickets(): void {
 		$this->userManager->callForAllUsers(function (IUser $user) {
@@ -57,6 +59,10 @@ class ZammadAPIService {
 		});
 	}
 
+	/**
+	 * @param string $userId
+	 * @return void
+	 */
 	private function checkOpenTicketsForUser(string $userId): void {
 		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token', '');
 		if ($accessToken) {
@@ -104,6 +110,12 @@ class ZammadAPIService {
 		}
 	}
 
+	/**
+	 * @param string $userId
+	 * @param string $subject
+	 * @param string $params
+	 * @return void
+	 */
 	private function sendNCNotification(string $userId, string $subject, array $params): void {
 		$manager = $this->notificationManager;
 		$notification = $manager->createNotification();
@@ -117,6 +129,18 @@ class ZammadAPIService {
 		$manager->notify($notification);
 	}
 
+	/**
+	 * @param string $url
+	 * @param string $accessToken
+	 * @param string $authType
+	 * @param string $refreshToken
+	 * @param string $clientID
+	 * @param string $clientSecret
+	 * @param string $userId
+	 * @param ?string $since
+	 * @param ?int $limit
+	 * @return array
+	 */
 	public function getNotifications(string $url, string $accessToken, string $authType,
 									string $refreshToken, string $clientID, string $clientSecret, string $userId,
 									?string $since = null, ?int $limit = null): array {
@@ -190,6 +214,17 @@ class ZammadAPIService {
 		return $result;
 	}
 
+	/**
+	 * @param string $url
+	 * @param string $accessToken
+	 * @param string $authType
+	 * @param string $refreshToken
+	 * @param string $clientID
+	 * @param string $clientSecret
+	 * @param string $userId
+	 * @param string $query
+	 * @return array
+	 */
 	public function search(string $url, string $accessToken, string $authType,
 							string $refreshToken, string $clientID, string $clientSecret, string $userId,
 							string $query): array {
@@ -279,7 +314,18 @@ class ZammadAPIService {
 		return $result;
 	}
 
-	// authenticated request to get an image from zammad
+	/**
+	 * authenticated request to get an image from zammad
+	 *
+	 * @param string $url
+	 * @param string $accessToken
+	 * @param string $authType
+	 * @param string $refreshToken
+	 * @param string $clientID
+	 * @param string $clientSecret
+	 * @param string $image
+	 * @return string
+	 */
 	public function getZammadAvatar(string $url,
 									string $accessToken, string $authType, string $refreshToken, string $clientID, string $clientSecret,
 									string $image): string {
@@ -294,6 +340,18 @@ class ZammadAPIService {
 		return $this->client->get($url, $options)->getBody();
 	}
 
+	/**
+	 * @param string $zammadUrl
+	 * @param string $accessToken
+	 * @param string $authType
+	 * @param string $refreshToken
+	 * @param string $clientID
+	 * @param string $clientSecret
+	 * @param string $endPoint
+	 * @param array $params
+	 * @param string $method
+	 * @return array
+	 */
 	public function request(string $zammadUrl, string $accessToken, string $authType, string $refreshToken,
 							string $clientID, string $clientSecret, string $userId,
 							string $endPoint, array $params = [], string $method = 'GET'): array {
@@ -371,6 +429,12 @@ class ZammadAPIService {
 		}
 	}
 
+	/**
+	 * @param string $url
+	 * @param array $params
+	 * @param string $method
+	 * @return array
+	 */
 	public function requestOAuthAccessToken(string $url, array $params = [], string $method = 'GET'): array {
 		try {
 			$url = $url . '/oauth/token';

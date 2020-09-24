@@ -148,6 +148,7 @@ class ZammadSearchProvider implements IProvider {
 	}
 
 	/**
+	 * @param array $entry
 	 * @return string
 	 */
 	protected function getMainText(array $entry): string {
@@ -155,6 +156,7 @@ class ZammadSearchProvider implements IProvider {
 	}
 
 	/**
+	 * @param array $entry
 	 * @return string
 	 */
 	protected function getSubline(array $entry): string {
@@ -167,13 +169,20 @@ class ZammadSearchProvider implements IProvider {
 		return $prefix . $entry['u_firstname'] . ' ' . $entry['u_lastname'];
 	}
 
-	private function truncate(string $s, int $len) {
+	/**
+	 * @param string $s
+	 * @param int $len
+	 * @return string
+	 */
+	private function truncate(string $s, int $len): string {
 		return strlen($s) > $len
 			? substr($s, 0, $len) . '…'
 			: $s;
 	}
 
 	/**
+	 * @param array $entry
+	 * @param array $url
 	 * @return string
 	 */
 	protected function getLinkToZammad(array $entry, string $url): string {
@@ -181,6 +190,8 @@ class ZammadSearchProvider implements IProvider {
 	}
 
 	/**
+	 * @param array $entry
+	 * @param string $thumbnailUrl
 	 * @return string
 	 */
 	protected function getThumbnailUrl(array $entry, string $thumbnailUrl): string {

@@ -70,6 +70,8 @@ class ZammadAPIController extends Controller {
 	/**
 	 * get zammad instance URL
 	 * @NoAdminRequired
+	 *
+	 * @return DataResponse
 	 */
 	public function getZammadUrl(): DataResponse {
 		return new DataResponse($this->zammadUrl);
@@ -79,8 +81,11 @@ class ZammadAPIController extends Controller {
 	 * get zammad user avatar
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 *
+	 * @param string $image
+	 * @return DataDisplayResponse
 	 */
-	public function getZammadAvatar($image): DataDisplayResponse {
+	public function getZammadAvatar(string $image = ''): DataDisplayResponse {
 		$response = new DataDisplayResponse(
 			$this->zammadAPIService->getZammadAvatar(
 				$this->zammadUrl, $this->accessToken, $this->tokenType, $this->refreshToken, $this->clientID, $this->clientSecret, $image
@@ -93,8 +98,11 @@ class ZammadAPIController extends Controller {
 	/**
 	 * get notifications list
 	 * @NoAdminRequired
+	 *
+	 * @param ?string $since
+	 * @return DataResponse
 	 */
-	public function getNotifications(?string $since): DataResponse {
+	public function getNotifications(?string $since = null): DataResponse {
 		if ($this->accessToken === '') {
 			return new DataResponse('', 400);
 		}
