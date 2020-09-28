@@ -55,7 +55,7 @@
 					class="checkbox"
 					:checked="state.search_enabled"
 					@input="onSearchChange">
-				<label for="search-zammad">{{ t('integration_zammad', 'Enable unified search for tickets.') }}</label>
+				<label for="search-zammad">{{ t('integration_zammad', 'Enable unified search for tickets') }}</label>
 				<br><br>
 				<p v-if="state.search_enabled" class="settings-hint">
 					<span class="icon icon-details" />
@@ -67,7 +67,7 @@
 					class="checkbox"
 					:checked="state.notification_enabled"
 					@input="onNotificationChange">
-				<label for="notification-zammad">{{ t('integration_zammad', 'Enable notifications for open tickets.') }}</label>
+				<label for="notification-zammad">{{ t('integration_zammad', 'Enable notifications for open tickets') }}</label>
 			</div>
 		</div>
 	</div>
