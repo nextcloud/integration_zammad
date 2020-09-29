@@ -114,7 +114,7 @@ export default {
 		const urlParams = new URLSearchParams(paramString)
 		const zmToken = urlParams.get('zammadToken')
 		if (zmToken === 'success') {
-			showSuccess(t('integration_zammad', 'OAuth access token successfully retrieved!'))
+			showSuccess(t('integration_zammad', 'Successfully connected to Zammad!'))
 		} else if (zmToken === 'error') {
 			showError(t('integration_zammad', 'OAuth access token could not be obtained:') + ' ' + urlParams.get('message'))
 		}
@@ -163,7 +163,7 @@ export default {
 			const url = generateUrl('/apps/integration_zammad/config')
 			axios.put(url, req)
 				.then((response) => {
-					showSuccess(t('integration_zammad', 'Zammad options saved.'))
+					showSuccess(t('integration_zammad', 'Zammad options saved'))
 					if (response.data.user_name !== undefined) {
 						this.state.user_name = response.data.user_name
 						if (this.state.token && response.data.user_name === '') {

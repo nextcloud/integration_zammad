@@ -95,7 +95,7 @@ export default {
 			const url = generateUrl('/apps/integration_zammad/admin-config')
 			axios.put(url, req)
 				.then((response) => {
-					showSuccess(t('integration_zammad', 'Zammad admin options saved.'))
+					showSuccess(t('integration_zammad', 'Zammad admin options saved'))
 				})
 				.catch((error) => {
 					showError(
