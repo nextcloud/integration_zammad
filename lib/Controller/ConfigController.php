@@ -96,7 +96,7 @@ class ConfigController extends Controller {
 				];
 			}
 		}
-		if ($result['error']) {
+		if (isset($result['error'])) {
 			return new DataResponse($result, 401);
 		} else {
 			return new DataResponse($result);

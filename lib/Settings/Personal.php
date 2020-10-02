@@ -45,7 +45,7 @@ class Personal implements ISettings {
 		$userName = $this->config->getUserValue($this->userId, Application::APP_ID, 'user_name', '');
 		$url = $this->config->getUserValue($this->userId, Application::APP_ID, 'url', '');
 		$searchEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'search_enabled', '0');
-		$notificationEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'notification    _enabled', '0');
+		$notificationEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'notification_enabled', '0');
 
 		// for OAuth
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');

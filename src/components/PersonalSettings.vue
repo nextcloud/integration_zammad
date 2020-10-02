@@ -123,23 +123,23 @@ export default {
 	methods: {
 		onLogoutClick() {
 			this.state.token = ''
-			this.saveOptions()
+			this.saveOptions(true)
 		},
 		onNotificationChange(e) {
 			this.state.notification_enabled = e.target.checked
-			this.saveOptions()
+			this.saveOptions(false)
 		},
 		onSearchChange(e) {
 			this.state.search_enabled = e.target.checked
-			this.saveOptions()
+			this.saveOptions(false)
 		},
 		onInput() {
 			const that = this
 			delay(function() {
-				that.saveOptions()
+				that.saveOptions(true)
 			}, 2000)()
 		},
-		saveOptions() {
+		saveOptions(justTokenAndUrl) {
 			if (this.state.url !== '' && !this.state.url.startsWith('https://')) {
 				if (this.state.url.startsWith('http://')) {
 					this.state.url = this.state.url.replace('http://', 'https://')
@@ -149,16 +149,23 @@ export default {
 			}
 			const req = {
 				values: {
-					token: this.state.token,
-					url: this.state.url,
-					search_enabled: this.state.search_enabled ? '1' : '0',
-					notification_enabled: this.state.notification_enabled ? '1' : '0',
 				},
 			}
-			if (this.showOAuth) {
-				req.values.token_type = 'oauth'
+			if (justTokenAndUrl) {
+				req.values = {
+					token: this.state.token,
+					url: this.state.url,
+				}
+				if (this.showOAuth) {
+					req.values.token_type = 'oauth'
+				} else {
+					req.values.token_type = 'access'
+				}
 			} else {
-				req.values.token_type = 'access'
+				req.values = {
+					search_enabled: this.state.search_enabled ? '1' : '0',
+					notification_enabled: this.state.notification_enabled ? '1' : '0',
+				}
 			}
 			const url = generateUrl('/apps/integration_zammad/config')
 			axios.put(url, req)
