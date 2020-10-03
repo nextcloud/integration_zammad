@@ -34,7 +34,11 @@
 					:placeholder="t('integration_zammad', 'Zammad access token')"
 					@input="onInput">
 			</div>
-			<button v-if="showOAuth && !connected" id="zammad-oauth" @click="onOAuthClick">
+			<button v-if="showOAuth && !connected"
+				id="zammad-oauth"
+				:disabled="loading === true"
+				:class="{ loading }"
+				@click="onOAuthClick">
 				<span class="icon icon-external" />
 				{{ t('integration_zammad', 'Connect to Zammad') }}
 			</button>
@@ -92,6 +96,7 @@ export default {
 		return {
 			state: loadState('integration_zammad', 'user-config'),
 			initialToken: loadState('integration_zammad', 'user-config').token,
+			loading: false,
 		}
 	},
 
@@ -134,6 +139,7 @@ export default {
 			this.saveOptions(false)
 		},
 		onInput() {
+			this.loading = true
 			const that = this
 			delay(function() {
 				that.saveOptions(true)
@@ -186,6 +192,7 @@ export default {
 					)
 				})
 				.then(() => {
+					this.loading = false
 				})
 		},
 		onOAuthClick() {
