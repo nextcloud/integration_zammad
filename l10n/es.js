@@ -6,6 +6,8 @@ OC.L10N.register(
     "Bad credentials" : "Credenciales incorrectas",
     "OAuth access token refused" : "Token de acceso OAuth rechazado",
     "Connected accounts" : "Cuentas conectadas",
+    "Application ID" : "ID de la aplicación",
+    "Application secret" : "Secreto de la aplicación",
     "Connected as {user}" : "Conectado como {user}",
     "Incorrect access token" : "Token de acceso incorrecto"
 },
