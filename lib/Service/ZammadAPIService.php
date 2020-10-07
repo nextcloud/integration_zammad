@@ -12,7 +12,7 @@
 namespace OCA\Zammad\Service;
 
 use OCP\IL10N;
-use OCP\ILogger;
+use Psr\Log\LoggerInterface;
 use OCP\IConfig;
 use OCP\IUserManager;
 use OCP\IUser;
@@ -32,7 +32,7 @@ class ZammadAPIService {
 	 */
 	public function __construct (IUserManager $userManager,
 								string $appName,
-								ILogger $logger,
+								LoggerInterface $logger,
 								IL10N $l10n,
 								IConfig $config,
 								INotificationManager $notificationManager,
