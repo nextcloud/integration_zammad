@@ -180,7 +180,7 @@ export default {
 		},
 		getAuthorAvatarUrl(n) {
 			return (n.image)
-				? generateUrl('/apps/integration_zammad/avatar?') + encodeURIComponent('image') + '=' + encodeURIComponent(n.image)
+				? generateUrl('/apps/integration_zammad/avatar?') + encodeURIComponent('imageId') + '=' + encodeURIComponent(n.image)
 				: ''
 		},
 		getNotificationProjectName(n) {

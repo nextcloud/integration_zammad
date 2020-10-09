@@ -323,13 +323,13 @@ class ZammadAPIService {
 	 * @param string $refreshToken
 	 * @param string $clientID
 	 * @param string $clientSecret
-	 * @param string $image
+	 * @param string $imageId
 	 * @return string
 	 */
 	public function getZammadAvatar(string $url,
 									string $accessToken, string $authType, string $refreshToken, string $clientID, string $clientSecret,
-									string $image): string {
-		$url = $url . '/api/v1/users/image/' . $image;
+									string $imageId): string {
+		$url = $url . '/api/v1/users/image/' . $imageId;
 		$authHeader = ($authType === 'access') ? 'Token token=' : 'Bearer ';
 		$options = [
 			'headers' => [
