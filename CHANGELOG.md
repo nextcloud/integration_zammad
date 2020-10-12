@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.0.6 – 2020-10-12
+### Changed
+- various small improvements, mostly in the backend
+
 ## 0.0.5 – 2020-10-02
 ### Fixed
 - mistake when saving settings
