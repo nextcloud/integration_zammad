@@ -19,6 +19,7 @@ use OCP\IUser;
 use OCP\Http\Client\IClientService;
 use OCP\Notification\IManager as INotificationManager;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 
 use OCA\Zammad\AppInfo\Application;
 
@@ -401,14 +402,13 @@ class ZammadAPIService {
 			} else {
 				return json_decode($body, true);
 			}
-		} catch (ClientException $e) {
-			$this->logger->warning('Zammad API error : '.$e->getMessage(), array('app' => $this->appName));
+		} catch (ServerException | ClientException $e) {
 			$response = $e->getResponse();
 			$body = (string) $response->getBody();
 			// refresh token if it's invalid and we are using oauth
 			// response can be : 'OAuth2 token is expired!', 'Invalid token!' or 'Not authorized'
-			if ($authType === 'oauth' && strpos($body, 'OAuth2 token is expired') !== false) {
-				$this->logger->warning('Trying to REFRESH the access token', array('app' => $this->appName));
+			if ($response->getStatusCode() === 401 && $authType === 'oauth') {
+				$this->logger->info('Trying to REFRESH the access token', ['app' => $this->appName]);
 				// try to refresh the token
 				$result = $this->requestOAuthAccessToken($zammadUrl, [
 					'client_id' => $clientID,
@@ -425,6 +425,7 @@ class ZammadAPIService {
 					);
 				}
 			}
+			$this->logger->warning('Zammad API error : '.$e->getMessage(), ['app' => $this->appName]);
 			return ['error' => $e->getMessage()];
 		}
 	}
@@ -471,9 +472,8 @@ class ZammadAPIService {
 				return json_decode($body, true);
 			}
 		} catch (\Exception $e) {
-			$this->logger->warning('Zammad OAuth error : '.$e->getMessage(), array('app' => $this->appName));
+			$this->logger->warning('Zammad OAuth error : '.$e->getMessage(), ['app' => $this->appName]);
 			return ['error' => $e->getMessage()];
 		}
 	}
-
 }
