@@ -231,12 +231,15 @@ export default {
 #zammad-search-block {
 	margin-top: 30px;
 }
+
 .zammad-grid-form label {
 	line-height: 38px;
 }
+
 .zammad-grid-form input {
 	width: 100%;
 }
+
 .zammad-grid-form {
 	max-width: 600px;
 	display: grid;
@@ -245,26 +248,33 @@ export default {
 		margin-bottom: -1px;
 	}
 }
+
 #zammad_prefs .icon {
 	display: inline-block;
 	width: 32px;
 }
+
 #zammad_prefs .grid-form .icon {
 	margin-bottom: -3px;
 }
+
 .icon-zammad {
 	background-image: url(./../../img/app-dark.svg);
 	background-size: 23px 23px;
 	height: 23px;
 	margin-bottom: -4px;
 }
+
 body.theme--dark .icon-zammad {
 	background-image: url(./../../img/app.svg);
 }
+
 #zammad-content {
 	margin-left: 40px;
 }
+
 #zammad-search-block .icon {
 	width: 22px;
 }
+
 </style>
