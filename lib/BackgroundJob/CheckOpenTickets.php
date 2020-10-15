@@ -24,8 +24,10 @@ declare(strict_types=1);
 namespace OCA\Zammad\BackgroundJob;
 
 use OCP\BackgroundJob\TimedJob;
-use OCA\Zammad\ZammadAPIService;
+use OCP\AppFramework\Utility\ITimeFactory;
 use Psr\Log\LoggerInterface;
+
+use OCA\Zammad\Service\ZammadAPIService;
 
 /**
  * Class CheckOpenTickets
@@ -40,8 +42,10 @@ class CheckOpenTickets extends TimedJob {
 	/** @var LoggerInterface */
 	protected $logger;
 
-	public function __construct(ZammadAPIService $zammadAPIService,
+	public function __construct(ITimeFactory $time,
+								ZammadAPIService $zammadAPIService,
 								LoggerInterface $logger) {
+		parent::__construct($time);
 		// Every 15 minutes
 		$this->setInterval(60 * 15);
 

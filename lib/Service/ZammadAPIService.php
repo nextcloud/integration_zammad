@@ -98,7 +98,6 @@ class ZammadAPIService {
 								$nbOpen++;
 							}
 						}
-						error_log('NB OPEN for '.$me['lastname'].': '.$nbOpen);
 						if ($nbOpen > 0) {
 							$this->sendNCNotification($userId, 'new_open_tickets', [
 								'nbOpen' => $nbOpen,
