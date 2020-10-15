@@ -66,7 +66,8 @@ class ZammadAPIService {
 	 */
 	private function checkOpenTicketsForUser(string $userId): void {
 		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token', '');
-		if ($accessToken) {
+		$notificationEnabled = ($this->config->getUserValue($userId, Application::APP_ID, 'notification_enabled', '0') === '1');
+		if ($accessToken && $notificationEnabled) {
 			$tokenType = $this->config->getUserValue($userId, Application::APP_ID, 'token_type', '');
 			$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token', '');
 			$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
