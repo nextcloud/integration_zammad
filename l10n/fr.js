@@ -11,7 +11,6 @@ OC.L10N.register(
     "Connected accounts" : "Comptes connectés",
     "Zammad integration" : "Intégration de Zammad",
     "Integration of Zammad user support/ticketing solution" : "Intégration de la solution de support utilisateur / ticketing Zammad",
-    "Zammad integration provides a dashboard widget displaying your important notifications,\n    a search provider for tickets and notifications for new open tickets." : "L'intégration de Zammad fournit un widget de tableau de bord affichant vos notifications importantes,\nun moteur de recherche de tickets et des notifications pour les nouveaux tickets ouverts.",
     "If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below." : "Si vous souhaitez permettre à vos utilisateurs Nextcloud d'utiliser OAuth pour s'authentifier auprès d'une instance Zammad, créez une application dans vos paramètres d'administration Zammad et placez l'ID d'application (AppId) et le secret ci-dessous.",
     "Make sure you set the \"Callback URL\" to" : "Assurez-vous de définir la valeur d'\"URL de callback\" à",
     "Zammad instance address" : "Adresse de l'instance Zammad",

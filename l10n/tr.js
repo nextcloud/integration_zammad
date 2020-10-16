@@ -11,7 +11,6 @@ OC.L10N.register(
     "Connected accounts" : "Bağlı hesaplar",
     "Zammad integration" : "Zammad bütünleştirmesi",
     "Integration of Zammad user support/ticketing solution" : "Zammad kullanıcı destek kaydı açma ve destek alma çözümü",
-    "Zammad integration provides a dashboard widget displaying your important notifications,\n    a search provider for tickets and notifications for new open tickets." : "Zammad bütünleştirmesi, önemli bildirimleri, yeni açılmış destek kayıtları için arama özelliğini\n    ve yeni açılmış destek kaydı bildirimlerini görüntüleyen bir pano gereci sağlar.",
     "If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below." : "Nextcloud kullanıcılarınızın Zammad kimlik doğrulaması için OAuth uygulamasını kullanmak istiyorsanız, Zammad yönetici ayarlarınızdan bir uygulama oluşturun ve aşağıya uygulama kimliği (AppID) ve sırrı bilgilerini yazın.",
     "Make sure you set the \"Callback URL\" to" : "\"Geri çağırma adresini\" şuna ayarladığınızdan emin olun",
     "Zammad instance address" : "Zammad kopyası adresi",
