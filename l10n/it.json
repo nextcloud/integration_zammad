@@ -9,6 +9,7 @@
     "Connected accounts" : "Account connessi",
     "Zammad integration" : "Integrazione Zammad",
     "Integration of Zammad user support/ticketing solution" : "Integrazione della soluzione di supporto utente/gestione ticket di Zammad",
+    "Zammad integration provides a dashboard widget displaying your important notifications,\n\ta search provider for tickets and notifications for new open tickets." : "L'integrazione di Zammad fornisce un widget del cruscotto che mostra le tue notifiche importanti,\n\tun motore di ricerca per ticket e notifiche per i nuovi ticket aperti.",
     "If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below." : "Se desideri consentire ai tuoi utenti Nextcloud di utilizzare OAuth per autenticarsi su un'istanza Zammad, crea un'applicazione nelle impostazioni di amministrazione di Zammad e inserisci l'ID dell'applicazione (AppId) e il segreto di seguito.",
     "Make sure you set the \"Callback URL\" to" : "Assicurati di impostare \"URL di callback\" a",
     "Zammad instance address" : "Indirizzo istanza Zammad",
