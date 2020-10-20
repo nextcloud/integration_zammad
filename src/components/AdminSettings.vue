@@ -9,7 +9,7 @@
 			<br><br>
 			<span class="icon icon-details" />
 			{{ t('integration_zammad', 'Make sure you set the "Callback URL" to') }}
-			<b> {{ redirect_uri }} </b>
+			<b> {{ state.redirect_uri }} </b>
 		</p>
 		<div class="grid-form">
 			<label for="zammad-oauth-instance">
@@ -67,7 +67,6 @@ export default {
 			state: loadState('integration_zammad', 'admin-config'),
 			// to prevent some browsers to fill fields with remembered passwords
 			readonly: true,
-			redirect_uri: window.location.protocol + '//' + window.location.host + generateUrl('/apps/integration_zammad/oauth-redirect'),
 		}
 	},
 

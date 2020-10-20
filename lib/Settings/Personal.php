@@ -20,14 +20,13 @@ class Personal implements ISettings {
 	private $urlGenerator;
 	private $l;
 
-	public function __construct(
-						string $appName,
-						IL10N $l,
-						IRequest $request,
-						IConfig $config,
-						IURLGenerator $urlGenerator,
-						IInitialStateService $initialStateService,
-						$userId) {
+	public function __construct(string $appName,
+								IL10N $l,
+								IRequest $request,
+								IConfig $config,
+								IURLGenerator $urlGenerator,
+								IInitialStateService $initialStateService,
+								$userId) {
 		$this->appName = $appName;
 		$this->urlGenerator = $urlGenerator;
 		$this->request = $request;
@@ -52,6 +51,7 @@ class Personal implements ISettings {
 		// don't expose the client secret to users
 		$clientSecret = ($this->config->getAppValue(Application::APP_ID, 'client_secret', '') !== '');
 		$oauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url', '');
+		$redirectUri = $this->urlGenerator->linkToRouteAbsolute('integration_zammad.config.oauthRedirect');
 
 		$userConfig = [
 			'token' => $token,
@@ -59,6 +59,7 @@ class Personal implements ISettings {
 			'client_id' => $clientID,
 			'client_secret' => $clientSecret,
 			'oauth_instance_url' => $oauthUrl,
+			'redirect_uri' => $redirectUri,
 			'search_enabled' => ($searchEnabled === '1'),
 			'notification_enabled' => ($notificationEnabled === '1'),
 			'user_name' => $userName,
