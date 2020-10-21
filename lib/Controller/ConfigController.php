@@ -135,7 +135,7 @@ class ConfigController extends Controller {
 		$this->config->setUserValue($this->userId, Application::APP_ID, 'oauth_state', '');
 
 		if ($clientID && $clientSecret && $configState !== '' && $configState === $state) {
-			$redirect_uri = $this->urlGenerator->linkToRouteAbsolute('integration_zammad.config.oauthRedirect');
+			$redirect_uri = $this->config->getUserValue($this->userId, Application::APP_ID, 'redirect_uri', '');
 			$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url', '');
 			$result = $this->zammadAPIService->requestOAuthAccessToken($zammadUrl, [
 				'client_id' => $clientID,
