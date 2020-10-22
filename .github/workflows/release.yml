@@ -71,7 +71,7 @@ jobs:
       - name: Publish to appstore
         id: publish
         run: |
-          SIGNATURE=$(cat /tmp/build/sign.txt)
+          SIGNATURE=$(cat /tmp/build/sign.txt | tr "\n" " ")
           VERSION=${{ steps.build_release.outputs.version }}
           DOWNLOAD_URL=https://github.com/nextcloud/integration_zammad/releases/download/v${VERSION}/integration_zammad-${VERSION}.tar.gz
           curl -X POST -H "Authorization: Token $APPSTORE_TOKEN" https://apps.nextcloud.com/api/v1/apps/releases -H "Content-Type: application/json" -d '{"download":"'$DOWNLOAD_URL'", "signature": "'$SIGNATURE'"}'
