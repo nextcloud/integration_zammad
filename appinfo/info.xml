@@ -5,7 +5,7 @@
 	<summary>Integration of Zammad user support/ticketing solution</summary>
 	<description><![CDATA[Zammad integration provides a dashboard widget displaying your important notifications,
 	a search provider for tickets and notifications for new open tickets.]]></description>
-	<version>0.0.8</version>
+	<version>0.0.9</version>
 	<licence>agpl</licence>
 	<author>Julien Veyssier</author>
 	<namespace>Zammad</namespace>

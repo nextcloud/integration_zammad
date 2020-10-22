@@ -33,8 +33,12 @@ jobs:
           php ~/html/nextcloud/occ app:enable integration_zammad
           php ~/html/nextcloud/occ maintenance:mode --off
           cd ~/html/nextcloud/apps/integration_zammad
-          echo "###### make"
-          webserveruser=runner occ_dir=~/html/nextcloud make > /dev/null
+          #echo "###### make"
+          #webserveruser=runner occ_dir=~/html/nextcloud make > /dev/null
+          echo "###### npm install"
+          npm install
+          echo "###### npm run build"
+          npm run build
           echo "###### make appstore"
           tag=${{ github.ref }}
           version=${tag/refs\/tags\/v/}
