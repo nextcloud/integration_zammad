@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.0.7 – 2020-10-22
+### Changed
+- use Webpack 5 and stylelint
+
+### Fixed
+- always use redirect URI that is generated on browser side
+- background job declaration
+
 ## 0.0.6 – 2020-10-12
 ### Changed
 - various small improvements, mostly in the backend
