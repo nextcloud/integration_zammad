@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## 0.0.8 – 2020-10-22
+## 0.0.11 – 2020-10-22
 ### Added
 - GitHub Action to build and publish release on new v* tag
 

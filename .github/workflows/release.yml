@@ -33,8 +33,6 @@ jobs:
           php ~/html/nextcloud/occ app:enable integration_zammad
           php ~/html/nextcloud/occ maintenance:mode --off
           cd ~/html/nextcloud/apps/integration_zammad
-          #echo "###### make"
-          #webserveruser=runner occ_dir=~/html/nextcloud make > /dev/null
           echo "###### npm install"
           npm install
           echo "###### npm run build"
@@ -76,6 +74,6 @@ jobs:
           SIGNATURE=$(cat /tmp/build/sign.txt)
           VERSION=${{ steps.build_release.outputs.version }}
           DOWNLOAD_URL=https://github.com/nextcloud/integration_zammad/releases/download/v${VERSION}/integration_zammad-${VERSION}.tar.gz
-          echo curl -X POST -H "Authorization: Token $APPSTORE_TOKEN" https://apps.nextcloud.com/api/v1/apps/releases -H "Content-Type: application/json" -d '{"download":"'$DOWNLOAD_URL'", "signature": "'$SIGNATURE'"}'
+          curl -X POST -H "Authorization: Token $APPSTORE_TOKEN" https://apps.nextcloud.com/api/v1/apps/releases -H "Content-Type: application/json" -d '{"download":"'$DOWNLOAD_URL'", "signature": "'$SIGNATURE'"}'
         env:
           APPSTORE_TOKEN: ${{ secrets.APPSTORE_TOKEN }}
