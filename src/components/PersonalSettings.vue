@@ -10,6 +10,16 @@
 			{{ t('integration_zammad', 'Create a "Personal Access Token" and give it "TICKET -> AGENT", "ADMIN -> OBJECT" and "USER_PREFERENCES -> NOTIFICATIONS" permissions.') }}
 		</p>
 		<div id="zammad-content">
+			<div id="toggle-zammad-navigation-link">
+				<input
+					id="zammad-link"
+					type="checkbox"
+					class="checkbox"
+					:checked="state.navigation_enabled"
+					@input="onNavigationChange">
+				<label for="zammad-link">{{ t('integration_zammad', 'Enable navigation link') }}</label>
+			</div>
+			<br><br>
 			<div class="zammad-grid-form">
 				<label for="zammad-url">
 					<a class="icon icon-link" />
@@ -129,24 +139,22 @@ export default {
 	methods: {
 		onLogoutClick() {
 			this.state.token = ''
-			this.saveOptions(true)
+			this.saveOptions({ token: this.state.token, token_type: '' })
 		},
 		onNotificationChange(e) {
 			this.state.notification_enabled = e.target.checked
-			this.saveOptions(false)
+			this.saveOptions({ notification_enabled: this.state.notification_enabled ? '1' : '0' })
 		},
 		onSearchChange(e) {
 			this.state.search_enabled = e.target.checked
-			this.saveOptions(false)
+			this.saveOptions({ search_enabled: this.state.search_enabled ? '1' : '0' })
+		},
+		onNavigationChange(e) {
+			this.state.navigation_enabled = e.target.checked
+			this.saveOptions({ navigation_enabled: this.state.navigation_enabled ? '1' : '0' })
 		},
 		onInput() {
 			this.loading = true
-			const that = this
-			delay(function() {
-				that.saveOptions(true)
-			}, 2000)()
-		},
-		saveOptions(justTokenAndUrl) {
 			if (this.state.url !== '' && !this.state.url.startsWith('https://')) {
 				if (this.state.url.startsWith('http://')) {
 					this.state.url = this.state.url.replace('http://', 'https://')
@@ -154,25 +162,13 @@ export default {
 					this.state.url = 'https://' + this.state.url
 				}
 			}
+			delay(() => {
+				this.saveOptions({ url: this.state.url, token: this.state.token, token_type: this.showOAuth ? 'oauth' : 'access' })
+			}, 2000)()
+		},
+		saveOptions(values) {
 			const req = {
-				values: {
-				},
-			}
-			if (justTokenAndUrl) {
-				req.values = {
-					token: this.state.token,
-					url: this.state.url,
-				}
-				if (this.showOAuth) {
-					req.values.token_type = 'oauth'
-				} else {
-					req.values.token_type = 'access'
-				}
-			} else {
-				req.values = {
-					search_enabled: this.state.search_enabled ? '1' : '0',
-					notification_enabled: this.state.notification_enabled ? '1' : '0',
-				}
+				values,
 			}
 			const url = generateUrl('/apps/integration_zammad/config')
 			axios.put(url, req)
@@ -189,7 +185,7 @@ export default {
 					console.debug(error)
 					showError(
 						t('integration_zammad', 'Failed to save Zammad options')
-						+ ': ' + error.response.request.responseText
+						+ ': ' + error.response?.request?.responseText
 					)
 				})
 				.then(() => {

@@ -20,6 +20,7 @@ use OCP\Http\Client\IClientService;
 use OCP\Notification\IManager as INotificationManager;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Exception\ConnectException;
 
 use OCA\Zammad\AppInfo\Application;
 
@@ -426,6 +427,8 @@ class ZammadAPIService {
 				}
 			}
 			$this->logger->warning('Zammad API error : '.$e->getMessage(), ['app' => $this->appName]);
+			return ['error' => $e->getMessage()];
+		} catch (ConnectException $e) {
 			return ['error' => $e->getMessage()];
 		}
 	}
