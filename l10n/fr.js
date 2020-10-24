@@ -1,10 +1,10 @@
 OC.L10N.register(
     "integration_zammad",
     {
+    "Zammad" : "Zammad",
     "Error getting OAuth access token." : "Erreur lors de l'obtention du jeton d'accès OAuth.",
     "Error during OAuth exchanges" : "Erreur lors des échanges OAuth",
     "Zammad notifications" : "Notifications Zammad",
-    "Zammad" : "Zammad",
     "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Vous avez %s ticket ouvert dans Zammad.","Vous avez %s tickets ouverts dans Zammad."],
     "Bad credentials" : "Identifiants incorrects",
     "OAuth access token refused" : "Jeton d'accès OAuth refusé",

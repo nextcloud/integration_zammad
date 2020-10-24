@@ -1,8 +1,8 @@
 OC.L10N.register(
     "integration_zammad",
     {
-    "Zammad notifications" : "Zammad-ilmoitukset",
     "Zammad" : "Zammad",
+    "Zammad notifications" : "Zammad-ilmoitukset",
     "Bad credentials" : "Virheelliset kirjautumistiedot",
     "Connected accounts" : "Yhdistetyt tilit",
     "Zammad integration" : "Zammad-integraatio",

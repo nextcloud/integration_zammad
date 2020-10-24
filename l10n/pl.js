@@ -1,10 +1,10 @@
 OC.L10N.register(
     "integration_zammad",
     {
+    "Zammad" : "Zammad",
     "Error getting OAuth access token." : "Błąd podczas pobierania tokena dostępu OAuth.",
     "Error during OAuth exchanges" : "Błąd podczas zamiany OAuth",
     "Zammad notifications" : "Powiadomienia Zammad",
-    "Zammad" : "Zammad",
     "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Masz %s otwarte zgłoszenie w Zammadzie.","Masz %s otwarte zgłoszenia w Zammadzie.","Masz %s otwartych zgłoszeń w Zammadzie.","Masz %s otwartych zgłoszeń w Zammadzie."],
     "Bad credentials" : "Złe poświadczenia",
     "OAuth access token refused" : "Odmowa tokena dostępu OAuth",

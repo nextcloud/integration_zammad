@@ -1,10 +1,10 @@
 OC.L10N.register(
     "integration_zammad",
     {
+    "Zammad" : "Zammad",
     "Error getting OAuth access token." : "Napaka med pridobivanjem žetona OAuth za dostop",
     "Error during OAuth exchanges" : " Napaka med izmenjavo podatkov OAuth",
     "Zammad notifications" : "Obvestila Zammad",
-    "Zammad" : "Zammad",
     "Bad credentials" : "Neustrezna poverila",
     "OAuth access token refused" : " Žeton OAuth za dostop je bil zavrnjen",
     "Connected accounts" : "Povezani računi",

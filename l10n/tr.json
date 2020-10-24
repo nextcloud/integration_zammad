@@ -1,8 +1,8 @@
 { "translations": {
+    "Zammad" : "Zammad",
     "Error getting OAuth access token." : "OAuth erişim kodu alınırken sorun çıktı.",
     "Error during OAuth exchanges" : "OAuth takasında sorun çıktı",
     "Zammad notifications" : "Zammad bildirimleri",
-    "Zammad" : "Zammad",
     "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Zammad üzerinde açık %s destek kaydınız var.","Zammad üzerinde açık %s destek kaydınız var."],
     "Bad credentials" : "Kimlik doğrulama bilgileri hatalı",
     "OAuth access token refused" : "OAuth erişim kodu reddedildi",
