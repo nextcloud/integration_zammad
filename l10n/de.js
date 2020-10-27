@@ -22,7 +22,7 @@ OC.L10N.register(
     "Client secret of your application" : "Client-Geheimnis Deiner Anwendung",
     "Zammad admin options saved" : "Zammad-Administrator-Einstellungen gespeichert",
     "Failed to save Zammad admin options" : "Fehler beim Speichern der Zammad-Administrator-Einstellungen",
-    "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Um selbst ein Zugriffstoken zu erstellen, gehe zum Abschnitt \"Tokenzugriff\" auf deiner Zammad-Profilseite.",
+    "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Um selbst ein Zugriffstoken zu erstellen, gehe zum Abschnitt \"Tokenzugriff\" auf Deiner Zammad-Profilseite.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Erstellen Sie ein \"Persönliches Zugriffstoken\" und erteile ihm die Berechtigungen \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" und \"USER_PREFERENCES -> NOTIFICATIONS\".",
     "Enable navigation link" : "Navigations-Link aktivieren",
     "https://my.zammad.org" : "https://my.zammad.org",
