@@ -24,6 +24,7 @@ OC.L10N.register(
     "Failed to save Zammad admin options" : "Zammad yönetici ayarları kaydedilemedi",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Bir erişim kodu oluşturmak için Zammad profil sayfanızdaki \"Erişim Kodu\" bölümüne gidin.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Bir \"Kişisel Erişim Kodu\" oluşturun ve ona \"DESTEK KAYDI -> TEMSİLCİ\", \"YÖNETİCİ -> NESNE\" ve \"KULLANICI_AYARLARI -> BİLDİRİMLER\" izinlerini verin.",
+    "Enable navigation link" : "Gezinme bağlantısı kullanılsın",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Erişim kodu",
     "Zammad access token" : "Zammad erişim kodu",
