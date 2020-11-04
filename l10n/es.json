@@ -22,6 +22,7 @@
     "Failed to save Zammad admin options" : "Fallo al guardar las opciones de administración de Zammad",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Para crear tú mismo un token de acceso, ve a la sección «Token de acceso» de tu página de perfil de Zammad.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Crea un «Token de acceso personal» y dale permisos «TICKET -> AGENT», «ADMIN -> OBJECT» Y «USER_PREFERENCIES -> NOTIFICACIONES».",
+    "Enable navigation link" : "Habilita el enlace de navegación",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Token de acceso",
     "Zammad access token" : "Token de acceso a Zammad",
