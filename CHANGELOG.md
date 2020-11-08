@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.0.14 – 2020-11-08
+### Added
+- optional navigation link to Zammad instance
+
+### Changed
+- bump js libs
+
 ## 0.0.13 – 2020-10-22
 ### Added
 - GitHub Action to build and publish release on new v* tag
