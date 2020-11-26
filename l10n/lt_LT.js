@@ -1,0 +1,26 @@
+OC.L10N.register(
+    "integration_zammad",
+    {
+    "Zammad" : "„Zammad“",
+    "Error getting OAuth access token." : "Klaida gaunant „OAuth“ prieigos raktą.",
+    "Error during OAuth exchanges" : "Klaida „OAuth“ apsikeitimo metu",
+    "Zammad notifications" : "„Zammad“ pranešimai",
+    "Bad credentials" : "Blogi prisijungimo duomenys",
+    "OAuth access token refused" : "„OAuth“ prieigos raktas atmestas",
+    "Connected accounts" : "Prijungtos paskyros",
+    "Zammad integration" : "„Zammad“ integracija",
+    "Zammad instance address" : "„Zammad“ egzemplioriaus adresas",
+    "Zammad address" : "„Zammad“ adresas",
+    "https://my.zammad.org" : "https://my.zammad.org",
+    "Connect to Zammad" : "Prisijungti prie „Zammad“",
+    "Connected as {user}" : "Prisijungta kaip {user}",
+    "Disconnect from Zammad" : "Atsijungti nuo „Zammad“",
+    "Successfully connected to Zammad!" : "Sėkmingai prisijungta prie „Zammad“!",
+    "Zammad options saved" : "„Zammad“ parinktys įrašytos",
+    "Failed to save Zammad options" : "Nepavyko įrašyti „Zammad“ parinkčių",
+    "No Zammad account connected" : "Neprijungta jokia „Zammad“ paskyra",
+    "Error connecting to Zammad" : "Klaida jungiantis prie „Zammad“",
+    "No Zammad notifications!" : "Nėra „Zammad“ pranešimų!",
+    "Failed to get Zammad notifications" : "Nepavyko gauti „Zammad“ pranešimų"
+},
+"nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);");
