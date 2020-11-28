@@ -22,6 +22,7 @@
     "Failed to save Zammad admin options" : "Nepodařilo se uložit předvolby správy Zammad",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Pokud si chcete přístupový token vytvořit sami, jděte do sekce „Přístup přes token“ stránky s vaším profilem na Zammad.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Vytvořte „Personal Access Token“ a udělte mu oprávnění „TICKET -> AGENT“, „ADMIN -> OBJECT“ a „USER_PREFERENCES -> NOTIFICATIONS“.",
+    "Enable navigation link" : "Povolit navigační odkaz",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Přístupový token",
     "Zammad access token" : "Přístupový token do Zammad",
