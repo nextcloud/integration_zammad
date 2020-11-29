@@ -9,6 +9,7 @@ OC.L10N.register(
     "OAuth access token refused" : "OAuth access token geweigerd",
     "Connected accounts" : "Verbonden accounts",
     "Zammad integration" : "Zammad integratie",
+    "Integration of Zammad user support/ticketing solution" : "Integration met de Zammad gebruikersondersteuning/ticketing oplossing",
     "If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below." : "Als je wilt dat je Nextcloud-gebruikers OAuth voor authenticatie kunnen gebruiken bij een Zammad-instance, maak dan een applicatie aan in je Zammad-instellingen en stel hier het ID (AppId) en secret in.",
     "Make sure you set the \"Callback URL\" to" : "Zorg ervoor dat het \"Callback URL\" is ingesteld op",
     "Zammad instance address" : "Zammad instance adres",
