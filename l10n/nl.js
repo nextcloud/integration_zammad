@@ -26,6 +26,7 @@ OC.L10N.register(
     "Connected as {user}" : "Verbonden als {user}",
     "Disconnect from Zammad" : "Verbinding met Zammad verbreken",
     "OAuth access token could not be obtained:" : "OAuth access token kon niet worden opgehaald:",
-    "No Zammad account connected" : "Geen Zammad-account verbonden"
+    "No Zammad account connected" : "Geen Zammad-account verbonden",
+    "No Zammad notifications!" : "Geen Zammad meldingen!"
 },
 "nplurals=2; plural=(n != 1);");
