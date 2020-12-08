@@ -17,6 +17,7 @@ OC.L10N.register(
     "Client secret of your application" : "Koda programa za povezavo",
     "Zammad admin options saved" : "Skrbniške nastavitve povezave Zammad so shranjene",
     "Failed to save Zammad admin options" : "Shranjevanje skrbniških nastavitev računa Zammad je spodletelo",
+    "Enable navigation link" : "Omogoči povezave za krmarjenje",
     "https://my.zammad.org" : "https://moj.zammad.org",
     "Access token" : "Žeton dostopa",
     "Zammad access token" : "Žeton dostopa Zammad",
