@@ -27,6 +27,7 @@ OC.L10N.register(
     "Connected as {user}" : "Povezan je uporabniški račun {user}",
     "Disconnect from Zammad" : "Prekini povezavo s programom Zammad",
     "Enable unified search for tickets" : "Omogoči enotno iskanje med objavami",
+    "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Opozorilo! Karkoli vpišete v iskalno polje bo poslano na strežnik Zammad.",
     "Enable notifications for open tickets" : "Pošlji obvestila za odprte kartice",
     "Successfully connected to Zammad!" : "Povezava z Zammad je uspešno vzpostavljena!",
     "OAuth access token could not be obtained:" : "Žetona OAuth za dostop ni mogoče pridobiti:",
