@@ -163,7 +163,13 @@ export default {
 				}
 			}
 			delay(() => {
-				this.saveOptions({ url: this.state.url, token: this.state.token, token_type: this.showOAuth ? 'oauth' : 'access' })
+				// check the domain name has at least one dot
+				const pattern = /^(https?:\/\/)?[A-Za-z0-9]+\.[A-Za-z0-9].*/
+				if (pattern.test(this.state.url)) {
+					this.saveOptions({ url: this.state.url, token: this.state.token, token_type: this.showOAuth ? 'oauth' : 'access' })
+				} else {
+					this.saveOptions({ url: '', token: this.state.token, token_type: this.showOAuth ? 'oauth' : 'access' })
+				}
 			}, 2000)()
 		},
 		saveOptions(values) {

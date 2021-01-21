@@ -178,6 +178,10 @@ class ConfigController extends Controller {
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
 		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url', '');
 
+		if (!$zammadUrl || !preg_match('/^(https?:\/\/)?[A-Za-z0-9]+\.[A-Za-z0-9].*/', $zammadUrl)) {
+			return ['error' => 'Zammad URL is invalid'];
+		}
+
 		$info = $this->zammadAPIService->request($zammadUrl, $accessToken, $tokenType, $refreshToken, $clientID, $clientSecret, $this->userId, 'users/me');
 		if (isset($info['lastname'], $info['firstname'], $info['id'])) {
 			$fullName = $info['firstname'] . ' ' . $info['lastname'];
