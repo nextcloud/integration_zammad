@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.0.15 – 2021-01-21
+### Changed
+- bump js libs
+- update translations
+
+### Fixed
+- avoid using invalid Zammad URL
+
 ## 0.0.14 – 2020-11-08
 ### Added
 - optional navigation link to Zammad instance
