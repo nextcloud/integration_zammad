@@ -103,7 +103,7 @@ class ZammadAPIController extends Controller {
 	 * @return DataResponse
 	 */
 	public function getNotifications(?string $since = null): DataResponse {
-		if ($this->accessToken === '' || !preg_match('/^(https?:\/\/)?[A-Za-z0-9]+\.[A-Za-z0-9].*/', $this->zammadUrl)) {
+		if ($this->accessToken === '' || !preg_match('/^(https?:\/\/)?[^.]+\.[^.].*/', $this->zammadUrl)) {
 			return new DataResponse('', 400);
 		}
 		$result = $this->zammadAPIService->getNotifications(

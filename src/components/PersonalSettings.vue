@@ -164,7 +164,7 @@ export default {
 			}
 			delay(() => {
 				// check the domain name has at least one dot
-				const pattern = /^(https?:\/\/)?[A-Za-z0-9]+\.[A-Za-z0-9].*/
+				const pattern = /^(https?:\/\/)?[^.]+\.[^.].*/
 				if (pattern.test(this.state.url)) {
 					this.saveOptions({ url: this.state.url, token: this.state.token, token_type: this.showOAuth ? 'oauth' : 'access' })
 				} else {

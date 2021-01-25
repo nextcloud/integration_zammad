@@ -78,7 +78,7 @@ class ConfigController extends Controller {
 	 */
 	public function setConfig(array $values): DataResponse {
 		foreach ($values as $key => $value) {
-			$this->config->setUserValue($this->userId, Application::APP_ID, $key, $value);
+			$this->config->setUserValue($this->userId, Application::APP_ID, $key, trim($value));
 		}
 		$result = [];
 
@@ -178,7 +178,7 @@ class ConfigController extends Controller {
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
 		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url', '');
 
-		if (!$zammadUrl || !preg_match('/^(https?:\/\/)?[A-Za-z0-9]+\.[A-Za-z0-9].*/', $zammadUrl)) {
+		if (!$zammadUrl || !preg_match('/^(https?:\/\/)?[^.]+\.[^.].*/', $zammadUrl)) {
 			return ['error' => 'Zammad URL is invalid'];
 		}
 

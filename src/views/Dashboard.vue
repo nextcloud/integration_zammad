@@ -127,7 +127,9 @@ export default {
 				}
 			}
 			axios.get(generateUrl('/apps/integration_zammad/notifications'), req).then((response) => {
-				this.processNotifications(response.data)
+				if (Array.isArray(response.data)) {
+					this.processNotifications(response.data)
+				}
 				this.state = 'ok'
 			}).catch((error) => {
 				clearInterval(this.loop)
