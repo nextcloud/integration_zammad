@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.0.16 – 2021-01-25
+### Fixed
+- url check was too restrictive
+[#10](https://github.com/nextcloud/integration_zammad/issues/10) @Bosi1024
+
 ## 0.0.15 – 2021-01-21
 ### Changed
 - bump js libs
