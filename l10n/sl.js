@@ -11,6 +11,7 @@ OC.L10N.register(
     "Zammad integration" : "Združevalnik Zammad",
     "Integration of Zammad user support/ticketing solution" : "Združevalnik za podporni/kartični sistem Zammand",
     "Zammad integration provides a dashboard widget displaying your important notifications,\n\ta search provider for tickets and notifications for new open tickets." : "Združevalnik Zamand omogoča uporabo gradnikov nadzorne plošče, ki prikazujejo pomembna obvestila,\nenotno iskalno orodje za brskanje med prijavljenimi objavami in obvestili o novih vnosih.",
+    "Make sure you set the \"Callback URL\" to" : "Poskrbite, da bo »povratni naslov URI« nastavljen na",
     "Zammad instance address" : "Naslov povezave do računa Zammad",
     "Zammad address" : "Naslov Zammad",
     "Application ID" : "ID Programa",
