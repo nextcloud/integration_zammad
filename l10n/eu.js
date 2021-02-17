@@ -12,6 +12,7 @@ OC.L10N.register(
     "ID of your application" : "Zure aplikazioaren IDa",
     "Application secret" : "Aplikazio-sekretua",
     "Enable navigation link" : "Gaitu nabigazio esteka",
+    "Access token" : "Sarbide tokena",
     "Connect to Zammad" : "Konektatu Zammad-era",
     "Connected as {user}" : "{user} gisa konektatuta",
     "Enable unified search for tickets" : "Gaitu bilaketa bateratua ticketentzako",
