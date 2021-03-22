@@ -25,7 +25,7 @@ OC.L10N.register(
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "要自己創建存取權杖，請轉到Zammad個人資料頁面的 “權杖存取” 部分。",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "創建一個 “個人存取權杖”，並賦予它 “TICKET -> AGENT”，“ADMIN -> OBJECT” 和 “USER_PREFERENCES -> NOTIFICATIONS” 權限。",
     "Enable navigation link" : "啟用導覽連結",
-    "https://my.zammad.org" : "https://my.zammad.org",
+    "https://my.zammad.org" : "https：//my。zammad。org",
     "Access token" : "存取權杖",
     "Zammad access token" : "Zammad 存取權杖",
     "Connect to Zammad" : "連線至 Zammad",
