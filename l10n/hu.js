@@ -10,7 +10,7 @@ OC.L10N.register(
     "OAuth access token refused" : "Az OAuth hozzáférési token lekérése visszautasítva",
     "Connected accounts" : "Kapcsolt fiókok",
     "Zammad integration" : "Zammad integráció",
-    "Integration of Zammad user support/ticketing solution" : "A Zammad felhasználó támogatásánaki / jegykezelő rendszer integrálása",
+    "Integration of Zammad user support/ticketing solution" : "A Zammad felhasználó támogatási / jegykezelő rendszer integrálása",
     "Zammad integration provides a dashboard widget displaying your important notifications,\n\ta search provider for tickets and notifications for new open tickets." : "A Zammad integráció egy irányítópult widgetet kínál, amely megjeleníti a fontos értesítéseket, és kereső szolgáltatást a jegyek és az új nyitott jegyek értesítéseihez.",
     "If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below." : "Ha azt szeretné, hogy a Nextcloud-felhasználók az OAuth használatával hitelesítsék magukat egy Zammad-példányban, hozzon létre egy alkalmazást a Zammad rendszergazdai beállításaiban, és helyezze el az alkalmazásazonosítót (AppId) és a titkot alább.",
     "Make sure you set the \"Callback URL\" to" : "Bizonyosodjon meg róla, hogy beállította ezt a \"callback URL\" értékét erre:",
