@@ -9,6 +9,7 @@
     "Zammad integration" : "Združevalnik Zammad",
     "Integration of Zammad user support/ticketing solution" : "Združevalnik za podporni/kartični sistem Zammand",
     "Zammad integration provides a dashboard widget displaying your important notifications,\n\ta search provider for tickets and notifications for new open tickets." : "Združevalnik Zamand omogoča uporabo gradnikov nadzorne plošče, ki prikazujejo pomembna obvestila,\nenotno iskalno orodje za brskanje med prijavljenimi objavami in obvestili o novih vnosih.",
+    "If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below." : "Za overitev okolja Zammad znotraj Nextcloud je treba ustvariti program  za overitev preko možnosti OAuth. Med skrbniškimi nastavitvami Zammad nastavite določilo ID programa (AppID) in skrivno geslo.",
     "Make sure you set the \"Callback URL\" to" : "Poskrbite, da bo »povratni naslov URI« nastavljen na",
     "Zammad instance address" : "Naslov povezave do računa Zammad",
     "Zammad address" : "Naslov Zammad",
