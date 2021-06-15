@@ -28,7 +28,7 @@ OC.L10N.register(
     "https://my.zammad.org" : "https://moj.zammad.org",
     "Access token" : "Token dostępu",
     "Zammad access token" : "Token dostępu Zammad",
-    "Connect to Zammad" : "Połącz się z Zammadem",
+    "Connect to Zammad" : "Połącz z Zammadem",
     "Connected as {user}" : "Połączono jako {user}",
     "Disconnect from Zammad" : "Rozłącz się z Zammadem",
     "Enable unified search for tickets" : "Włącz ujednolicone wyszukiwanie zgłoszeń",
@@ -41,7 +41,7 @@ OC.L10N.register(
     "Failed to save Zammad options" : "Nie udało się zapisać opcji Zammada",
     "Failed to save Zammad OAuth state" : "Nie udało się zapisać statusu OAuth Zammad",
     "No Zammad account connected" : "Brak połączonego konta Zammad",
-    "Error connecting to Zammad" : "Błąd podczas łączenia się z Zammadem",
+    "Error connecting to Zammad" : "Błąd podczas łączenia z Zammadem",
     "No Zammad notifications!" : "Brak powiadomień Zammada!",
     "Failed to get Zammad notifications" : "Nie udało się pobrać powiadomień Zammada"
 },
