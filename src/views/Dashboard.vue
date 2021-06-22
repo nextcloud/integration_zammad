@@ -66,6 +66,7 @@ export default {
 					targetUrl: this.getNotificationTarget(n),
 					avatarUrl: this.getAuthorAvatarUrl(n),
 					avatarUsername: this.getAuthorShortName(n),
+					avatarIsNoUser: true,
 					overlayIconUrl: this.getNotificationTypeImage(n),
 					mainText: this.getTargetTitle(n),
 					subText: this.getSubline(n),
@@ -206,7 +207,7 @@ export default {
 		getAuthorAvatarUrl(n) {
 			return (n.image)
 				? generateUrl('/apps/integration_zammad/avatar?') + encodeURIComponent('imageId') + '=' + encodeURIComponent(n.image)
-				: ''
+				: undefined
 		},
 		getNotificationProjectName(n) {
 			return ''
