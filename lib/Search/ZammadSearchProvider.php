@@ -45,12 +45,21 @@ class ZammadSearchProvider implements IProvider {
 
 	/** @var IURLGenerator */
 	private $urlGenerator;
+	/**
+	 * @var IConfig
+	 */
+	private $config;
+	/**
+	 * @var ZammadAPIService
+	 */
+	private $service;
 
 	/**
 	 * CospendSearchProvider constructor.
 	 *
 	 * @param IAppManager $appManager
 	 * @param IL10N $l10n
+	 * @param IConfig $config
 	 * @param IURLGenerator $urlGenerator
 	 * @param ZammadAPIService $service
 	 */
@@ -105,17 +114,17 @@ class ZammadSearchProvider implements IProvider {
 		$offset = $query->getCursor();
 		$offset = $offset ? intval($offset) : 0;
 
-		$theme = $this->config->getUserValue($user->getUID(), 'accessibility', 'theme', '');
+		$theme = $this->config->getUserValue($user->getUID(), 'accessibility', 'theme');
 		$thumbnailUrl = ($theme === 'dark')
 			? $this->urlGenerator->imagePath(Application::APP_ID, 'app.svg')
 			: $this->urlGenerator->imagePath(Application::APP_ID, 'app-dark.svg');
 
-		$zammadUrl = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'url', '');
-		$accessToken = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'token', '');
-		$tokenType = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'token_type', '');
-		$refreshToken = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'refresh_token', '');
-		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
-		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
+		$zammadUrl = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'url');
+		$accessToken = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'token');
+		$tokenType = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'token_type');
+		$refreshToken = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'refresh_token');
+		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
+		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
 
 		$searchEnabled = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'search_enabled', '0') === '1';
 		if ($accessToken === '' || !$searchEnabled) {
@@ -129,7 +138,7 @@ class ZammadSearchProvider implements IProvider {
 			return SearchResult::paginated($this->getName(), [], 0);
 		}
 
-		$formattedResults = \array_map(function (array $entry) use ($thumbnailUrl, $zammadUrl): ZammadSearchResultEntry {
+		$formattedResults = array_map(function (array $entry) use ($thumbnailUrl, $zammadUrl): ZammadSearchResultEntry {
 			return new ZammadSearchResultEntry(
 				$this->getThumbnailUrl($entry, $thumbnailUrl),
 				$this->getMainText($entry),
@@ -160,9 +169,7 @@ class ZammadSearchProvider implements IProvider {
 	 * @return string
 	 */
 	protected function getSubline(array $entry): string {
-		$priorityName = $entry['priority_name']
-			? $entry['priority_name']
-			: $entry['priority_id'];
+		$priorityName = $entry['priority_name'] ?: $entry['priority_id'];
 		$prefix = $entry['state_name']
 			? '[' . $this->truncate($entry['state_name'], 10) . '/' . $priorityName . '] '
 			: '[' . $priorityName . '] ';
@@ -182,7 +189,7 @@ class ZammadSearchProvider implements IProvider {
 
 	/**
 	 * @param array $entry
-	 * @param array $url
+	 * @param string $url
 	 * @return string
 	 */
 	protected function getLinkToZammad(array $entry, string $url): string {

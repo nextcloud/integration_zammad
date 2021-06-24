@@ -11,21 +11,8 @@
 
 namespace OCA\Zammad\Controller;
 
-use OCP\App\IAppManager;
-use OCP\Files\IAppData;
 use OCP\AppFramework\Http\DataDisplayResponse;
-
-use OCP\IURLGenerator;
 use OCP\IConfig;
-use OCP\IServerContainer;
-use OCP\IL10N;
-
-use OCP\AppFramework\Http;
-use OCP\AppFramework\Http\RedirectResponse;
-
-use OCP\AppFramework\Http\ContentSecurityPolicy;
-
-use Psr\Log\LoggerInterface;
 use OCP\IRequest;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Controller;
@@ -35,36 +22,53 @@ use OCA\Zammad\AppInfo\Application;
 
 class ZammadAPIController extends Controller {
 
-
+	/**
+	 * @var ZammadAPIService
+	 */
+	private $zammadAPIService;
+	/**
+	 * @var string|null
+	 */
 	private $userId;
-	private $config;
-	private $dbconnection;
-	private $dbtype;
+	/**
+	 * @var string
+	 */
+	private $accessToken;
+	/**
+	 * @var string
+	 */
+	private $tokenType;
+	/**
+	 * @var string
+	 */
+	private $refreshToken;
+	/**
+	 * @var string
+	 */
+	private $clientID;
+	/**
+	 * @var string
+	 */
+	private $clientSecret;
+	/**
+	 * @var string
+	 */
+	private $zammadUrl;
 
-	public function __construct($AppName,
+	public function __construct(string $appName,
 								IRequest $request,
-								IServerContainer $serverContainer,
 								IConfig $config,
-								IL10N $l10n,
-								IAppManager $appManager,
-								IAppData $appData,
-								LoggerInterface $logger,
 								ZammadAPIService $zammadAPIService,
-								$userId) {
-		parent::__construct($AppName, $request);
-		$this->userId = $userId;
-		$this->l10n = $l10n;
-		$this->appData = $appData;
-		$this->serverContainer = $serverContainer;
-		$this->config = $config;
-		$this->logger = $logger;
+								?string $userId) {
+		parent::__construct($appName, $request);
 		$this->zammadAPIService = $zammadAPIService;
-		$this->accessToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'token', '');
-		$this->tokenType = $this->config->getUserValue($this->userId, Application::APP_ID, 'token_type', '');
-		$this->refreshToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'refresh_token', '');
-		$this->clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
-		$this->clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
-		$this->zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url', '');
+		$this->userId = $userId;
+		$this->accessToken = $config->getUserValue($userId, Application::APP_ID, 'token');
+		$this->tokenType = $config->getUserValue($userId, Application::APP_ID, 'token_type');
+		$this->refreshToken = $config->getUserValue($userId, Application::APP_ID, 'refresh_token');
+		$this->clientID = $config->getAppValue(Application::APP_ID, 'client_id');
+		$this->clientSecret = $config->getAppValue(Application::APP_ID, 'client_secret');
+		$this->zammadUrl = $config->getUserValue($userId, Application::APP_ID, 'url');
 	}
 
 	/**

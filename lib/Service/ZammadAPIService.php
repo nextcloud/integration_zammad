@@ -11,6 +11,8 @@
 
 namespace OCA\Zammad\Service;
 
+use DateTime;
+use Exception;
 use OCP\IL10N;
 use Psr\Log\LoggerInterface;
 use OCP\IConfig;
@@ -25,26 +27,51 @@ use GuzzleHttp\Exception\ConnectException;
 use OCA\Zammad\AppInfo\Application;
 
 class ZammadAPIService {
-
-	private $l10n;
+	/**
+	 * @var string
+	 */
+	private $appName;
+	/**
+	 * @var IUserManager
+	 */
+	private $userManager;
+	/**
+	 * @var LoggerInterface
+	 */
 	private $logger;
+	/**
+	 * @var IL10N
+	 */
+	private $l10n;
+	/**
+	 * @var IConfig
+	 */
+	private $config;
+	/**
+	 * @var INotificationManager
+	 */
+	private $notificationManager;
+	/**
+	 * @var \OCP\Http\Client\IClient
+	 */
+	private $client;
 
 	/**
 	 * Service to make requests to Zammad v3 (JSON) API
 	 */
-	public function __construct (IUserManager $userManager,
+	public function __construct (
 								string $appName,
+								IUserManager $userManager,
 								LoggerInterface $logger,
 								IL10N $l10n,
 								IConfig $config,
 								INotificationManager $notificationManager,
 								IClientService $clientService) {
 		$this->appName = $appName;
-		$this->l10n = $l10n;
-		$this->logger = $logger;
-		$this->config = $config;
 		$this->userManager = $userManager;
-		$this->clientService = $clientService;
+		$this->logger = $logger;
+		$this->l10n = $l10n;
+		$this->config = $config;
 		$this->notificationManager = $notificationManager;
 		$this->client = $clientService->newClient();
 	}
@@ -66,16 +93,16 @@ class ZammadAPIService {
 	 * @return void
 	 */
 	private function checkOpenTicketsForUser(string $userId): void {
-		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token', '');
+		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token');
 		$notificationEnabled = ($this->config->getUserValue($userId, Application::APP_ID, 'notification_enabled', '0') === '1');
 		if ($accessToken && $notificationEnabled) {
-			$tokenType = $this->config->getUserValue($userId, Application::APP_ID, 'token_type', '');
-			$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token', '');
-			$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
-			$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
-			$zammadUrl = $this->config->getUserValue($userId, Application::APP_ID, 'url', '');
+			$tokenType = $this->config->getUserValue($userId, Application::APP_ID, 'token_type');
+			$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
+			$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
+			$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
+			$zammadUrl = $this->config->getUserValue($userId, Application::APP_ID, 'url');
 			if ($clientID && $clientSecret && $zammadUrl) {
-				$lastNotificationCheck = $this->config->getUserValue($userId, Application::APP_ID, 'last_open_check', '');
+				$lastNotificationCheck = $this->config->getUserValue($userId, Application::APP_ID, 'last_open_check');
 				$lastNotificationCheck = $lastNotificationCheck === '' ? null : $lastNotificationCheck;
 				// get the zammad user ID
 				$me = $this->request(
@@ -92,7 +119,7 @@ class ZammadAPIService {
 						$this->config->setUserValue($userId, Application::APP_ID, 'last_open_check', $lastNotificationCheck);
 						$nbOpen = 0;
 						foreach ($notifications as $n) {
-							$user_id = $n['user_id'];
+//							$user_id = $n['user_id'];
 							$state_id = $n['state_id'];
 							$owner_id = $n['owner_id'];
 							// if ($state_id === 1) {
@@ -115,7 +142,7 @@ class ZammadAPIService {
 	/**
 	 * @param string $userId
 	 * @param string $subject
-	 * @param string $params
+	 * @param array $params
 	 * @return void
 	 */
 	private function sendNCNotification(string $userId, string $subject, array $params): void {
@@ -124,7 +151,7 @@ class ZammadAPIService {
 
 		$notification->setApp(Application::APP_ID)
 			->setUser($userId)
-			->setDateTime(new \DateTime())
+			->setDateTime(new DateTime())
 			->setObject('dum', 'dum')
 			->setSubject($subject, $params);
 
@@ -161,10 +188,10 @@ class ZammadAPIService {
 		});
 		// filter results by date
 		if (!is_null($since)) {
-			$sinceDate = new \DateTime($since);
+			$sinceDate = new DateTime($since);
 			$sinceTimestamp = $sinceDate->getTimestamp();
 			$result = array_filter($result, function($elem) use ($sinceTimestamp) {
-				$date = new \Datetime($elem['updated_at']);
+				$date = new Datetime($elem['updated_at']);
 				$ts = $date->getTimestamp();
 				return $ts > $sinceTimestamp;
 			});
@@ -349,10 +376,12 @@ class ZammadAPIService {
 	 * @param string $refreshToken
 	 * @param string $clientID
 	 * @param string $clientSecret
+	 * @param string $userId
 	 * @param string $endPoint
 	 * @param array $params
 	 * @param string $method
 	 * @return array
+	 * @throws \OCP\PreConditionNotMetException
 	 */
 	public function request(string $zammadUrl, string $accessToken, string $authType, string $refreshToken,
 							string $clientID, string $clientSecret, string $userId,
@@ -394,6 +423,8 @@ class ZammadAPIService {
 				$response = $this->client->put($url, $options);
 			} else if ($method === 'DELETE') {
 				$response = $this->client->delete($url, $options);
+			} else {
+				return ['error' => $this->l10n->t('Bad HTTP method')];
 			}
 			$body = $response->getBody();
 			$respCode = $response->getStatusCode();
@@ -405,7 +436,7 @@ class ZammadAPIService {
 			}
 		} catch (ServerException | ClientException $e) {
 			$response = $e->getResponse();
-			$body = (string) $response->getBody();
+//			$body = (string) $response->getBody();
 			// refresh token if it's invalid and we are using oauth
 			// response can be : 'OAuth2 token is expired!', 'Invalid token!' or 'Not authorized'
 			if ($response->getStatusCode() === 401 && $authType === 'oauth') {
@@ -465,6 +496,8 @@ class ZammadAPIService {
 				$response = $this->client->put($url, $options);
 			} else if ($method === 'DELETE') {
 				$response = $this->client->delete($url, $options);
+			} else {
+				return ['error' => $this->l10n->t('Bad HTTP method')];
 			}
 			$body = $response->getBody();
 			$respCode = $response->getStatusCode();
@@ -474,7 +507,7 @@ class ZammadAPIService {
 			} else {
 				return json_decode($body, true);
 			}
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->logger->warning('Zammad OAuth error : '.$e->getMessage(), ['app' => $this->appName]);
 			return ['error' => $e->getMessage()];
 		}
