@@ -25,6 +25,7 @@ namespace OCA\Zammad\Dashboard;
 
 use OCP\Dashboard\IWidget;
 use OCP\IL10N;
+use OCP\Util;
 
 use OCA\Zammad\AppInfo\Application;
 
@@ -78,7 +79,7 @@ class ZammadWidget implements IWidget {
 	 * @inheritDoc
 	 */
 	public function load(): void {
-		\OC_Util::addScript(Application::APP_ID, Application::APP_ID . '-dashboard');
-		\OC_Util::addStyle(Application::APP_ID, 'dashboard');
+		Util::addScript(Application::APP_ID, Application::APP_ID . '-dashboard');
+		Util::addStyle(Application::APP_ID, 'dashboard');
 	}
 }
