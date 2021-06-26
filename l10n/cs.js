@@ -6,6 +6,7 @@ OC.L10N.register(
     "Error during OAuth exchanges" : "Chyba při výměnách informací v rámci OAuth",
     "Zammad notifications" : "Upozorňování ze Zammad",
     "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Máte %s otevřený požadavek v Zammad.","Máte %s otevřené požadavky v Zammad.","Máte %s otevřených požadavků v Zammad.","Máte %s otevřené požadavky v Zammad."],
+    "Bad HTTP method" : "Nesprávná HTTP metoda",
     "Bad credentials" : "Nesprávné přihlašovací údaje",
     "OAuth access token refused" : "OAuth přístupový token odmítnut",
     "Connected accounts" : "Propojené účty",

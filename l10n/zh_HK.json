@@ -4,6 +4,7 @@
     "Error during OAuth exchanges" : "OAuth 交換時發生錯誤",
     "Zammad notifications" : "Zammad 通告",
     "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["您在Zammad有 %s 張公開票。"],
+    "Bad HTTP method" : "不正確的 HTTP 方法",
     "Bad credentials" : "錯誤的身分驗證",
     "OAuth access token refused" : "OAuth 存取權杖被拒絕",
     "Connected accounts" : "已連線的帳號",
