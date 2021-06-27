@@ -6,6 +6,7 @@ OC.L10N.register(
     "Error during OAuth exchanges" : "OAuth takasında sorun çıktı",
     "Zammad notifications" : "Zammad bildirimleri",
     "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Zammad üzerinde açık %s destek kaydınız var.","Zammad üzerinde açık %s destek kaydınız var."],
+    "Bad HTTP method" : "HTTP yöntemi hatalı",
     "Bad credentials" : "Kimlik doğrulama bilgileri hatalı",
     "OAuth access token refused" : "OAuth erişim kodu reddedildi",
     "Connected accounts" : "Bağlı hesaplar",
