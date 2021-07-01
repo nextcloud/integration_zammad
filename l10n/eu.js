@@ -6,6 +6,7 @@ OC.L10N.register(
     "Error during OAuth exchanges" : "Errorea QAuth trukeak egitean",
     "Zammad notifications" : "Zammad jakinarazpenak",
     "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["%seskaera ireki dituzu Zammaden.","%seskaera ireki dituzu Zammaden."],
+    "Bad HTTP method" : "HTTP metodo okerra",
     "Bad credentials" : "Kredentzial okerrak",
     "OAuth access token refused" : "QAuth sarbide tokena ukatua izan da",
     "Connected accounts" : "Konektaturiko kontuak",
