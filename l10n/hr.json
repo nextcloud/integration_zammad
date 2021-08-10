@@ -4,6 +4,7 @@
     "Error during OAuth exchanges" : "Pogreška tijekom razmjene radi autentifikacije OAuth",
     "Zammad notifications" : "Zammad obavijesti",
     "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Imate %s otvorenu prijavu u Zammadu.","Imate %s otvorene prijave u Zammadu.","Imate %s otvorenih prijava u Zammadu."],
+    "Bad HTTP method" : "Pogrešna metoda HTTP-a",
     "Bad credentials" : "Pogrešne vjerodajnice",
     "OAuth access token refused" : "Odbijen token za pristup OAuth",
     "Connected accounts" : "Povezani računi",
