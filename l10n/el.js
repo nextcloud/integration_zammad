@@ -6,6 +6,7 @@ OC.L10N.register(
     "Error during OAuth exchanges" : "Σφάλμα κατά την ανταλλαγή OAuth",
     "Zammad notifications" : "Ειδοποιήσεις Zammad",
     "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Έχετε %s ανοιχτό εισιτήριο στο Zammad.","Έχετε %s ανοιχτά εισιτήρια στο Zammad."],
+    "Bad HTTP method" : "Κακή μέθοδος HTTP",
     "Bad credentials" : "Εσφαλμένα διαπιστευτήρια",
     "OAuth access token refused" : "Το διακριτικό πρόσβασης OAuth απορρίφθηκε",
     "Connected accounts" : "Συνδεδεμένοι λογαριασμοί",
