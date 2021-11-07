@@ -6,6 +6,7 @@ OC.L10N.register(
     "Error during OAuth exchanges" : "Erreur lors des échanges OAuth",
     "Zammad notifications" : "Notifications Zammad",
     "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Vous avez %s ticket ouvert dans Zammad.","Vous avez %s tickets ouverts dans Zammad."],
+    "Bad HTTP method" : "Mauvaise méthode HTTP",
     "Bad credentials" : "Identifiants incorrects",
     "OAuth access token refused" : "Jeton d'accès OAuth refusé",
     "Connected accounts" : "Comptes connectés",
