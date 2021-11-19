@@ -24,7 +24,7 @@ OC.L10N.register(
     "Zammad admin options saved" : "Zammad beheeropties bewaard",
     "Failed to save Zammad admin options" : "Kon Zammad admin-opties niet opslaan",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Om zelf een access token aan te maken, ga je naar het gedeelte \"Token Access\" van je Zammad-profielpagina.",
-    "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Creëer een \"Personal Access Token\" en geef dat \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" en \"USER_PREFERENCES -> NOTIFICATIONS\" permissies.",
+    "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Creëer een \"Personal Access Token\" en geef dat \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" en \"USER_PREFERENCES -> NOTIFICATIONS\" machtigingen.",
     "Enable navigation link" : "Inschakelen navigatielink",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Access token",
