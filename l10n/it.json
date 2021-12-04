@@ -4,6 +4,7 @@
     "Error during OAuth exchanges" : "Errore durante le negoziazioni OAuth",
     "Zammad notifications" : "Notifiche Zammad",
     "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Hai %s ticket aperto in Zammad.","Hai %s ticket aperti in Zammad."],
+    "Bad HTTP method" : "Metodo HTTP non corretto",
     "Bad credentials" : "Credenziali non valide",
     "OAuth access token refused" : "Token di accesso OAuth rifiutato",
     "Connected accounts" : "Account connessi",
