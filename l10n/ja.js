@@ -7,6 +7,7 @@ OC.L10N.register(
     "OAuth access token refused" : "OAuthアクセストークンが拒否されました",
     "Connected accounts" : "接続済みアカウント",
     "Zammad address" : "Zammadアドレス",
+    "Application ID" : "アプリケーション ID",
     "Connect to Zammad" : "Zammadに接続",
     "Connected as {user}" : "{user} を接続済み",
     "No Zammad account connected" : "接続済みZammadアカウントがありません",
