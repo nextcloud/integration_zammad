@@ -17,7 +17,9 @@ OC.L10N.register(
     "Application secret" : "应用密码",
     "Client secret of your application" : "应用程序的客户端密钥",
     "Enable navigation link" : "启用导航链接",
+    "Connect to Zammad" : "连接到Zammad",
     "Connected as {user}" : "作为 {user} 已连接",
+    "Disconnect from Zammad" : "与Zammad端开连接",
     "Incorrect access token" : "访问令牌不正确"
 },
 "nplurals=1; plural=0;");
