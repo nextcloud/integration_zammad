@@ -6,6 +6,7 @@ OC.L10N.register(
     "Error during OAuth exchanges" : "Hiba történt az OAuth cserék során",
     "Zammad notifications" : "Zammad értesítések",
     "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["%s nyitott jegye van Zammadban.","%s nyitott jegye van Zammadban."],
+    "Bad HTTP method" : "Hibás HTTP metódus",
     "Bad credentials" : "Hibás hitelesítő adatok",
     "OAuth access token refused" : "Az OAuth hozzáférési token lekérése visszautasítva",
     "Connected accounts" : "Kapcsolt fiókok",
