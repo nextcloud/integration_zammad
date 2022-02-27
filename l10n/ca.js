@@ -20,7 +20,7 @@ OC.L10N.register(
     "Access token" : "Testimoni d'aplicació",
     "Zammad access token" : "Testimoni d'accés de Zammad",
     "Connect to Zammad" : "Connectar-se a Zammad",
-    "Connected as {user}" : "S'ha connectat com a {usuari}",
+    "Connected as {user}" : "S'ha connectat com a {user}",
     "Disconnect from Zammad" : "Desconnectar-se de Zammad",
     "Incorrect access token" : "Testimoni d'accés incorrecte",
     "Failed to save Zammad options" : "No s'han pogut desar les opcions de Zammad",
