@@ -26,6 +26,8 @@
     "Connect to Zammad" : "连接到Zammad",
     "Connected as {user}" : "作为 {user} 已连接",
     "Disconnect from Zammad" : "与Zammad端开连接",
+    "Enable unified search for tickets" : "启用统一的票证搜索",
+    "Enable notifications for open tickets" : "为打开的票证启用通知",
     "OAuth access token could not be obtained:" : "无法获取 OAuth 访问令牌：",
     "Incorrect access token" : "访问令牌不正确"
 },"pluralForm" :"nplurals=1; plural=0;"
