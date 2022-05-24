@@ -3,7 +3,7 @@
     "Error getting OAuth access token." : "Error al obtener el token de acceso OAuth.",
     "Error during OAuth exchanges" : "Error durante los intercambios OAuth",
     "Zammad notifications" : "Notificaciones de Zammad",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Tienes %s ticket abierto en Zammad.","Tienes %s tickets abiertos en Zammad."],
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Tienes %s ticket abierto en Zammad.","Tienes %s tickets abiertos en Zammad.","Tienes %s tickets abiertos en Zammad."],
     "Bad HTTP method" : "Método HTTP incorrecto",
     "Bad credentials" : "Credenciales incorrectas",
     "OAuth access token refused" : "Token de acceso OAuth rechazado",
@@ -43,5 +43,5 @@
     "Error connecting to Zammad" : "Error al conectar con Zammad",
     "No Zammad notifications!" : "No hay notificaciones de Zammad",
     "Failed to get Zammad notifications" : "Fallo al obtener las notificaciones de Zammad"
-},"pluralForm" :"nplurals=2; plural=(n != 1);"
+},"pluralForm" :"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }
