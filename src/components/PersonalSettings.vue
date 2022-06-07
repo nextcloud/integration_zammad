@@ -267,8 +267,10 @@ export default {
 	background-size: 23px 23px;
 	height: 23px;
 	margin-bottom: -4px;
+	filter: var(--background-invert-if-dark);
 }
 
+// for NC <= 24
 body.theme--dark .icon-zammad {
 	background-image: url(./../../img/app.svg);
 }
