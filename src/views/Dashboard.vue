@@ -22,7 +22,7 @@
 
 <script>
 import axios from '@nextcloud/axios'
-import { generateUrl } from '@nextcloud/router'
+import { generateUrl, imagePath } from '@nextcloud/router'
 import { DashboardWidget } from '@nextcloud/vue-dashboard'
 import { showError } from '@nextcloud/dialogs'
 import '@nextcloud/dialogs/styles/toast.scss'
@@ -217,11 +217,11 @@ export default {
 		},
 		getNotificationTypeImage(n) {
 			if (n.type_lookup_id === 2 || n.type === 'update') {
-				return generateUrl('/svg/integration_zammad/rename?color=ffffff')
+				return imagePath('integration_zammad', 'rename.svg')
 			} else if (n.type_lookup_id === 3 || n.type === 'create') {
-				return generateUrl('/svg/integration_zammad/add?color=ffffff')
+				return imagePath('integration_zammad', 'add.svg')
 			}
-			return generateUrl('/svg/core/actions/sound?color=' + this.themingColor)
+			return imagePath('integration_zammad', 'sound-border.svg')
 		},
 		getSubline(n) {
 			return this.getAuthorFullName(n) + ' #' + n.o_id
