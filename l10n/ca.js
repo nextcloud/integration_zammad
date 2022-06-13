@@ -8,7 +8,7 @@ OC.L10N.register(
     "Bad HTTP method" : "Mètode HTTP incorrecte",
     "Bad credentials" : "Credencials dolentes",
     "OAuth access token refused" : "S'ha rebutjat el testimoni d'accés oAuth",
-    "Connected accounts" : "Comptes connectades",
+    "Connected accounts" : "Comptes connectats",
     "Zammad integration" : "Integració de Zammad",
     "Zammad instance address" : "Adreça de la instància Zammad",
     "Zammad address" : "Adreça de Zammad",
