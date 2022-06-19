@@ -11,6 +11,7 @@
 
 namespace OCA\Zammad\Controller;
 
+use DateTime;
 use OCP\IURLGenerator;
 use OCP\IConfig;
 use OCP\IL10N;
@@ -77,15 +78,16 @@ class ConfigController extends Controller {
 			if ($values['token'] && $values['token'] !== '') {
 				$result = $this->storeUserInfo($values['token']);
 			} else {
-				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', '');
-				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', '');
-				$this->config->setUserValue($this->userId, Application::APP_ID, 'refresh_token', '');
-				$this->config->setUserValue($this->userId, Application::APP_ID, 'last_open_check', '');
-				$this->config->setUserValue($this->userId, Application::APP_ID, 'token_type', '');
+				$this->config->deleteUserValue($this->userId, Application::APP_ID, 'user_id');
+				$this->config->deleteUserValue($this->userId, Application::APP_ID, 'user_name');
+				$this->config->deleteUserValue($this->userId, Application::APP_ID, 'last_open_check');
+				$this->config->deleteUserValue($this->userId, Application::APP_ID, 'token_type');
 				$result = [
 					'user_name' => '',
 				];
 			}
+			$this->config->deleteUserValue($this->userId, Application::APP_ID, 'refresh_token');
+			$this->config->deleteUserValue($this->userId, Application::APP_ID, 'token_expires_at');
 		}
 		if (isset($result['error'])) {
 			return new DataResponse($result, 401);
@@ -140,6 +142,11 @@ class ConfigController extends Controller {
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'token_type', 'oauth');
 				$refreshToken = $result['refresh_token'];
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'refresh_token', $refreshToken);
+				if (isset($result['expires_in'])) {
+					$nowTs = (new Datetime())->getTimestamp();
+					$expiresAt = $nowTs + (int) $result['expires_in'];
+					$this->config->setUserValue($this->userId, Application::APP_ID, 'token_expires_at', $expiresAt);
+				}
 				// get user info
 				$this->storeUserInfo($accessToken);
 				return new RedirectResponse(
@@ -162,17 +169,13 @@ class ConfigController extends Controller {
 	 * @return array
 	 */
 	private function storeUserInfo(string $accessToken): array {
-		$tokenType = $this->config->getUserValue($this->userId, Application::APP_ID, 'token_type');
-		$refreshToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'refresh_token');
-		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
-		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
 		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url');
 
 		if (!$zammadUrl || !preg_match('/^(https?:\/\/)?[^.]+\.[^.].*/', $zammadUrl)) {
 			return ['error' => 'Zammad URL is invalid'];
 		}
 
-		$info = $this->zammadAPIService->request($zammadUrl, $accessToken, $tokenType, $refreshToken, $clientID, $clientSecret, $this->userId, 'users/me');
+		$info = $this->zammadAPIService->request($this->userId, 'users/me');
 		if (isset($info['lastname'], $info['firstname'], $info['id'])) {
 			$fullName = $info['firstname'] . ' ' . $info['lastname'];
 			$this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', $info['id']);

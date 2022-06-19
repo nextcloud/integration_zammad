@@ -105,9 +105,7 @@ class ZammadAPIService {
 				$lastNotificationCheck = $this->config->getUserValue($userId, Application::APP_ID, 'last_open_check');
 				$lastNotificationCheck = $lastNotificationCheck === '' ? null : $lastNotificationCheck;
 				// get the zammad user ID
-				$me = $this->request(
-					$zammadUrl, $accessToken, $tokenType, $refreshToken, $clientID, $clientSecret, $userId, 'users/me'
-				);
+				$me = $this->request($userId, 'users/me');
 				if (isset($me['id'])) {
 					$my_user_id = $me['id'];
 
@@ -159,26 +157,16 @@ class ZammadAPIService {
 	}
 
 	/**
-	 * @param string $url
-	 * @param string $accessToken
-	 * @param string $authType
-	 * @param string $refreshToken
-	 * @param string $clientID
-	 * @param string $clientSecret
 	 * @param string $userId
 	 * @param ?string $since
 	 * @param ?int $limit
 	 * @return array
 	 */
-	public function getNotifications(string $url, string $accessToken, string $authType,
-									string $refreshToken, string $clientID, string $clientSecret, string $userId,
-									?string $since = null, ?int $limit = null): array {
+	public function getNotifications(string $userId, ?string $since = null, ?int $limit = null): array {
 		$params = [
 			'state' => 'pending',
 		];
-		$result = $this->request(
-			$url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, 'online_notifications', $params
-		);
+		$result = $this->request($userId, 'online_notifications', $params);
 		if (isset($result['error'])) {
 			return $result;
 		}
@@ -202,9 +190,7 @@ class ZammadAPIService {
 		$result = array_values($result);
 		// get details
 		foreach ($result as $k => $v) {
-			$details = $this->request(
-				$url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, 'tickets/' . $v['o_id']
-			);
+			$details = $this->request($userId, 'tickets/' . $v['o_id']);
 			if (!isset($details['error'])) {
 				$result[$k]['title'] = $details['title'];
 				$result[$k]['note'] = $details['note'];
@@ -222,9 +208,7 @@ class ZammadAPIService {
 		}
 		$userDetails = [];
 		foreach ($userIds as $uid) {
-			$user = $this->request(
-				$url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, 'users/' . $uid
-			);
+			$user = $this->request($userId, 'users/' . $uid);
 			$userDetails[$uid] = [
 				'firstname' => $user['firstname'],
 				'lastname' => $user['lastname'],
@@ -244,26 +228,16 @@ class ZammadAPIService {
 	}
 
 	/**
-	 * @param string $url
-	 * @param string $accessToken
-	 * @param string $authType
-	 * @param string $refreshToken
-	 * @param string $clientID
-	 * @param string $clientSecret
 	 * @param string $userId
 	 * @param string $query
 	 * @return array
 	 */
-	public function search(string $url, string $accessToken, string $authType,
-							string $refreshToken, string $clientID, string $clientSecret, string $userId,
-							string $query): array {
+	public function search(string $userId, string $query): array {
 		$params = [
 			'query' => $query,
 			'limit' => 20,
 		];
-		$searchResult = $this->request(
-			$url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, 'tickets/search', $params
-		);
+		$searchResult = $this->request($userId, 'tickets/search', $params);
 
 		$result = [];
 		if (isset($searchResult['assets']) && isset($searchResult['assets']['Ticket'])) {
@@ -272,9 +246,7 @@ class ZammadAPIService {
 			}
 		}
 		// get ticket state names
-		$states = $this->request(
-			$url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, 'ticket_states'
-		);
+		$states = $this->request($userId, 'ticket_states');
 		$statesById = [];
 		if (!isset($states['error'])) {
 			foreach ($states as $state) {
@@ -291,9 +263,7 @@ class ZammadAPIService {
 			}
 		}
 		// get ticket priority names
-		$prios = $this->request(
-			$url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, 'ticket_priorities'
-		);
+		$prios = $this->request($userId, 'ticket_priorities');
 		$priosById = [];
 		if (!isset($prios['error'])) {
 			foreach ($prios as $prio) {
@@ -314,14 +284,12 @@ class ZammadAPIService {
 		$field = 'customer_id';
 		foreach ($result as $k => $v) {
 			if (!in_array($v[$field], $userIds)) {
-				array_push($userIds, $v[$field]);
+				$userIds[] = $v[$field];
 			}
 		}
 		$userDetails = [];
 		foreach ($userIds as $uid) {
-			$user = $this->request(
-				$url, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, 'users/' . $uid
-			);
+			$user = $this->request($userId, 'users/' . $uid);
 			if (!isset($user['error'])) {
 				$userDetails[$uid] = [
 					'firstname' => $user['firstname'],
@@ -383,9 +351,11 @@ class ZammadAPIService {
 	 * @return array
 	 * @throws \OCP\PreConditionNotMetException
 	 */
-	public function request(string $zammadUrl, string $accessToken, string $authType, string $refreshToken,
-							string $clientID, string $clientSecret, string $userId,
-							string $endPoint, array $params = [], string $method = 'GET'): array {
+	public function request(string $userId, string $endPoint, array $params = [], string $method = 'GET'): array {
+		$zammadUrl = $this->config->getUserValue($userId, Application::APP_ID, 'url');
+		$this->checkTokenExpiration($userId, $zammadUrl);
+		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token');
+		$authType = $this->config->getUserValue($userId, Application::APP_ID, 'token_type');
 		try {
 			$url = $zammadUrl . '/api/v1/' . $endPoint;
 			$authHeader = ($authType === 'access') ? 'Token token=' : 'Bearer ';
@@ -435,32 +405,62 @@ class ZammadAPIService {
 				return json_decode($body, true);
 			}
 		} catch (ServerException | ClientException $e) {
-			$response = $e->getResponse();
-//			$body = (string) $response->getBody();
-			// refresh token if it's invalid and we are using oauth
-			// response can be : 'OAuth2 token is expired!', 'Invalid token!' or 'Not authorized'
-			if ($response->getStatusCode() === 401 && $authType === 'oauth') {
-				$this->logger->info('Trying to REFRESH the access token', ['app' => $this->appName]);
-				// try to refresh the token
-				$result = $this->requestOAuthAccessToken($zammadUrl, [
-					'client_id' => $clientID,
-					'client_secret' => $clientSecret,
-					'grant_type' => 'refresh_token',
-					'refresh_token' => $refreshToken,
-				], 'POST');
-				if (isset($result['access_token'])) {
-					$accessToken = $result['access_token'];
-					$this->config->setUserValue($userId, Application::APP_ID, 'token', $accessToken);
-					// retry the request with new access token
-					return $this->request(
-						$zammadUrl, $accessToken, $authType, $refreshToken, $clientID, $clientSecret, $userId, $endPoint, $params, $method
-					);
-				}
-			}
 			$this->logger->warning('Zammad API error : '.$e->getMessage(), ['app' => $this->appName]);
 			return ['error' => $e->getMessage()];
 		} catch (ConnectException $e) {
 			return ['error' => $e->getMessage()];
+		}
+	}
+
+	private function checkTokenExpiration(string $userId, string $url): void {
+		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
+		$expireAt = $this->config->getUserValue($userId, Application::APP_ID, 'token_expires_at');
+		if ($refreshToken !== '' && $expireAt !== '') {
+			$nowTs = (new Datetime())->getTimestamp();
+			$expireAt = (int) $expireAt;
+			// if token expires in less than a minute or is already expired
+			if ($nowTs > $expireAt - 60) {
+				$this->refreshToken($userId, $url);
+			}
+		}
+	}
+
+	private function refreshToken(string $userId, string $url): bool {
+		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
+		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
+		$redirect_uri = $this->config->getUserValue($userId, Application::APP_ID, 'redirect_uri');
+		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
+		if (!$refreshToken) {
+			$this->logger->error('No GitLab refresh token found', ['app' => $this->appName]);
+			return false;
+		}
+		$result = $this->requestOAuthAccessToken($url, [
+			'client_id' => $clientID,
+			'client_secret' => $clientSecret,
+			'grant_type' => 'refresh_token',
+			'refresh_token' => $refreshToken,
+		], 'POST');
+		if (isset($result['access_token'])) {
+			$accessToken = $result['access_token'];
+			$this->config->setUserValue($userId, Application::APP_ID, 'token', $accessToken);
+			// TODO check if we need to store the refresh token here
+//			$refreshToken = $result['refresh_token'];
+//			$this->config->setUserValue($userId, Application::APP_ID, 'refresh_token', $refreshToken);
+			if (isset($result['expires_in'])) {
+				$nowTs = (new Datetime())->getTimestamp();
+				$expiresAt = $nowTs + (int) $result['expires_in'];
+				$this->config->setUserValue($userId, Application::APP_ID, 'token_expires_at', $expiresAt);
+			}
+			return true;
+		} else {
+			// impossible to refresh the token
+			$this->logger->error(
+				'Token is not valid anymore. Impossible to refresh it. '
+					. $result['error'] . ' '
+					. $result['error_description'] ?? '[no error description]',
+				['app' => $this->appName]
+			);
+			return false;
 		}
 	}
 

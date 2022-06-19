@@ -110,9 +110,7 @@ class ZammadAPIController extends Controller {
 		if ($this->accessToken === '' || !preg_match('/^(https?:\/\/)?[^.]+\.[^.].*/', $this->zammadUrl)) {
 			return new DataResponse('', 400);
 		}
-		$result = $this->zammadAPIService->getNotifications(
-			$this->zammadUrl, $this->accessToken, $this->tokenType, $this->refreshToken, $this->clientID, $this->clientSecret, $this->userId, $since, 7
-		);
+		$result = $this->zammadAPIService->getNotifications($this->userId, $since, 7);
 		if (!isset($result['error'])) {
 			$response = new DataResponse($result);
 		} else {
