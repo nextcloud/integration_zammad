@@ -10,8 +10,13 @@
 				<template #desc>
 					{{ emptyContentMessage }}
 					<div v-if="state === 'no-token' || state === 'error'" class="connect-button">
-						<a class="button" :href="settingsUrl">
-							{{ t('integration_zammad', 'Connect to Zammad') }}
+						<a :href="settingsUrl">
+							<Button>
+								<template #icon>
+									<LoginVariantIcon />
+								</template>
+								{{ t('integration_zammad', 'Connect to Zammad') }}
+							</Button>
 						</a>
 					</div>
 				</template>
@@ -28,12 +33,17 @@ import { showError } from '@nextcloud/dialogs'
 import '@nextcloud/dialogs/styles/toast.scss'
 import moment from '@nextcloud/moment'
 import EmptyContent from '@nextcloud/vue/dist/Components/EmptyContent'
+import LoginVariantIcon from 'vue-material-design-icons/LoginVariant'
+import Button from '@nextcloud/vue/dist/Components/Button'
 
 export default {
 	name: 'Dashboard',
 
 	components: {
-		DashboardWidget, EmptyContent,
+		DashboardWidget,
+		EmptyContent,
+		Button,
+		LoginVariantIcon,
 	},
 
 	props: {
