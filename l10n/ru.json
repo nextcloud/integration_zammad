@@ -1,14 +1,22 @@
 { "translations": {
+    "Zammad" : "Zammad",
     "Error getting OAuth access token." : "Ошибка получения токена доступа OAuth.",
     "Error during OAuth exchanges" : "Ошибка во время обмена данными OAuth",
+    "Zammad notifications" : "Уведомления Zammad",
     "Bad HTTP method" : "Неверный метод HTTP",
     "Bad credentials" : "Неверные учётные данные",
     "OAuth access token refused" : "Токен доступа OAuth отклонён",
     "Connected accounts" : "Подключённые учётные записи",
+    "Zammad integration" : "Интеграция с Zammad",
     "Application ID" : "Идентификатор приложения",
+    "ID of your application" : "Идентификатор вашего приложения",
     "Application secret" : "Секрет приложения",
+    "Client secret of your application" : "Пароль вашего приложения",
     "Enable navigation link" : "Включить ссылку для навигации",
+    "https://my.zammad.org" : "https://my.zammad.org",
+    "Connect to Zammad" : "Подключиться к Zammad",
     "Connected as {user}" : "Подключено под именем {user}",
+    "Disconnect from Zammad" : "Отключиться от Zammad",
     "OAuth access token could not be obtained:" : "Токен доступа OAuth не может быть получен:",
     "Incorrect access token" : "Неверный токен доступа"
 },"pluralForm" :"nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
