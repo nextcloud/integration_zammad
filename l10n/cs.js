@@ -12,7 +12,7 @@ OC.L10N.register(
     "Connected accounts" : "Propojené účty",
     "Zammad integration" : "Napojení na Zammad",
     "Integration of Zammad user support/ticketing solution" : "Napojení na řešení podpory uživatelů / správy hlášení problémů Zammad",
-    "Zammad integration provides a dashboard widget displaying your important notifications,\n\ta search provider for tickets and notifications for new open tickets." : "Napojení na Zammad poskytuje ovládací prvek pro přehled zobrazující důležitá upozornění pro vás,\n\ta sjednoceného poskytovatele vyhledávání požadavcích a upozorňování na nové otevřené požadavky.",
+    "Zammad integration provides a dashboard widget displaying your important notifications,\n\ta search provider for tickets and notifications for new open tickets." : "Napojení na Zammad poskytuje ovládací prvek pro nástěnku, zobrazující důležitá upozornění pro vás,\n\ta poskytovatele do sjednoceného vyhledávání pro hledání v požadavcích a upozorňování na nové otevřené požadavky.",
     "If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below." : "Pokud chcete svým Nextcloud uživatelům umožnit použití ověření pomocí vámi zvolené instanci Zammad, vytvořte v nastavení Zammad aplikaci a níže vložte identifikátor aplikace (AppId) a tajemství pro ni.",
     "Make sure you set the \"Callback URL\" to" : "Ověřte, že jste nastavili „URL adresu zpětného volání“ na",
     "Zammad instance address" : "Adresa instance Zammad",
