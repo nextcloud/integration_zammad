@@ -30,7 +30,7 @@ OC.L10N.register(
     "Access token" : "Hozzáférési token",
     "Zammad access token" : "Zammad hozzáférési token",
     "Connect to Zammad" : "Kapcsolódás a Zammadhoz",
-    "Connected as {user}" : "Kapcsolódva {user} felhasználóként",
+    "Connected as {user}" : "Kapcsolódva mint {user}",
     "Disconnect from Zammad" : "Kapcsolat bontása a Zammaddal",
     "Enable unified search for tickets" : "Engedélyezze a jegyek egységes keresését",
     "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Figyelem, minden amit a keresősávba ír, el lesz küldve a Zammad példányához.",
@@ -43,7 +43,7 @@ OC.L10N.register(
     "Failed to save Zammad OAuth state" : "Nem sikerült menteni a Zammad OAuth állapotot",
     "No Zammad account connected" : "Nincs Zammad-fiók csatlakoztatva",
     "Error connecting to Zammad" : "Hiba történt a Zammadhoz való csatlakozáskor",
-    "No Zammad notifications!" : "Nincsenek Zammad-értesítések!",
+    "No Zammad notifications!" : "Nincsenek Zammad-értesítések.",
     "Failed to get Zammad notifications" : "A Zammad-értesítések lekérése sikertelen"
 },
 "nplurals=2; plural=(n != 1);");
