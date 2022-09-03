@@ -1,5 +1,3 @@
-/* jshint esversion: 6 */
-
 /**
  * Nextcloud - zammad
  *
@@ -12,14 +10,8 @@
  */
 
 import Vue from 'vue'
-import './bootstrap'
-import PersonalSettings from './components/PersonalSettings'
+import './bootstrap.js'
+import PersonalSettings from './components/PersonalSettings.vue'
 
-// eslint-disable-next-line
-'use strict'
-
-// eslint-disable-next-line
-new Vue({
-	el: '#zammad_prefs',
-	render: h => h(PersonalSettings),
-})
+const View = Vue.extend(PersonalSettings)
+new View().$mount('#zammad_prefs')

@@ -1,28 +1,24 @@
 <template>
 	<div id="zammad_prefs" class="section">
 		<h2>
-			<a class="icon icon-zammad" />
+			<ZammadIcon class="icon" />
 			{{ t('integration_zammad', 'Zammad integration') }}
 		</h2>
 		<p v-if="!showOAuth && !connected" class="settings-hint">
 			{{ t('integration_zammad', 'To create an access token yourself, go to the "Token Access" section of your Zammad profile page.') }}
-			<br>
+		</p>
+		<p v-if="!showOAuth && !connected" class="settings-hint">
 			{{ t('integration_zammad', 'Create a "Personal Access Token" and give it "TICKET -> AGENT", "ADMIN -> OBJECT" and "USER_PREFERENCES -> NOTIFICATIONS" permissions.') }}
 		</p>
 		<div id="zammad-content">
-			<div id="toggle-zammad-navigation-link">
-				<input
-					id="zammad-link"
-					type="checkbox"
-					class="checkbox"
-					:checked="state.navigation_enabled"
-					@input="onNavigationChange">
-				<label for="zammad-link">{{ t('integration_zammad', 'Enable navigation link') }}</label>
-			</div>
-			<br><br>
-			<div class="zammad-grid-form">
+			<CheckboxRadioSwitch
+				:checked="state.navigation_enabled"
+				@update:checked="onCheckboxChanged($event, 'navigation_enabled')">
+				{{ t('integration_zammad', 'Enable navigation link') }}
+			</CheckboxRadioSwitch>
+			<div class="line">
 				<label for="zammad-url">
-					<a class="icon icon-link" />
+					<EarthIcon :size="20" class="icon" />
 					{{ t('integration_zammad', 'Zammad instance address') }}
 				</label>
 				<input id="zammad-url"
@@ -31,74 +27,95 @@
 					:disabled="connected === true"
 					:placeholder="t('integration_zammad', 'https://my.zammad.org')"
 					@input="onInput">
-				<label v-show="!showOAuth"
-					for="zammad-token">
-					<a class="icon icon-category-auth" />
+			</div>
+			<div v-show="!showOAuth" class="line">
+				<label for="zammad-token">
+					<KeyIcon :size="20" class="icon" />
 					{{ t('integration_zammad', 'Access token') }}
 				</label>
-				<input v-show="!showOAuth"
-					id="zammad-token"
+				<input id="zammad-token"
 					v-model="state.token"
 					type="password"
 					:disabled="connected === true"
 					:placeholder="t('integration_zammad', 'Zammad access token')"
 					@input="onInput">
 			</div>
-			<button v-if="showOAuth && !connected"
+			<NcButton v-if="showOAuth && !connected"
 				id="zammad-oauth"
 				:disabled="loading === true"
 				:class="{ loading }"
 				@click="onOAuthClick">
-				<span class="icon icon-external" />
+				<template #icon>
+					<LoginVariantIcon :size="20" />
+				</template>
 				{{ t('integration_zammad', 'Connect to Zammad') }}
-			</button>
-			<div v-if="connected" class="zammad-grid-form">
+			</NcButton>
+			<div v-if="connected" class="line">
 				<label class="zammad-connected">
-					<a class="icon icon-checkmark-color" />
+					<CheckIcon :size="20" class="icon" />
 					{{ t('integration_zammad', 'Connected as {user}', { user: state.user_name }) }}
 				</label>
-				<button id="zammad-rm-cred" @click="onLogoutClick">
-					<span class="icon icon-close" />
+				<NcButton id="zammad-rm-cred"
+					@click="onLogoutClick">
+					<template #icon>
+						<CloseIcon :size="20" />
+					</template>
 					{{ t('integration_zammad', 'Disconnect from Zammad') }}
-				</button>
+				</NcButton>
 			</div>
 			<div v-if="connected" id="zammad-search-block">
-				<input
-					id="search-zammad"
-					type="checkbox"
-					class="checkbox"
-					:checked="state.search_enabled"
-					@input="onSearchChange">
-				<label for="search-zammad">{{ t('integration_zammad', 'Enable unified search for tickets') }}</label>
-				<br><br>
+				<br>
 				<p v-if="state.search_enabled" class="settings-hint">
-					<span class="icon icon-details" />
+					<InformationOutlineIcon :size="20" class="icon" />
 					{{ t('integration_zammad', 'Warning, everything you type in the search bar will be sent to your Zammad instance.') }}
 				</p>
-				<input
-					id="notification-zammad"
-					type="checkbox"
-					class="checkbox"
+				<CheckboxRadioSwitch
+					:checked="state.search_enabled"
+					@update:checked="onCheckboxChanged($event, 'search_enabled')">
+					{{ t('integration_zammad', 'Enable unified search for tickets') }}
+				</CheckboxRadioSwitch>
+				<CheckboxRadioSwitch
 					:checked="state.notification_enabled"
-					@input="onNotificationChange">
-				<label for="notification-zammad">{{ t('integration_zammad', 'Enable notifications for open tickets') }}</label>
+					@update:checked="onCheckboxChanged($event, 'notification_enabled')">
+					{{ t('integration_zammad', 'Enable notifications for open tickets') }}
+				</CheckboxRadioSwitch>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+import LoginVariantIcon from 'vue-material-design-icons/LoginVariant.vue'
+import EarthIcon from 'vue-material-design-icons/Earth.vue'
+import KeyIcon from 'vue-material-design-icons/Key.vue'
+import CloseIcon from 'vue-material-design-icons/Close.vue'
+import CheckIcon from 'vue-material-design-icons/Check.vue'
+import InformationOutlineIcon from 'vue-material-design-icons/InformationOutline.vue'
+
+import ZammadIcon from './icons/ZammadIcon.vue'
+
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
-import { delay } from '../utils'
+import { delay } from '../utils.js'
 import { showSuccess, showError } from '@nextcloud/dialogs'
-import '@nextcloud/dialogs/styles/toast.scss'
+
+import NcButton from '@nextcloud/vue/dist/Components/Button.js'
+import CheckboxRadioSwitch from '@nextcloud/vue/dist/Components/CheckboxRadioSwitch.js'
 
 export default {
 	name: 'PersonalSettings',
 
 	components: {
+		CheckboxRadioSwitch,
+		NcButton,
+		ZammadIcon,
+		EarthIcon,
+		KeyIcon,
+		LoginVariantIcon,
+		CloseIcon,
+		CheckIcon,
+		InformationOutlineIcon,
 	},
 
 	props: [],
@@ -142,17 +159,9 @@ export default {
 			this.state.token = ''
 			this.saveOptions({ token: this.state.token, token_type: '' })
 		},
-		onNotificationChange(e) {
-			this.state.notification_enabled = e.target.checked
-			this.saveOptions({ notification_enabled: this.state.notification_enabled ? '1' : '0' })
-		},
-		onSearchChange(e) {
-			this.state.search_enabled = e.target.checked
-			this.saveOptions({ search_enabled: this.state.search_enabled ? '1' : '0' })
-		},
-		onNavigationChange(e) {
-			this.state.navigation_enabled = e.target.checked
-			this.saveOptions({ navigation_enabled: this.state.navigation_enabled ? '1' : '0' })
+		onCheckboxChanged(newValue, key) {
+			this.state[key] = newValue
+			this.saveOptions({ [key]: this.state[key] ? '1' : '0' })
 		},
 		onInput() {
 			this.loading = true
@@ -232,55 +241,33 @@ export default {
 </script>
 
 <style scoped lang="scss">
-#zammad-search-block {
-	margin-top: 30px;
-}
+#zammad_prefs {
+	#zammad-content {
+		margin-left: 40px;
+	}
+	h2,
+	.line,
+	.settings-hint {
+		display: flex;
+		align-items: center;
+		.icon {
+			margin-right: 4px;
+		}
+	}
 
-.zammad-grid-form label {
-	line-height: 38px;
-}
+	h2 .icon {
+		margin-right: 8px;
+	}
 
-.zammad-grid-form input {
-	width: 100%;
-}
-
-.zammad-grid-form {
-	max-width: 600px;
-	display: grid;
-	grid-template: 1fr / 1fr 1fr;
-	button .icon {
-		margin-bottom: -1px;
+	.line {
+		> label {
+			width: 300px;
+			display: flex;
+			align-items: center;
+		}
+		> input {
+			width: 250px;
+		}
 	}
 }
-
-#zammad_prefs .icon {
-	display: inline-block;
-	width: 32px;
-}
-
-#zammad_prefs .grid-form .icon {
-	margin-bottom: -3px;
-}
-
-.icon-zammad {
-	background-image: url(./../../img/app-dark.svg);
-	background-size: 23px 23px;
-	height: 23px;
-	margin-bottom: -4px;
-	filter: var(--background-invert-if-dark);
-}
-
-// for NC <= 24
-body.theme--dark .icon-zammad {
-	background-image: url(./../../img/app.svg);
-}
-
-#zammad-content {
-	margin-left: 40px;
-}
-
-#zammad-search-block .icon {
-	width: 22px;
-}
-
 </style>

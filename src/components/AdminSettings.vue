@@ -1,64 +1,80 @@
 <template>
 	<div id="zammad_prefs" class="section">
 		<h2>
-			<a class="icon icon-zammad" />
+			<ZammadIcon class="icon" />
 			{{ t('integration_zammad', 'Zammad integration') }}
 		</h2>
 		<p class="settings-hint">
 			{{ t('integration_zammad', 'If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below.') }}
-			<br><br>
-			<span class="icon icon-details" />
-			{{ t('integration_zammad', 'Make sure you set the "Callback URL" to') }}
-			<b> {{ redirect_uri }} </b>
 		</p>
-		<div class="grid-form">
-			<label for="zammad-oauth-instance">
-				<a class="icon icon-link" />
-				{{ t('integration_zammad', 'Zammad instance address') }}
-			</label>
-			<input id="zammad-oauth-instance"
-				v-model="state.oauth_instance_url"
-				type="text"
-				:placeholder="t('integration_zammad', 'Zammad address')"
-				@input="onInput">
-			<label for="zammad-client-id">
-				<a class="icon icon-category-auth" />
-				{{ t('integration_zammad', 'Application ID') }}
-			</label>
-			<input id="zammad-client-id"
-				v-model="state.client_id"
-				type="password"
-				:readonly="readonly"
-				:placeholder="t('integration_zammad', 'ID of your application')"
-				@focus="readonly = false"
-				@input="onInput">
-			<label for="zammad-client-secret">
-				<a class="icon icon-category-auth" />
-				{{ t('integration_zammad', 'Application secret') }}
-			</label>
-			<input id="zammad-client-secret"
-				v-model="state.client_secret"
-				type="password"
-				:readonly="readonly"
-				:placeholder="t('integration_zammad', 'Client secret of your application')"
-				@focus="readonly = false"
-				@input="onInput">
+		<p class="settings-hint">
+			<InformationOutlineIcon :size="20" class="icon" />
+			{{ t('integration_zammad', 'Make sure you set the "Callback URL" to') }}
+		</p>
+		<strong>{{ redirect_uri }}</strong>
+		<br><br>
+		<div id="zammad-content">
+			<div class="line">
+				<label for="zammad-oauth-instance">
+					<EarthIcon :size="20" class="icon" />
+					{{ t('integration_zammad', 'Zammad instance address') }}
+				</label>
+				<input id="zammad-oauth-instance"
+					v-model="state.oauth_instance_url"
+					type="text"
+					:placeholder="t('integration_zammad', 'Zammad address')"
+					@input="onInput">
+			</div>
+			<div class="line">
+				<label for="zammad-client-id">
+					<KeyIcon :size="20" class="icon" />
+					{{ t('integration_zammad', 'Application ID') }}
+				</label>
+				<input id="zammad-client-id"
+					v-model="state.client_id"
+					type="password"
+					:readonly="readonly"
+					:placeholder="t('integration_zammad', 'ID of your application')"
+					@focus="readonly = false"
+					@input="onInput">
+			</div>
+			<div class="line">
+				<label for="zammad-client-secret">
+					<KeyIcon :size="20" class="icon" />
+					{{ t('integration_zammad', 'Application secret') }}
+				</label>
+				<input id="zammad-client-secret"
+					v-model="state.client_secret"
+					type="password"
+					:readonly="readonly"
+					:placeholder="t('integration_zammad', 'Client secret of your application')"
+					@focus="readonly = false"
+					@input="onInput">
+			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+import InformationOutlineIcon from 'vue-material-design-icons/InformationOutline.vue'
+import KeyIcon from 'vue-material-design-icons/Key.vue'
+import EarthIcon from 'vue-material-design-icons/Earth.vue'
+
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
-import { delay } from '../utils'
+import { delay } from '../utils.js'
 import { showSuccess, showError } from '@nextcloud/dialogs'
-import '@nextcloud/dialogs/styles/toast.scss'
+import ZammadIcon from './icons/ZammadIcon.vue'
 
 export default {
 	name: 'AdminSettings',
 
 	components: {
+		ZammadIcon,
+		InformationOutlineIcon,
+		KeyIcon,
+		EarthIcon,
 	},
 
 	props: [],
@@ -112,41 +128,34 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.grid-form label {
-	line-height: 38px;
-}
+#zammad_prefs {
+	#zammad-content{
+		margin-left: 40px;
+	}
 
-.grid-form input {
-	width: 100%;
-}
+	h2,
+	.line,
+	.settings-hint {
+		display: flex;
+		align-items: center;
+		.icon {
+			margin-right: 4px;
+		}
+	}
 
-.grid-form {
-	max-width: 500px;
-	display: grid;
-	grid-template: 1fr / 1fr 1fr;
-	margin-left: 30px;
-}
+	h2 .icon {
+		margin-right: 8px;
+	}
 
-#zammad_prefs .icon {
-	display: inline-block;
-	width: 32px;
+	.line {
+		> label {
+			width: 300px;
+			display: flex;
+			align-items: center;
+		}
+		> input {
+			width: 300px;
+		}
+	}
 }
-
-#zammad_prefs .grid-form .icon {
-	margin-bottom: -3px;
-}
-
-.icon-zammad {
-	background-image: url(./../../img/app-dark.svg);
-	background-size: 23px 23px;
-	height: 23px;
-	margin-bottom: -4px;
-	filter: var(--background-invert-if-dark);
-}
-
-// for NC <= 24
-body.theme--dark .icon-zammad {
-	background-image: url(./../../img/app.svg);
-}
-
 </style>

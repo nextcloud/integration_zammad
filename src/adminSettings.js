@@ -1,5 +1,3 @@
-/* jshint esversion: 6 */
-
 /**
  * Nextcloud - zammad
  *
@@ -12,14 +10,8 @@
  */
 
 import Vue from 'vue'
-import './bootstrap'
-import AdminSettings from './components/AdminSettings'
+import './bootstrap.js'
+import AdminSettings from './components/AdminSettings.vue'
 
-// eslint-disable-next-line
-'use strict'
-
-// eslint-disable-next-line
-new Vue({
-	el: '#zammad_prefs',
-	render: h => h(AdminSettings),
-})
+const View = Vue.extend(AdminSettings)
+new View().$mount('#zammad_prefs')

@@ -5,18 +5,20 @@
 		:loading="state === 'loading'">
 		<template #empty-content>
 			<EmptyContent
-				v-if="emptyContentMessage"
-				:icon="emptyContentIcon">
+				v-if="emptyContentMessage">
+				<template #icon>
+					<component :is="emptyContentIcon" />
+				</template>
 				<template #desc>
 					{{ emptyContentMessage }}
 					<div v-if="state === 'no-token' || state === 'error'" class="connect-button">
 						<a :href="settingsUrl">
-							<Button>
+							<NcButton>
 								<template #icon>
 									<LoginVariantIcon />
 								</template>
 								{{ t('integration_zammad', 'Connect to Zammad') }}
-							</Button>
+							</NcButton>
 						</a>
 					</div>
 				</template>
@@ -26,15 +28,19 @@
 </template>
 
 <script>
+import CloseIcon from 'vue-material-design-icons/Close.vue'
+import CheckIcon from 'vue-material-design-icons/Check.vue'
+import LoginVariantIcon from 'vue-material-design-icons/LoginVariant.vue'
+
+import ZammadIcon from '../components/icons/ZammadIcon.vue'
+
 import axios from '@nextcloud/axios'
 import { generateUrl, imagePath } from '@nextcloud/router'
 import { DashboardWidget } from '@nextcloud/vue-dashboard'
 import { showError } from '@nextcloud/dialogs'
-import '@nextcloud/dialogs/styles/toast.scss'
 import moment from '@nextcloud/moment'
-import EmptyContent from '@nextcloud/vue/dist/Components/EmptyContent'
-import LoginVariantIcon from 'vue-material-design-icons/LoginVariant'
-import Button from '@nextcloud/vue/dist/Components/Button'
+import EmptyContent from '@nextcloud/vue/dist/Components/EmptyContent.js'
+import NcButton from '@nextcloud/vue/dist/Components/Button.js'
 
 export default {
 	name: 'Dashboard',
@@ -42,8 +48,10 @@ export default {
 	components: {
 		DashboardWidget,
 		EmptyContent,
-		Button,
+		NcButton,
 		LoginVariantIcon,
+		CheckIcon,
+		CloseIcon,
 	},
 
 	props: {
@@ -102,13 +110,13 @@ export default {
 		},
 		emptyContentIcon() {
 			if (this.state === 'no-token') {
-				return 'icon-zammad'
+				return ZammadIcon
 			} else if (this.state === 'error') {
-				return 'icon-close'
+				return CloseIcon
 			} else if (this.state === 'ok') {
-				return 'icon-checkmark'
+				return CheckIcon
 			}
-			return 'icon-checkmark'
+			return CheckIcon
 		},
 	},
 

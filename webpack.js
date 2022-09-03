@@ -12,10 +12,11 @@ webpackConfig.stats = {
 	modules: false,
 }
 
+const appId = 'integration_zammad'
 webpackConfig.entry = {
-	personalSettings: { import: path.join(__dirname, 'src', 'personalSettings.js'), filename: 'integration_zammad-personalSettings.js' },
-	adminSettings: { import: path.join(__dirname, 'src', 'adminSettings.js'), filename: 'integration_zammad-adminSettings.js' },
-	dashboard: { import: path.join(__dirname, 'src', 'dashboard.js'), filename: 'integration_zammad-dashboard.js' },
+	personalSettings: { import: path.join(__dirname, 'src', 'personalSettings.js'), filename: appId + '-personalSettings.js' },
+	adminSettings: { import: path.join(__dirname, 'src', 'adminSettings.js'), filename: appId + '-adminSettings.js' },
+	dashboard: { import: path.join(__dirname, 'src', 'dashboard.js'), filename: appId + '-dashboard.js' },
 }
 
 webpackConfig.plugins.push(
