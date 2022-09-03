@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 1.0.4 – 2022-09-03
+### Changed
+- use node 16
+- use material icons, adjust to new eslint config
+- improve settings style
+- make it ready for NC 25, remove svg api etc...
+
 ## 1.0.2 – 2021-06-28
 ### Changed
 - bump js libs
