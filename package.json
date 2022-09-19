@@ -46,8 +46,8 @@
 		"@nextcloud/vue": "^v7.0.0-beta.4",
 		"@nextcloud/vue-dashboard": "^2.0.1",
 		"@nextcloud/vue-richtext": "^2.0.1",
-		"html-to-text": "^8.2.1",
 		"vue": "^2.6.14",
+		"vue-html-secure": "^1.0.10",
 		"vue-material-design-icons": "^5.1.2"
 	},
 	"devDependencies": {

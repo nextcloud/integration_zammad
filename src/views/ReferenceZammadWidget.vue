@@ -69,7 +69,7 @@
 						{{ t('integration_zammad', 'by {creator}', { creator: authorName }) }}
 					</a>
 					<a
-						v-tooltip.top="{ html: true, content: authorOrgTooltip }"
+						v-tooltip.top="{ html: true, content: $safeHTML(authorOrgTooltip) }"
 						:href="authorOrgUrl"
 						target="_blank"
 						class="author-link">
@@ -154,11 +154,15 @@
 						</span>
 						<div class="spacer" />
 					</div>
-					<div
+					<div v-show="shortComment"
 						v-tooltip.top="{ html: true, content: richObject.zammad_comment.body }"
-						class="comment--author--bubble--content">
-						{{ commentTextBody }}
-					</div>
+						v-html-remove="richObject.zammad_comment.body"
+						class="comment--author--bubble--short-content"
+						@click="shortComment = false" />
+					<div v-show="!shortComment"
+						v-html-safe="richObject.zammad_comment.body"
+						class="comment--author--bubble--full-content"
+						@click="shortComment = true" />
 				</span>
 			</div>
 		</div>
@@ -176,8 +180,11 @@ import moment from '@nextcloud/moment'
 
 import NcAvatar from '@nextcloud/vue/dist/Components/NcAvatar.js'
 import Tooltip from '@nextcloud/vue/dist/Directives/Tooltip.js'
-import { convert } from 'html-to-text'
+import VueSecureHTML from 'vue-html-secure'
 import Vue from 'vue'
+
+Vue.use(VueSecureHTML)
+Vue.prototype.$safeHTML = VueSecureHTML.safeHTML
 Vue.directive('tooltip', Tooltip)
 
 export default {
@@ -208,6 +215,7 @@ export default {
 	data() {
 		return {
 			settingsUrl: generateUrl('/settings/user/connected-accounts#zammad_prefs'),
+			shortComment: true,
 		}
 	},
 
@@ -289,9 +297,6 @@ export default {
 		},
 		commentAuthorUrl() {
 			return this.richObject.zammad_url + '/#user/profile/' + this.richObject.zammad_comment.created_by_id
-		},
-		commentTextBody() {
-			return convert(this.richObject.zammad_comment.body)
 		},
 		commentAuthorName() {
 			return this.richObject.zammad_comment_author.firstname + ' ' + this.richObject.zammad_comment_author.lastname
@@ -379,10 +384,6 @@ export default {
 			.icon {
 				margin-right: 4px;
 			}
-			.milestone {
-				display: flex;
-				align-items: center;
-			}
 		}
 
 		.closed-at,
@@ -425,8 +426,12 @@ export default {
 		align-items: start;
 		&--author {
 			display: flex;
-			align-items: center;
+			align-items: start;
 			width: 100%;
+
+			&--avatar {
+				margin-top: 4px;
+			}
 
 			&--bubble {
 				// TODO improve this
@@ -444,7 +449,11 @@ export default {
 						color: var(--color-main-text);
 					}
 				}
-				&--content {
+				&--short-content,
+				&--full-content {
+					cursor: pointer;
+				}
+				&--short-content {
 					text-overflow: ellipsis;
 					overflow: hidden;
 					white-space: nowrap;
@@ -453,6 +462,7 @@ export default {
 			&--bubble-tip {
 				margin-left: 15px;
 				position: relative;
+				top: 20px;
 				&:before {
 					content: '';
 					width: 0px;
@@ -496,14 +506,12 @@ export default {
 		font-size: 12px;
 	}
 
-	.milestone,
 	::v-deep .author-link,
 	.slug-link {
 		color: inherit;
 	}
 
 	.date-with-tooltip,
-	.milestone,
 	::v-deep .author-link,
 	.author-link:hover .comment-author-display-name,
 	.slug-link,
@@ -511,10 +519,6 @@ export default {
 		&:hover {
 			color: #58a6ff;
 		}
-	}
-
-	.item-reactions {
-		margin: 8px 0 0 40px;
 	}
 
 	.settings-link {
