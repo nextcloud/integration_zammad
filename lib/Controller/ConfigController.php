@@ -12,6 +12,7 @@
 namespace OCA\Zammad\Controller;
 
 use DateTime;
+use OCA\Zammad\Reference\ZammadReferenceProvider;
 use OCP\IURLGenerator;
 use OCP\IConfig;
 use OCP\IL10N;
@@ -24,27 +25,12 @@ use OCA\Zammad\Service\ZammadAPIService;
 use OCA\Zammad\AppInfo\Application;
 
 class ConfigController extends Controller {
-
-	/**
-	 * @var IConfig
-	 */
-	private $config;
-	/**
-	 * @var IURLGenerator
-	 */
-	private $urlGenerator;
-	/**
-	 * @var IL10N
-	 */
-	private $l;
-	/**
-	 * @var ZammadAPIService
-	 */
-	private $zammadAPIService;
-	/**
-	 * @var string|null
-	 */
-	private $userId;
+	private IConfig $config;
+	private IURLGenerator $urlGenerator;
+	private IL10N $l;
+	private ZammadAPIService $zammadAPIService;
+	private ZammadReferenceProvider $zammadReferenceProvider;
+	private ?string $userId;
 
 	public function __construct(string $appName,
 								IRequest $request,
@@ -52,12 +38,14 @@ class ConfigController extends Controller {
 								IURLGenerator $urlGenerator,
 								IL10N $l,
 								ZammadAPIService $zammadAPIService,
+								ZammadReferenceProvider $zammadReferenceProvider,
 								?string $userId) {
 		parent::__construct($appName, $request);
 		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;
 		$this->l = $l;
 		$this->zammadAPIService = $zammadAPIService;
+		$this->zammadReferenceProvider = $zammadReferenceProvider;
 		$this->userId = $userId;
 	}
 
@@ -86,6 +74,7 @@ class ConfigController extends Controller {
 					'user_name' => '',
 				];
 			}
+			$this->zammadReferenceProvider->invalidateUserCache($this->userId);
 			$this->config->deleteUserValue($this->userId, Application::APP_ID, 'refresh_token');
 			$this->config->deleteUserValue($this->userId, Application::APP_ID, 'token_expires_at');
 		}
@@ -137,6 +126,7 @@ class ConfigController extends Controller {
 				'grant_type' => 'authorization_code'
 			], 'POST');
 			if (isset($result['access_token'])) {
+				$this->zammadReferenceProvider->invalidateUserCache($this->userId);
 				$accessToken = $result['access_token'];
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'token', $accessToken);
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'token_type', 'oauth');

@@ -10,6 +10,9 @@
 namespace OCA\Zammad\AppInfo;
 
 use Closure;
+use OCA\Zammad\Listener\ZammadReferenceListener;
+use OCA\Zammad\Reference\ZammadReferenceProvider;
+use OCP\Collaboration\Reference\RenderReferenceEvent;
 use OCP\IConfig;
 use OCP\IL10N;
 use OCP\INavigationManager;
@@ -39,11 +42,6 @@ class Application extends App implements IBootstrap {
 	 */
 	private $config;
 
-	/**
-	 * Constructor
-	 *
-	 * @param array $urlParams
-	 */
 	public function __construct(array $urlParams = []) {
 		parent::__construct(self::APP_ID, $urlParams);
 
@@ -57,6 +55,9 @@ class Application extends App implements IBootstrap {
 	public function register(IRegistrationContext $context): void {
 		$context->registerDashboardWidget(ZammadWidget::class);
 		$context->registerSearchProvider(ZammadSearchProvider::class);
+
+		$context->registerReferenceProvider(ZammadReferenceProvider::class);
+		$context->registerEventListener(RenderReferenceEvent::class, ZammadReferenceListener::class);
 	}
 
 	public function boot(IBootContext $context): void {

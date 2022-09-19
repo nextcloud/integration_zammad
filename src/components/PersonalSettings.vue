@@ -80,6 +80,11 @@
 				@update:checked="onCheckboxChanged($event, 'navigation_enabled')">
 				{{ t('integration_zammad', 'Enable navigation link') }}
 			</NcCheckboxRadioSwitch>
+			<NcCheckboxRadioSwitch
+				:checked="state.link_preview_enabled"
+				@update:checked="onCheckboxChanged($event, 'link_preview_enabled')">
+				{{ t('integration_zammad', 'Enable Zammad link previews in Talk') }}
+			</NcCheckboxRadioSwitch>
 		</div>
 	</div>
 </template>
@@ -94,14 +99,14 @@ import InformationOutlineIcon from 'vue-material-design-icons/InformationOutline
 
 import ZammadIcon from './icons/ZammadIcon.vue'
 
+import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
+import NcCheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
+
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
 import { delay } from '../utils.js'
 import { showSuccess, showError } from '@nextcloud/dialogs'
-
-import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
-import NcCheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
 
 export default {
 	name: 'PersonalSettings',

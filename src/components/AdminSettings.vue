@@ -51,6 +51,11 @@
 					@focus="readonly = false"
 					@input="onInput">
 			</div>
+			<NcCheckboxRadioSwitch
+				:checked="state.link_preview_enabled"
+				@update:checked="onCheckboxChanged($event, 'link_preview_enabled')">
+				{{ t('integration_zammad', 'Enable Zammad link previews in Talk') }}
+			</NcCheckboxRadioSwitch>
 		</div>
 	</div>
 </template>
@@ -62,6 +67,8 @@ import EarthIcon from 'vue-material-design-icons/Earth.vue'
 
 import ZammadIcon from './icons/ZammadIcon.vue'
 
+import NcCheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
+
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
@@ -72,6 +79,7 @@ export default {
 	name: 'AdminSettings',
 
 	components: {
+		NcCheckboxRadioSwitch,
 		ZammadIcon,
 		InformationOutlineIcon,
 		KeyIcon,
@@ -99,16 +107,20 @@ export default {
 		onInput() {
 			const that = this
 			delay(() => {
-				that.saveOptions()
-			}, 2000)()
-		},
-		saveOptions() {
-			const req = {
-				values: {
+				that.saveOptions({
 					client_id: this.state.client_id,
 					client_secret: this.state.client_secret,
 					oauth_instance_url: this.state.oauth_instance_url,
-				},
+				})
+			}, 2000)()
+		},
+		onCheckboxChanged(newValue, key) {
+			this.state[key] = newValue
+			this.saveOptions({ [key]: this.state[key] ? '1' : '0' })
+		},
+		saveOptions(values) {
+			const req = {
+				values,
 			}
 			const url = generateUrl('/apps/integration_zammad/admin-config')
 			axios.put(url, req)
@@ -120,8 +132,6 @@ export default {
 						t('integration_zammad', 'Failed to save Zammad admin options')
 						+ ': ' + error.response.request.responseText
 					)
-				})
-				.then(() => {
 				})
 		},
 	},

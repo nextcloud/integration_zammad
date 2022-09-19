@@ -14,6 +14,7 @@ namespace OCA\Zammad\Service;
 use DateTime;
 use Exception;
 use OCP\IL10N;
+use OCP\PreConditionNotMetException;
 use Psr\Log\LoggerInterface;
 use OCP\IConfig;
 use OCP\IUserManager;
@@ -161,6 +162,7 @@ class ZammadAPIService {
 	 * @param ?string $since
 	 * @param ?int $limit
 	 * @return array
+	 * @throws PreConditionNotMetException
 	 */
 	public function getNotifications(string $userId, ?string $since = null, ?int $limit = null): array {
 		$params = [
@@ -231,6 +233,7 @@ class ZammadAPIService {
 	 * @param string $userId
 	 * @param string $query
 	 * @return array
+	 * @throws PreConditionNotMetException
 	 */
 	public function search(string $userId, string $query): array {
 		$params = [
@@ -314,44 +317,75 @@ class ZammadAPIService {
 	/**
 	 * authenticated request to get an image from zammad
 	 *
-	 * @param string $url
-	 * @param string $accessToken
-	 * @param string $authType
-	 * @param string $refreshToken
-	 * @param string $clientID
-	 * @param string $clientSecret
+	 * @param string $userId
 	 * @param string $imageId
-	 * @return string
+	 * @return array
+	 * @throws Exception
 	 */
-	public function getZammadAvatar(string $url,
-									string $accessToken, string $authType, string $refreshToken, string $clientID, string $clientSecret,
-									string $imageId): string {
-		$url = $url . '/api/v1/users/image/' . $imageId;
-		$authHeader = ($authType === 'access') ? 'Token token=' : 'Bearer ';
-		$options = [
-			'headers' => [
-				'Authorization'  => $authHeader . $accessToken,
-				'User-Agent' => 'Nextcloud Zammad integration',
-			]
-		];
-		return $this->client->get($url, $options)->getBody();
+	public function getZammadAvatar(string $userId, string $imageId): array {
+		return $this->request($userId, 'users/image/' . $imageId, [], 'GET', false);
 	}
 
 	/**
-	 * @param string $zammadUrl
-	 * @param string $accessToken
-	 * @param string $authType
-	 * @param string $refreshToken
-	 * @param string $clientID
-	 * @param string $clientSecret
+	 * @param string $userId
+	 * @param int $ticketId
+	 * @return array
+	 * @throws PreConditionNotMetException
+	 */
+	public function getTicketInfo(string $userId, int $ticketId): array {
+		return $this->request($userId, 'tickets/' . $ticketId);
+	}
+
+	/**
+	 * @param string $userId
+	 * @return array
+	 * @throws Exception
+	 */
+	public function getTicketStates(string $userId): array	{
+		return $this->request($userId, 'ticket_states');
+	}
+
+	/**
+	 * @param string $userId
+	 * @param int $commentId
+	 * @return array
+	 * @throws Exception
+	 */
+	public function getCommentInfo(string $userId, int $commentId): array {
+		return $this->request($userId, 'ticket_articles/' . $commentId);
+	}
+
+	/**
+	 * @param string $userId
+	 * @param int $zammadUserId
+	 * @return array
+	 * @throws Exception
+	 */
+	public function getUserInfo(string $userId, int $zammadUserId): array {
+		return $this->request($userId, 'users/' . $zammadUserId);
+	}
+
+	/**
+	 * @param string $userId
+	 * @param int $zammadOrgId
+	 * @return array
+	 * @throws Exception
+	 */
+	public function getOrganizationInfo(string $userId, int $zammadOrgId): array {
+		return $this->request($userId, 'organizations/' . $zammadOrgId);
+	}
+
+	/**
 	 * @param string $userId
 	 * @param string $endPoint
 	 * @param array $params
 	 * @param string $method
+	 * @param bool $jsonResponse
 	 * @return array
-	 * @throws \OCP\PreConditionNotMetException
+	 * @throws Exception
 	 */
-	public function request(string $userId, string $endPoint, array $params = [], string $method = 'GET'): array {
+	public function request(string $userId, string $endPoint, array $params = [], string $method = 'GET',
+							bool $jsonResponse = true): array {
 		$zammadUrl = $this->config->getUserValue($userId, Application::APP_ID, 'url');
 		$this->checkTokenExpiration($userId, $zammadUrl);
 		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token');
@@ -402,7 +436,14 @@ class ZammadAPIService {
 			if ($respCode >= 400) {
 				return ['error' => $this->l10n->t('Bad credentials')];
 			} else {
-				return json_decode($body, true);
+				if ($jsonResponse) {
+					return json_decode($body, true);
+				} else {
+					return [
+						'body' => $body,
+						'headers' => $response->getHeaders(),
+					];
+				}
 			}
 		} catch (ServerException | ClientException $e) {
 			$this->logger->warning('Zammad API error : '.$e->getMessage(), ['app' => $this->appName]);
@@ -431,7 +472,7 @@ class ZammadAPIService {
 		$redirect_uri = $this->config->getUserValue($userId, Application::APP_ID, 'redirect_uri');
 		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
 		if (!$refreshToken) {
-			$this->logger->error('No GitLab refresh token found', ['app' => $this->appName]);
+			$this->logger->error('No Zammad refresh token found', ['app' => $this->appName]);
 			return false;
 		}
 		$result = $this->requestOAuthAccessToken($url, [

@@ -38,9 +38,10 @@ class Personal implements ISettings {
 		$token = $this->config->getUserValue($this->userId, Application::APP_ID, 'token');
 		$userName = $this->config->getUserValue($this->userId, Application::APP_ID, 'user_name');
 		$url = $this->config->getUserValue($this->userId, Application::APP_ID, 'url');
-		$searchEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'search_enabled', '0');
-		$notificationEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'notification_enabled', '0');
-		$navigationEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'navigation_enabled', '0');
+		$searchEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'search_enabled', '0') === '1';
+		$notificationEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'notification_enabled', '0') === '1';
+		$navigationEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'navigation_enabled', '0') === '1';
+		$linkPreviewEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'link_preview_enabled', '1') === '1';
 
 		// for OAuth
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
@@ -54,10 +55,11 @@ class Personal implements ISettings {
 			'client_id' => $clientID,
 			'client_secret' => $clientSecret,
 			'oauth_instance_url' => $oauthUrl,
-			'search_enabled' => ($searchEnabled === '1'),
-			'notification_enabled' => ($notificationEnabled === '1'),
-			'navigation_enabled' => ($navigationEnabled === '1'),
 			'user_name' => $userName,
+			'search_enabled' => $searchEnabled,
+			'notification_enabled' => $notificationEnabled,
+			'navigation_enabled' => $navigationEnabled,
+			'link_preview_enabled' => $linkPreviewEnabled,
 		];
 		$this->initialStateService->provideInitialState('user-config', $userConfig);
 		return new TemplateResponse(Application::APP_ID, 'personalSettings');

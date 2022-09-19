@@ -11,6 +11,7 @@
 
 namespace OCA\Zammad\Controller;
 
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataDisplayResponse;
 use OCP\IConfig;
 use OCP\IRequest;
@@ -19,6 +20,7 @@ use OCP\AppFramework\Controller;
 
 use OCA\Zammad\Service\ZammadAPIService;
 use OCA\Zammad\AppInfo\Application;
+use OCP\PreConditionNotMetException;
 
 class ZammadAPIController extends Controller {
 
@@ -88,14 +90,19 @@ class ZammadAPIController extends Controller {
 	 *
 	 * @param string $imageId
 	 * @return DataDisplayResponse
+	 * @throws \Exception
 	 */
 	public function getZammadAvatar(string $imageId = ''): DataDisplayResponse {
+		$avatarResponse = $this->zammadAPIService->getZammadAvatar($this->userId, $imageId);
+		if (isset($avatarResponse['error'])) {
+			return new DataDisplayResponse('', Http::STATUS_NOT_FOUND);
+		}
 		$response = new DataDisplayResponse(
-			$this->zammadAPIService->getZammadAvatar(
-				$this->zammadUrl, $this->accessToken, $this->tokenType, $this->refreshToken, $this->clientID, $this->clientSecret, $imageId
-			)
+			$avatarResponse['body'],
+			Http::STATUS_OK,
+			['Content-Type' => $avatarResponse['headers']['Content-Type'][0] ?? 'image/jpeg']
 		);
-		$response->cacheFor(60*60*24);
+		$response->cacheFor(60 * 60 * 24);
 		return $response;
 	}
 
@@ -105,6 +112,7 @@ class ZammadAPIController extends Controller {
 	 *
 	 * @param ?string $since
 	 * @return DataResponse
+	 * @throws PreConditionNotMetException
 	 */
 	public function getNotifications(?string $since = null): DataResponse {
 		if ($this->accessToken === '' || !preg_match('/^(https?:\/\/)?[^.]+\.[^.].*/', $this->zammadUrl)) {
