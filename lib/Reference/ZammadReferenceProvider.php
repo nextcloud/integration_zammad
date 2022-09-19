@@ -82,11 +82,21 @@ class ZammadReferenceProvider implements IReferenceProvider {
 				[$ticketId, $end] = $parts;
 //				$projectLabels = $this->zammadAPIService->getProjectLabels($this->userId, $projectInfo['id']);
 				$commentInfo = $this->getCommentInfo($end);
+				$commentAuthorInfo = null;
 				$ticketInfo = $this->zammadAPIService->getTicketInfo($this->userId, (int)$ticketId);
 				if (!isset($ticketInfo['error']) && isset($ticketInfo['customer_id'])) {
 					$authorInfo = $this->zammadAPIService->getUserInfo($this->userId, $ticketInfo['customer_id']);
 					$authorOrgInfo = $this->zammadAPIService->getOrganizationInfo($this->userId, $ticketInfo['organization_id']);
 					$ticketStates = $this->zammadAPIService->getTicketStates($this->userId);
+					if ($commentInfo !== null) {
+						if ($commentInfo['created_by_id'] === $ticketInfo['customer_id']) {
+							$commentAuthorInfo = $authorInfo;
+							$commentAuthorOrgInfo = $authorOrgInfo;
+						} else {
+							$commentAuthorInfo = $this->zammadAPIService->getUserInfo($this->userId, $commentInfo['created_by_id']);
+							$commentAuthorOrgInfo = $this->zammadAPIService->getOrganizationInfo($this->userId, $commentAuthorInfo['organization_id']);
+						}
+					}
 				}
 				$reference = new Reference($referenceText);
 				$reference->setRichObject(
@@ -98,6 +108,8 @@ class ZammadReferenceProvider implements IReferenceProvider {
 						'zammad_ticket_author' => $authorInfo,
 						'zammad_ticket_author_organization' => $authorOrgInfo,
 						'zammad_comment' => $commentInfo,
+						'zammad_comment_author' => $commentAuthorInfo,
+						'zammad_comment_author_organization' => $commentAuthorOrgInfo,
 					], $ticketInfo)
 				);
 				return $reference;

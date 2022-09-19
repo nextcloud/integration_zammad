@@ -39,11 +39,11 @@
 				{{ t('integration_zammad', 'Zammad connected accounts settings') }}
 			</a>
 		</div>
-		<div v-if="!isError" class="issue-pr-wrapper">
-			<div class="issue-pr-info">
+		<div v-if="!isError" class="ticket-wrapper">
+			<div class="ticket-info">
 				<div class="line">
 					<div class="title">
-						<a :href="ticketUrl" class="issue-pr-link" target="_blank">
+						<a :href="ticketUrl" class="ticket-link" target="_blank">
 							<strong>
 								{{ richObject.title }}
 							</strong>
@@ -116,40 +116,52 @@
 				</div>
 			</div>
 		</div>
-		<!--div v-if="!isError && richObject.zammad_comment" class="comment">
+		<div v-if="!isError && richObject.zammad_comment" class="comment">
 			<div class="comment--author">
-				<NcAvatar
+				<NcAvatar v-if="commentAuthorAvatarUrl"
 					class="comment--author--avatar"
 					:tooltip-message="commentAuthorTooltip"
 					:is-no-user="true"
 					:url="commentAuthorAvatarUrl" />
+				<NcAvatar v-else
+					class="comment--author--avatar"
+					:tooltip-message="commentAuthorTooltip"
+					:is-no-user="true"
+					:display-name="commentAuthorName" />
 				<span class="comment--author--bubble-tip" />
 				<span class="comment--author--bubble">
 					<div class="comment--author--bubble--header">
-						<a :href="richObject.zammad_comment.author.web_url" target="_blank" class="author-link">
-							<strong class="comment-author-display-name">{{ richObject.zammad_comment.author.name }}</strong>
-							@{{ richObject.zammad_comment.author.username }}
+						<a
+							v-tooltip.top="{ content: commentAuthorTooltip }"
+							:href="commentAuthorUrl"
+							target="_blank"
+							class="author-link">
+							<strong class="comment-author-display-name">{{ commentAuthorName }}</strong>
+						</a>
+						&nbsp;
+						<a
+							v-tooltip.top="{ html: true, content: commentAuthorOrgTooltip }"
+							:href="commentAuthorOrgUrl"
+							target="_blank"
+							class="author-link">
+							[{{ commentAuthorOrgName }}]
 						</a>
 						&nbsp;·&nbsp;
 						<span
-							v-tooltip.top="{ content: commentUpdatedAtTooltip }"
+							v-tooltip.top="{ content: commentCreatedAtTooltip }"
 							class="date-with-tooltip">
-							{{ commentUpdatedAtText }}
+							{{ commentCreatedAtText }}
 						</span>
 						<div class="spacer" />
-						<div v-if="richObject.zammad_comment.author.username === richObject.author.username" class="label">
-							{{ t('integration_zammad', 'Author') }}
-						</div>
-						<div v-if="richObject.zammad_comment.author.username === richObject.zammad_project_owner_username" class="label">
-							{{ t('integration_zammad', 'Owner') }}
-						</div>
 					</div>
-					<div class="comment--author--bubble--content" :title="richObject.zammad_comment.body">
-						{{ richObject.zammad_comment.body }}
+					<div
+						v-tooltip.top="{ html: true, content: richObject.zammad_comment.body }"
+						class="comment--author--bubble--content">
+						{{ commentTextBody }}
 					</div>
 				</span>
 			</div>
-		</div-->
+		</div>
 	</div>
 </template>
 
@@ -164,6 +176,7 @@ import moment from '@nextcloud/moment'
 
 import NcAvatar from '@nextcloud/vue/dist/Components/NcAvatar.js'
 import Tooltip from '@nextcloud/vue/dist/Directives/Tooltip.js'
+import { convert } from 'html-to-text'
 import Vue from 'vue'
 Vue.directive('tooltip', Tooltip)
 
@@ -268,29 +281,47 @@ export default {
 		updatedAtText() {
 			return t('integration_zammad', 'updated {relativeDate}', { relativeDate: moment(this.richObject.updated_at).fromNow() })
 		},
-		commentUpdatedAtText() {
-			return moment(this.richObject.zammad_comment.updated_at).fromNow()
+		commentCreatedAtText() {
+			return moment(this.richObject.zammad_comment.created_at).fromNow()
 		},
-		commentUpdatedAtTooltip() {
-			return moment(this.richObject.zammad_comment.updated_at).format('LLL')
+		commentCreatedAtTooltip() {
+			return moment(this.richObject.zammad_comment.created_at).format('LLL')
 		},
-		commentAuthorAvatarUrl() {
-			const userId = this.richObject.zammad_comment?.author?.id ?? ''
-			return generateUrl('/apps/integration_zammad/avatar/user/{userId}', { userId })
+		commentAuthorUrl() {
+			return this.richObject.zammad_url + '/#user/profile/' + this.richObject.zammad_comment.created_by_id
+		},
+		commentTextBody() {
+			return convert(this.richObject.zammad_comment.body)
+		},
+		commentAuthorName() {
+			return this.richObject.zammad_comment_author.firstname + ' ' + this.richObject.zammad_comment_author.lastname
 		},
 		commentAuthorTooltip() {
-			return t('integration_zammad', 'Comment from @{username}', { username: this.richObject.zammad_comment?.author?.username ?? '' })
+			return this.richObject.zammad_comment_author.email
+		},
+		commentAuthorAvatarUrl() {
+			const imageId = this.richObject.zammad_comment_author.image
+			return imageId
+				? generateUrl('/apps/integration_zammad/avatar/{imageId}', { imageId })
+				: null
+		},
+		commentAuthorOrgUrl() {
+			return this.richObject.zammad_url + '/#organization/profile/' + this.richObject.zammad_comment_author.organization_id
+		},
+		commentAuthorOrgName() {
+			return this.richObject.zammad_comment_author_organization.name
+		},
+		commentAuthorOrgTooltip() {
+			return '<strong>' + t('integration_zammad', 'Account manager')
+				+ ':</strong> ' + this.richObject.zammad_comment_author_organization.account_manager
+				+ (this.richObject.zammad_comment_author_organization.subscription_end
+					? '<br><strong>' + t('integration_zammad', 'Subscription ends') + ':</strong> '
+					+ moment(this.richObject.zammad_comment_author_organization.subscription_end).format('LL')
+					: '')
 		},
 	},
 
 	methods: {
-		getAssigneeAvatarUrl(assignee) {
-			const userId = assignee.id ?? ''
-			return generateUrl('/apps/integration_zammad/avatar/user/{userId}', { userId })
-		},
-		getAssigneeTooltip(assignee) {
-			return t('integration_zammad', 'Assigned to {username}', { username: assignee.username })
-		},
 	},
 }
 </script>
@@ -310,16 +341,10 @@ export default {
 		}
 	}
 
-	.issue-pr-wrapper {
+	.ticket-wrapper {
 		width: 100%;
 		display: flex;
 		align-items: start;
-
-		.assignee-avatars {
-			display: flex;
-			align-items: center;
-			margin-left: 8px;
-		}
 
 		.title {
 			display: flex;
@@ -328,7 +353,7 @@ export default {
 			> * {
 				margin-bottom: 2px;
 			}
-			.issue-pr-link {
+			.ticket-link {
 				margin-right: 8px;
 			}
 		}
@@ -482,7 +507,7 @@ export default {
 	::v-deep .author-link,
 	.author-link:hover .comment-author-display-name,
 	.slug-link,
-	.issue-pr-link {
+	.ticket-link {
 		&:hover {
 			color: #58a6ff;
 		}
