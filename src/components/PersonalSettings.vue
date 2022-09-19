@@ -11,11 +11,6 @@
 			{{ t('integration_zammad', 'Create a "Personal Access Token" and give it "TICKET -> AGENT", "ADMIN -> OBJECT" and "USER_PREFERENCES -> NOTIFICATIONS" permissions.') }}
 		</p>
 		<div id="zammad-content">
-			<CheckboxRadioSwitch
-				:checked="state.navigation_enabled"
-				@update:checked="onCheckboxChanged($event, 'navigation_enabled')">
-				{{ t('integration_zammad', 'Enable navigation link') }}
-			</CheckboxRadioSwitch>
 			<div class="line">
 				<label for="zammad-url">
 					<EarthIcon :size="20" class="icon" />
@@ -69,17 +64,22 @@
 					<InformationOutlineIcon :size="20" class="icon" />
 					{{ t('integration_zammad', 'Warning, everything you type in the search bar will be sent to your Zammad instance.') }}
 				</p>
-				<CheckboxRadioSwitch
+				<NcCheckboxRadioSwitch
 					:checked="state.search_enabled"
 					@update:checked="onCheckboxChanged($event, 'search_enabled')">
 					{{ t('integration_zammad', 'Enable unified search for tickets') }}
-				</CheckboxRadioSwitch>
-				<CheckboxRadioSwitch
+				</NcCheckboxRadioSwitch>
+				<NcCheckboxRadioSwitch
 					:checked="state.notification_enabled"
 					@update:checked="onCheckboxChanged($event, 'notification_enabled')">
 					{{ t('integration_zammad', 'Enable notifications for open tickets') }}
-				</CheckboxRadioSwitch>
+				</NcCheckboxRadioSwitch>
 			</div>
+			<NcCheckboxRadioSwitch
+				:checked="state.navigation_enabled"
+				@update:checked="onCheckboxChanged($event, 'navigation_enabled')">
+				{{ t('integration_zammad', 'Enable navigation link') }}
+			</NcCheckboxRadioSwitch>
 		</div>
 	</div>
 </template>
@@ -100,14 +100,14 @@ import axios from '@nextcloud/axios'
 import { delay } from '../utils.js'
 import { showSuccess, showError } from '@nextcloud/dialogs'
 
-import NcButton from '@nextcloud/vue/dist/Components/Button.js'
-import CheckboxRadioSwitch from '@nextcloud/vue/dist/Components/CheckboxRadioSwitch.js'
+import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
+import NcCheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
 
 export default {
 	name: 'PersonalSettings',
 
 	components: {
-		CheckboxRadioSwitch,
+		NcCheckboxRadioSwitch,
 		NcButton,
 		ZammadIcon,
 		EarthIcon,

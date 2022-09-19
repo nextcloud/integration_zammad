@@ -60,12 +60,13 @@ import InformationOutlineIcon from 'vue-material-design-icons/InformationOutline
 import KeyIcon from 'vue-material-design-icons/Key.vue'
 import EarthIcon from 'vue-material-design-icons/Earth.vue'
 
+import ZammadIcon from './icons/ZammadIcon.vue'
+
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
 import { delay } from '../utils.js'
 import { showSuccess, showError } from '@nextcloud/dialogs'
-import ZammadIcon from './icons/ZammadIcon.vue'
 
 export default {
 	name: 'AdminSettings',
