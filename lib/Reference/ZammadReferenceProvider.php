@@ -88,6 +88,7 @@ class ZammadReferenceProvider implements IReferenceProvider {
 					$authorInfo = $this->zammadAPIService->getUserInfo($this->userId, $ticketInfo['customer_id']);
 					$authorOrgInfo = $this->zammadAPIService->getOrganizationInfo($this->userId, $ticketInfo['organization_id']);
 					$ticketStates = $this->zammadAPIService->getTicketStates($this->userId);
+					$ticketTags = $this->zammadAPIService->getTicketTags($this->userId, (int)$ticketId);
 					if ($commentInfo !== null) {
 						if ($commentInfo['created_by_id'] === $ticketInfo['customer_id']) {
 							$commentAuthorInfo = $authorInfo;
@@ -105,6 +106,7 @@ class ZammadReferenceProvider implements IReferenceProvider {
 						'zammad_url' => $zammadUrl,
 						'zammad_ticket_id' => (int)$ticketId,
 						'zammad_ticket_states' => $ticketStates,
+						'zammad_ticket_tags' => $ticketTags,
 						'zammad_ticket_author' => $authorInfo,
 						'zammad_ticket_author_organization' => $authorOrgInfo,
 						'zammad_comment' => $commentInfo,

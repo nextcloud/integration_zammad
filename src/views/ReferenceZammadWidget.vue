@@ -48,6 +48,11 @@
 								{{ richObject.title }}
 							</strong>
 						</a>
+						<div v-for="tag in richObject.zammad_ticket_tags.tags"
+							:key="tag"
+							class="tag">
+							{{ tag }}
+						</div>
 					</div>
 				</div>
 				<div class="sub-text">
@@ -153,6 +158,9 @@
 							{{ commentCreatedAtText }}
 						</span>
 						<div class="spacer" />
+						<div class="tag">
+							{{ t('integration_zammad', 'internal') }}
+						</div>
 					</div>
 					<div v-show="shortComment"
 						v-tooltip.top="{ html: true, content: richObject.zammad_comment.body }"
@@ -355,9 +363,11 @@ export default {
 			display: flex;
 			align-items: center;
 			flex-wrap: wrap;
+
 			> * {
 				margin-bottom: 2px;
 			}
+
 			.ticket-link {
 				margin-right: 8px;
 			}
@@ -404,7 +414,7 @@ export default {
 			}
 
 			.ticket-author-avatar {
-				margin-right: 4px;
+				margin-right: 8px;
 			}
 
 			.comments-count {
@@ -495,15 +505,19 @@ export default {
 		}
 	}
 
-	.label {
+	.tag {
 		display: flex;
 		align-items: center;
 		height: 20px;
 		margin-right: 4px;
+		margin-bottom: 0 !important;
 		border: 1px solid var(--color-border-dark);
 		padding: 0 7px;
 		border-radius: var(--border-radius-pill);
 		font-size: 12px;
+	}
+	.comment .tag {
+		margin-right: 0;
 	}
 
 	::v-deep .author-link,

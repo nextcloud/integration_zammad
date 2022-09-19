@@ -347,6 +347,20 @@ class ZammadAPIService {
 
 	/**
 	 * @param string $userId
+	 * @param int $ticketId
+	 * @return array
+	 * @throws Exception
+	 */
+	public function getTickettags(string $userId, int $ticketId): array	{
+		$params = [
+			'object' => 'Ticket',
+			'o_id' => $ticketId,
+		];
+		return $this->request($userId, 'tags', $params);
+	}
+
+	/**
+	 * @param string $userId
 	 * @param int $commentId
 	 * @return array
 	 * @throws Exception
