@@ -25,7 +25,6 @@ OC.L10N.register(
     "Failed to save Zammad admin options" : "Kon Zammad admin-opties niet opslaan",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Om zelf een access token aan te maken, ga je naar het gedeelte \"Token Access\" van je Zammad-profielpagina.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Creëer een \"Personal Access Token\" en geef dat \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" en \"USER_PREFERENCES -> NOTIFICATIONS\" machtigingen.",
-    "Enable navigation link" : "Inschakelen navigatielink",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Access token",
     "Zammad access token" : "Zammad access token",
@@ -35,6 +34,7 @@ OC.L10N.register(
     "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Let op: alles wat je intypt in de zoekbalk wordt naar Zammad gestuurd.",
     "Enable unified search for tickets" : "Inschakelen zoeken naar tickets",
     "Enable notifications for open tickets" : "Meldingen voor open tickets inschakelen.",
+    "Enable navigation link" : "Inschakelen navigatielink",
     "Successfully connected to Zammad!" : "Succesvol verbonden met Zammad!",
     "OAuth access token could not be obtained:" : "OAuth access token kon niet worden opgehaald:",
     "Zammad options saved" : "Zammad opties bewaard",
@@ -44,6 +44,8 @@ OC.L10N.register(
     "No Zammad account connected" : "Geen Zammad-account verbonden",
     "Error connecting to Zammad" : "Fout bij het verbinden met Zammad",
     "No Zammad notifications!" : "Geen Zammad meldingen!",
-    "Failed to get Zammad notifications" : "Kon Zammad-meldingen niet ophalen"
+    "Failed to get Zammad notifications" : "Kon Zammad-meldingen niet ophalen",
+    "Unknown error" : "Onbekende fout",
+    "Comments" : "Reacties"
 },
 "nplurals=2; plural=(n != 1);");

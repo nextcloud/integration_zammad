@@ -21,7 +21,6 @@ OC.L10N.register(
     "Application secret" : "应用密码",
     "Client secret of your application" : "应用程序的客户端密钥",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "您若要自己创建访问令牌，请前往Zammand个人资料页面的 \"令牌访问\" 部分。",
-    "Enable navigation link" : "启用导航链接",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "访问令牌",
     "Zammad access token" : "Zammad 访问令牌",
@@ -30,7 +29,10 @@ OC.L10N.register(
     "Disconnect from Zammad" : "与Zammad端开连接",
     "Enable unified search for tickets" : "启用统一的票证搜索",
     "Enable notifications for open tickets" : "为打开的票证启用通知",
+    "Enable navigation link" : "启用导航链接",
     "OAuth access token could not be obtained:" : "无法获取 OAuth 访问令牌：",
-    "Incorrect access token" : "访问令牌不正确"
+    "Incorrect access token" : "访问令牌不正确",
+    "Unknown error" : "未知错误",
+    "Comments" : "评论"
 },
 "nplurals=1; plural=0;");

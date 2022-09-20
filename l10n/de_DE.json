@@ -23,7 +23,6 @@
     "Failed to save Zammad admin options" : "Fehler beim Speichern der Zammad-Administrator-Einstellungen",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Um selbst ein Zugriffstoken zu erstellen, gehen Sie zum Abschnitt \"Tokenzugriff\" auf Ihrer Zammad-Profilseite.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Erstellen Sie ein \"Persönliches Zugriffstoken\" und erteilen Sie ihm die Berechtigungen \"TICKET\" -> \"AGENT\", \"ADMIN\" -> \"OBJEKT\" und \"NUTZER_EINSTELLUNGEN\" -> \"BENACHRICHTIGUNGEN\".",
-    "Enable navigation link" : "Navigations-Link aktivieren",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Zugriffstoken",
     "Zammad access token" : "Zammad Zugriffstoken",
@@ -33,6 +32,7 @@
     "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Achtung, alles, was Sie in die Suchleiste eingeben, wird an Deine Zammad-Instanz gesendet.",
     "Enable unified search for tickets" : "Einheitliche Suche nach Tickets aktivieren",
     "Enable notifications for open tickets" : "Benachrichtigungen für offene Tickets aktivieren",
+    "Enable navigation link" : "Navigations-Link aktivieren",
     "Successfully connected to Zammad!" : "Erfolgreich mit Zammad verbunden!",
     "OAuth access token could not be obtained:" : "OAuth-Zugriffstoken konnte nicht abgerufen werden:",
     "Zammad options saved" : "Zammad-Einstellungen gespeichert",
@@ -42,6 +42,12 @@
     "No Zammad account connected" : "Kein Zammad-Konto verbunden",
     "Error connecting to Zammad" : "Fehler bei der Verbindung mit Zammad",
     "No Zammad notifications!" : "Keine Zammad-Benachrichtigungen!",
-    "Failed to get Zammad notifications" : "Konnte Zammad-Benachrichtigungen nicht abrufen"
+    "Failed to get Zammad notifications" : "Konnte Zammad-Benachrichtigungen nicht abrufen",
+    "Unknown error" : "Unbekannter Fehler",
+    "by {creator}" : "von {creator}",
+    "Comments" : "Kommentare",
+    "created {relativeDate}" : "erstellt {relativeDate}",
+    "closed {relativeDate}" : "Geschlossen {relativeDate}",
+    "updated {relativeDate}" : "Aktualisiert {relativeDate}"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

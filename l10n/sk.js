@@ -25,7 +25,6 @@ OC.L10N.register(
     "Failed to save Zammad admin options" : "Nepodarilo sa uložiť možnosti administrátora Zammad",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Ak si chcete prístupový token vytvoriť sami, prejdite na stránke svojho profilu v službe Zammad do sekcie „Prístup k tokenom“.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Vytvorte „Osobný prístupový token“ a udeľte mu povolenia \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" a \"USER_PREFERENCES -> NOTIFICATIONS\".",
-    "Enable navigation link" : "Povoliť navigačný odkaz",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Prístupový token",
     "Zammad access token" : "Prístupový token Zammadu",
@@ -35,6 +34,7 @@ OC.L10N.register(
     "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Varovanie, všetko čo napíšete do vyhľadávania bude odoslané do vašej inštancie Zammad.",
     "Enable unified search for tickets" : "Zapnúť jednotné vyhľadávanie tiketov",
     "Enable notifications for open tickets" : "Zapnúť oznámenia o otvorených ticketoch",
+    "Enable navigation link" : "Povoliť navigačný odkaz",
     "Successfully connected to Zammad!" : "Úspešne pripojené k Zammadu!",
     "OAuth access token could not be obtained:" : "Prístupový token OAuth sa nepodarilo získať:",
     "Zammad options saved" : "Nastavenia Zammadu boli uložené",
@@ -44,6 +44,8 @@ OC.L10N.register(
     "No Zammad account connected" : "Nie je pripojený žiadny Zammad účet",
     "Error connecting to Zammad" : "Chyba pri pripájaní k Zammadu",
     "No Zammad notifications!" : "Žiadne upozornenia zo Zammadu!",
-    "Failed to get Zammad notifications" : "Chyba pri získavaní upozornení zo Zammadu"
+    "Failed to get Zammad notifications" : "Chyba pri získavaní upozornení zo Zammadu",
+    "Unknown error" : "Neznáma chyba",
+    "Comments" : "Komentáre"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");

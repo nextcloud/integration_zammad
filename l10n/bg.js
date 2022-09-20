@@ -25,7 +25,6 @@ OC.L10N.register(
     "Failed to save Zammad admin options" : "Неуспешно записване на опциите за администратор на Zammad",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "За да създадете сами токен за достъп, отидете в секцията „Достъп до токен“ на страницата на вашия профил в Zammad.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Създайте „Токен за личен достъп“ и му дайте следните права „БИЛЕТ -> АГЕНТ“, „АДМИНИСТРАЦИЯ -> ОБЕКТ“ и „ПОТРЕБИТЕЛ_ПРЕДПОЧИТАНИЯ -> ИЗВЕСТИЯ“.",
-    "Enable navigation link" : "Активиране на връзка за навигация",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Токен за достъп",
     "Zammad access token" : "Токен за достъп на Zammad",
@@ -35,6 +34,7 @@ OC.L10N.register(
     "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Предупреждение, всичко, което въведете в лентата за търсене, ще бъде изпратено до вашия екземпляр на Zammad.",
     "Enable unified search for tickets" : "Активиране на унифицираното търсене на билети",
     "Enable notifications for open tickets" : "Активиране на известията за отворени билети",
+    "Enable navigation link" : "Активиране на връзка за навигация",
     "Successfully connected to Zammad!" : "Успешно свързване със Zammad!",
     "OAuth access token could not be obtained:" : "Токенът за достъп OAuth не може да бъде получен:",
     "Zammad options saved" : "Опциите на Zammad са записани",
@@ -44,6 +44,7 @@ OC.L10N.register(
     "No Zammad account connected" : "Няма свързан профил в Zammad",
     "Error connecting to Zammad" : "Грешка при свързването със Zammad",
     "No Zammad notifications!" : "Няма известия от Zammad!",
-    "Failed to get Zammad notifications" : "Неуспешно получаване на известия от Zammad"
+    "Failed to get Zammad notifications" : "Неуспешно получаване на известия от Zammad",
+    "closed {relativeDate}" : "затворен {relativeDate}"
 },
 "nplurals=2; plural=(n != 1);");

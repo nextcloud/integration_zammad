@@ -23,7 +23,6 @@
     "Failed to save Zammad admin options" : "Nepodařilo se uložit předvolby správy Zammad",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Pokud si chcete přístupový token vytvořit sami, jděte do sekce „Přístup přes token“ stránky s vaším profilem na Zammad.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Vytvořte „Personal Access Token“ a udělte mu oprávnění „TICKET -> AGENT“, „ADMIN -> OBJECT“ a „USER_PREFERENCES -> NOTIFICATIONS“.",
-    "Enable navigation link" : "Povolit navigační odkaz",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Přístupový token",
     "Zammad access token" : "Přístupový token do Zammad",
@@ -33,6 +32,7 @@
     "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Varování – cokoli zadáte do kolonky vyhledávání bude odesláno vámi využívané instanci Zammad.",
     "Enable unified search for tickets" : "Zapnout sjednocené hledání hlášení požadavků",
     "Enable notifications for open tickets" : "Zapnout upozornění na otevřená hlášení požadavků",
+    "Enable navigation link" : "Povolit navigační odkaz",
     "Successfully connected to Zammad!" : "Úspěšně spojeno se Zammad!",
     "OAuth access token could not be obtained:" : "Nepodařilo se získat OAuth přístupový token:",
     "Zammad options saved" : "Předvolby pro Zammad uloženy",
@@ -42,6 +42,12 @@
     "No Zammad account connected" : "Nepřipojen žádný Zammad účet",
     "Error connecting to Zammad" : "Chyba při připojování se k Zammad",
     "No Zammad notifications!" : "Žádná upozornění ze Zammad!",
-    "Failed to get Zammad notifications" : "Nepodařilo se získat upozornění ze Zammad"
+    "Failed to get Zammad notifications" : "Nepodařilo se získat upozornění ze Zammad",
+    "Unknown error" : "Neznámá chyba",
+    "by {creator}" : "od {creator}",
+    "Comments" : "Komentáře",
+    "created {relativeDate}" : "vytvořeno {relativeDate}",
+    "closed {relativeDate}" : "uzavřeno {relativeDate}",
+    "updated {relativeDate}" : "zaktualizováno {relativeDate}"
 },"pluralForm" :"nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;"
 }

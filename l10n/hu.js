@@ -25,7 +25,6 @@ OC.L10N.register(
     "Failed to save Zammad admin options" : "A Zammad rendszergazdai beállítások mentése sikertelen",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Ha saját maga szeretne hozzáférési tokent létrehozni, ugorjon a Zammad profiloldalának „Tokenhozzáférs” szakaszához.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Hozzon létre egy „Személyes hozzáférési tokent”, és adjon neki „TICKET -> AGENT”, „ADMIN -> OBJECT” és „USER_PREFERENCES -> NOTIFICATIONS” engedélyeket.",
-    "Enable navigation link" : "Navigációs hivatkozás engedélyezése",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Hozzáférési token",
     "Zammad access token" : "Zammad hozzáférési token",
@@ -35,6 +34,7 @@ OC.L10N.register(
     "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Figyelem, minden amit a keresősávba ír, el lesz küldve a Zammad példányához.",
     "Enable unified search for tickets" : "Engedélyezze a jegyek egységes keresését",
     "Enable notifications for open tickets" : "Értesítések engedélyezése a nyitott jegyekről",
+    "Enable navigation link" : "Navigációs hivatkozás engedélyezése",
     "Successfully connected to Zammad!" : "Sikeresen csatlakozott a Zammadhoz!",
     "OAuth access token could not be obtained:" : "Az OAuth hozzáférési token megszerzése sikertelen:",
     "Zammad options saved" : "A Zammad beállítások mentve",
@@ -44,6 +44,8 @@ OC.L10N.register(
     "No Zammad account connected" : "Nincs Zammad-fiók csatlakoztatva",
     "Error connecting to Zammad" : "Hiba történt a Zammadhoz való csatlakozáskor",
     "No Zammad notifications!" : "Nincsenek Zammad-értesítések.",
-    "Failed to get Zammad notifications" : "A Zammad-értesítések lekérése sikertelen"
+    "Failed to get Zammad notifications" : "A Zammad-értesítések lekérése sikertelen",
+    "Unknown error" : "Ismeretlen hiba",
+    "Comments" : "Hozzászólások"
 },
 "nplurals=2; plural=(n != 1);");

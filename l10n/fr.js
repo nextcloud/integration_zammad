@@ -25,7 +25,6 @@ OC.L10N.register(
     "Failed to save Zammad admin options" : "Échec de l'enregistrement des options d'administration de Zammad",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Pour créer vous-même un jeton d'accès, rendez-vous à la section \"Token Access\" de votre page de profil Zammad.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Créez un \"jeton d'accès personnel\" et donnez-lui les autorisations \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" et \"USER_PREFERENCES -> NOTIFICATIONS\".",
-    "Enable navigation link" : "Activer le lien de navigation",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Jeton d'accès",
     "Zammad access token" : "Jeton d'accès Zammad",
@@ -35,6 +34,7 @@ OC.L10N.register(
     "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Attention, tout ce que vous saisissez dans la barre de recherche sera envoyé à votre instance Zammad.",
     "Enable unified search for tickets" : "Activer la recherche de tickets",
     "Enable notifications for open tickets" : "Activer les notifications pour les tickets ouverts",
+    "Enable navigation link" : "Activer le lien de navigation",
     "Successfully connected to Zammad!" : "Connexion à Zammad réussie !",
     "OAuth access token could not be obtained:" : "Le jeton d'accès OAuth n'a pas pu être obtenu :",
     "Zammad options saved" : "Options Zammad enregistrées",
@@ -44,6 +44,8 @@ OC.L10N.register(
     "No Zammad account connected" : "Aucun compte Zammad connecté",
     "Error connecting to Zammad" : "Erreur de connexion à Zammad",
     "No Zammad notifications!" : "Pas de notification Zammad !",
-    "Failed to get Zammad notifications" : "Impossible d'obtenir les notifications Zammad"
+    "Failed to get Zammad notifications" : "Impossible d'obtenir les notifications Zammad",
+    "Unknown error" : "Erreur inconnue",
+    "Comments" : "Commentaires"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

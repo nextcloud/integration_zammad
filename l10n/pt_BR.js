@@ -25,7 +25,6 @@ OC.L10N.register(
     "Failed to save Zammad admin options" : "Falha ao salvar as opções de administração do Zammad",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Para você mesmo criar um token de acesso, vá para a seção \"Token de Acesso\" da página de seu perfil do Zammad.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Crie um \"Token de acesso pessoal\" e conceda a ele as permissões \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\".",
-    "Enable navigation link" : "Habilitar link de navegação",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Token de acesso",
     "Zammad access token" : "Token de acesso Zammad",
@@ -35,6 +34,7 @@ OC.L10N.register(
     "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Atenção, tudo o que você digitar na barra de pesquisa será enviado para a sua instância Zammad.",
     "Enable unified search for tickets" : "Ativar pesquisa unificada para tíquetes",
     "Enable notifications for open tickets" : "Ativar notificações para tíquetes abertos",
+    "Enable navigation link" : "Habilitar link de navegação",
     "Successfully connected to Zammad!" : "Conectado com sucesso ao Zammad!",
     "OAuth access token could not be obtained:" : "Não foi possível obter o token de acesso OAuth:",
     "Zammad options saved" : "Opções de Zammad salvas",
@@ -44,6 +44,8 @@ OC.L10N.register(
     "No Zammad account connected" : "Nenhuma conta Zammad conectada",
     "Error connecting to Zammad" : "Erro ao conectar ao Zammad",
     "No Zammad notifications!" : "Sem notificações Zammad!",
-    "Failed to get Zammad notifications" : "Falha ao obter notificações Zammad"
+    "Failed to get Zammad notifications" : "Falha ao obter notificações Zammad",
+    "Unknown error" : "Erro desconhecido",
+    "Comments" : "Comentários"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
