@@ -162,15 +162,13 @@
 							{{ t('integration_zammad', 'internal') }}
 						</div>
 					</div>
-					<div v-show="shortComment"
-						v-tooltip.top="{ html: true, content: richObject.zammad_comment.body }"
-						v-html-remove="richObject.zammad_comment.body"
-						class="comment--author--bubble--short-content"
-						@click="shortComment = false" />
-					<div v-show="!shortComment"
+					<div v-tooltip.top="{ html: true, content: shortComment ? t('integration_zammad', 'Click to expand comment') : undefined }"
 						v-html-safe="richObject.zammad_comment.body"
-						class="comment--author--bubble--full-content"
-						@click="shortComment = true" />
+						:class="{
+							'comment--author--bubble--content': true,
+							'short-comment': shortComment,
+						}"
+						@click="shortComment = !shortComment" />
 				</span>
 			</div>
 		</div>
@@ -454,19 +452,20 @@ export default {
 				&--header {
 					display: flex;
 					align-items: center;
+					margin-bottom: 6px;
 					color: var(--color-text-maxcontrast);
 					.comment-author-display-name {
 						color: var(--color-main-text);
 					}
 				}
-				&--short-content,
-				&--full-content {
+				&--content {
 					cursor: pointer;
-				}
-				&--short-content {
-					text-overflow: ellipsis;
-					overflow: hidden;
-					white-space: nowrap;
+					max-height: 250px;
+					overflow: scroll;
+					&.short-comment {
+						max-height: 25px;
+						overflow: hidden;
+					}
 				}
 			}
 			&--bubble-tip {
