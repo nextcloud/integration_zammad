@@ -13,6 +13,7 @@ OC.L10N.register(
     "OAuth access token could not be obtained:" : "無法取得 OAuth 存取權杖：",
     "Incorrect access token" : "不正確的存取權杖",
     "Unknown error" : "未知的錯誤",
+    "by {creator}" : "由 {creator} 建立",
     "Comments" : "留言",
     "closed {relativeDate}" : "關閉於 {relativeDate}",
     "updated {relativeDate}" : "更新於 {relativeDate}"

@@ -44,6 +44,8 @@ OC.L10N.register(
     "No Zammad account connected" : "Κανένας συνδεδεμένος λογαριασμός Zammad",
     "Error connecting to Zammad" : "Σφάλμα σύνδεσης στο Zammad",
     "No Zammad notifications!" : "Καμία ειδοποίηση Zammad!",
-    "Failed to get Zammad notifications" : "Αποτυχία λήψης ειδοποιήσεων του Zammad"
+    "Failed to get Zammad notifications" : "Αποτυχία λήψης ειδοποιήσεων του Zammad",
+    "Unknown error" : "Άγνωστο σφάλμα",
+    "Comments" : "Σχόλια"
 },
 "nplurals=2; plural=(n != 1);");

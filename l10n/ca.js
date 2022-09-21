@@ -32,6 +32,8 @@ OC.L10N.register(
     "Failed to save Zammad OAuth state" : "No s'ha pogut desar l'estat de Zammad OAuth",
     "No Zammad account connected" : "No s'ha connectat el compte de Zammad",
     "Error connecting to Zammad" : "S'ha produït un error en connectar a Zammad",
-    "No Zammad notifications!" : "No hi ha notificacions de Zammad!"
+    "No Zammad notifications!" : "No hi ha notificacions de Zammad!",
+    "Unknown error" : "Error desconegut",
+    "Comments" : "Comentaris"
 },
 "nplurals=2; plural=(n != 1);");

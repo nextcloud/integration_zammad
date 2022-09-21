@@ -24,6 +24,7 @@ OC.L10N.register(
     "No Zammad account connected" : "Zammad-tiliä ei ole yhdistetty",
     "Error connecting to Zammad" : "Virhe yhdistäessä Zammadiin",
     "No Zammad notifications!" : "Ei Zammad-ilmoituksia!",
-    "Unknown error" : "Tuntematon virhe"
+    "Unknown error" : "Tuntematon virhe",
+    "Comments" : "Kommentit"
 },
 "nplurals=2; plural=(n != 1);");

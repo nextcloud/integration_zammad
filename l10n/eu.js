@@ -44,6 +44,9 @@ OC.L10N.register(
     "No Zammad account connected" : "Ez dago Zammad konturik konektatuta",
     "Error connecting to Zammad" : "Errorea Zammad-era konektatzean",
     "No Zammad notifications!" : "Zammad jakinarazpenik ez!",
-    "Failed to get Zammad notifications" : "Ezin izan da Zammad jakinarazpenik lortu"
+    "Failed to get Zammad notifications" : "Ezin izan da Zammad jakinarazpenik lortu",
+    "Unknown error" : "Errore ezezaguna",
+    "by {creator}" : "{creator}-(e)k sortua",
+    "Comments" : "Iruzkinak"
 },
 "nplurals=2; plural=(n != 1);");

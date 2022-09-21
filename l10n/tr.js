@@ -45,7 +45,10 @@ OC.L10N.register(
     "Error connecting to Zammad" : "Zammad bağlantısı kurulurken sorun çıktı",
     "No Zammad notifications!" : "Herhangi bir Zammad bildirimi yok!",
     "Failed to get Zammad notifications" : "Zammad bildirimleri alınamadı",
+    "Unknown error" : "Bilinmeyen sorun",
     "by {creator}" : "{creator} tarafından oluşturuldu",
+    "Comments" : "Yorumlar",
+    "created {relativeDate}" : "{relativeDate} oluşturuldu",
     "closed {relativeDate}" : "{relativeDate} kapatıldı",
     "updated {relativeDate}" : "{relativeDate} güncellendi"
 },

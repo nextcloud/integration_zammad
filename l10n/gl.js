@@ -43,6 +43,8 @@ OC.L10N.register(
     "No Zammad account connected" : "Non hai ningunha conta de Zammad conectada",
     "Error connecting to Zammad" : "Produciuse un erro ao conectar co Zammad",
     "No Zammad notifications!" : "Non hai notificacións do Zammad.",
-    "Failed to get Zammad notifications" : "Produciuse un fallo ao obter as notificacións de Zammad."
+    "Failed to get Zammad notifications" : "Produciuse un fallo ao obter as notificacións de Zammad.",
+    "Unknown error" : "Erro descoñecido",
+    "Comments" : "Comentarios"
 },
 "nplurals=2; plural=(n != 1);");

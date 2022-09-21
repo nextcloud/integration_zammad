@@ -45,6 +45,9 @@ OC.L10N.register(
     "Error connecting to Zammad" : "Грешка при свързването със Zammad",
     "No Zammad notifications!" : "Няма известия от Zammad!",
     "Failed to get Zammad notifications" : "Неуспешно получаване на известия от Zammad",
-    "closed {relativeDate}" : "затворен {relativeDate}"
+    "Unknown error" : "Неизвестна грешка",
+    "Comments" : "Коментари",
+    "closed {relativeDate}" : "затворен {relativeDate}",
+    "updated {relativeDate}" : "обновен {relativeDate}"
 },
 "nplurals=2; plural=(n != 1);");
