@@ -343,6 +343,12 @@ export default {
 	white-space: normal;
 	padding: 12px;
 
+	a {
+		padding: 0 !important;
+		color: var(--color-main-text) !important;
+		text-decoration: unset !important;
+	}
+
 	h3 {
 		display: flex;
 		align-items: center;
@@ -521,7 +527,7 @@ export default {
 
 	::v-deep .author-link,
 	.slug-link {
-		color: inherit;
+		color: inherit !important;
 	}
 
 	.date-with-tooltip,
@@ -530,7 +536,7 @@ export default {
 	.slug-link,
 	.ticket-link {
 		&:hover {
-			color: #58a6ff;
+			color: #58a6ff !important;
 		}
 	}
 
