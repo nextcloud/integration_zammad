@@ -53,6 +53,7 @@ OC.L10N.register(
     "by {creator}" : "przez {creator}",
     "Comments" : "Komentarze",
     "internal" : "wewnętrzny",
+    "Click to expand comment" : "Kliknij, aby rozwinąć komentarz",
     "Account manager" : "Menadżer konta",
     "Subscription ends" : "Kończy się subskrypcja",
     "created {relativeDate}" : "utworzone {relativeDate}",

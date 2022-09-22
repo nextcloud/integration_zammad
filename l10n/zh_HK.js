@@ -53,6 +53,7 @@ OC.L10N.register(
     "by {creator}" : "由 {creator} 創作",
     "Comments" : "備註",
     "internal" : "內部",
+    "Click to expand comment" : "點擊展開評論",
     "Account manager" : "賬戶經理",
     "Subscription ends" : "訂閱結束日",
     "created {relativeDate}" : "於 {relativeDate} 天前創建",

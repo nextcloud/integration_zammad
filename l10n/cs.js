@@ -53,6 +53,7 @@ OC.L10N.register(
     "by {creator}" : "od {creator}",
     "Comments" : "Komentáře",
     "internal" : "interní",
+    "Click to expand comment" : "Komentář rozbalíte kliknutím",
     "Account manager" : "Správce účtů",
     "Subscription ends" : "Předplatné skončí",
     "created {relativeDate}" : "vytvořeno {relativeDate}",

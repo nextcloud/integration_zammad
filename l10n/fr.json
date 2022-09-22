@@ -44,6 +44,11 @@
     "No Zammad notifications!" : "Pas de notification Zammad !",
     "Failed to get Zammad notifications" : "Impossible d'obtenir les notifications Zammad",
     "Unknown error" : "Erreur inconnue",
-    "Comments" : "Commentaires"
+    "by {creator}" : "par {creator}",
+    "Comments" : "Commentaires",
+    "Click to expand comment" : "Cliquer pour déplier le commentaire",
+    "created {relativeDate}" : "créé {relativeDate}",
+    "closed {relativeDate}" : "fermé {relativeDate}",
+    "updated {relativeDate}" : "édité {relativeDate}"
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }
