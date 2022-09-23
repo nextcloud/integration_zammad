@@ -54,7 +54,7 @@
 			<NcCheckboxRadioSwitch
 				:checked="state.link_preview_enabled"
 				@update:checked="onCheckboxChanged($event, 'link_preview_enabled')">
-				{{ t('integration_zammad', 'Enable Zammad link previews in Talk') }}
+				{{ t('integration_zammad', 'Enable Zammad link previews') }}
 			</NcCheckboxRadioSwitch>
 		</div>
 	</div>

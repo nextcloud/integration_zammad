@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 1.0.5 – 2022-09-23
+### Added
+- Link reference widget for tickets and ticket comments
+
 ## 1.0.4 – 2022-09-03
 ### Changed
 - use node 16
