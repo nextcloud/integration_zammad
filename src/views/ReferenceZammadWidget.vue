@@ -411,6 +411,7 @@ export default {
 			flex-direction: column;
 			align-items: end;
 			text-align: right;
+			white-space: nowrap;
 
 			> * {
 				display: flex;
