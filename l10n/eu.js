@@ -47,6 +47,9 @@ OC.L10N.register(
     "Failed to get Zammad notifications" : "Ezin izan da Zammad jakinarazpenik lortu",
     "Unknown error" : "Errore ezezaguna",
     "by {creator}" : "{creator}-(e)k sortua",
-    "Comments" : "Iruzkinak"
+    "Comments" : "Iruzkinak",
+    "created {relativeDate}" : "sortua {relativeDate}",
+    "closed {relativeDate}" : "ixte-data {relativeDate}",
+    "updated {relativeDate}" : "eguneratze-data {relativeDate}"
 },
 "nplurals=2; plural=(n != 1);");

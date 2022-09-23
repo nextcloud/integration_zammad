@@ -46,6 +46,10 @@ OC.L10N.register(
     "No Zammad notifications!" : "Sem notificações Zammad!",
     "Failed to get Zammad notifications" : "Falha ao obter notificações Zammad",
     "Unknown error" : "Erro desconhecido",
-    "Comments" : "Comentários"
+    "by {creator}" : "por {creator}",
+    "Comments" : "Comentários",
+    "created {relativeDate}" : "criado {relativeDate}",
+    "closed {relativeDate}" : "fechada {relativeDate}",
+    "updated {relativeDate}" : "atualizada {relativeDate}"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
