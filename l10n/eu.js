@@ -46,8 +46,13 @@ OC.L10N.register(
     "No Zammad notifications!" : "Zammad jakinarazpenik ez!",
     "Failed to get Zammad notifications" : "Ezin izan da Zammad jakinarazpenik lortu",
     "Unknown error" : "Errore ezezaguna",
+    "Ticket#{number}" : "Tiket {number}#",
     "by {creator}" : "{creator}-(e)k sortua",
     "Comments" : "Iruzkinak",
+    "internal" : "barnekoa",
+    "Click to expand comment" : "Egin klik iruzkina handitzeko",
+    "Account manager" : "Kontu kudeatzailea",
+    "Subscription ends" : "Harpidetza bukatzen da",
     "created {relativeDate}" : "sortua {relativeDate}",
     "closed {relativeDate}" : "ixte-data {relativeDate}",
     "updated {relativeDate}" : "eguneratze-data {relativeDate}"

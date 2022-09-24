@@ -21,7 +21,6 @@ OC.L10N.register(
     "ID of your application" : "Identif. vaší aplikace",
     "Application secret" : "Tajemství pro aplikaci",
     "Client secret of your application" : "Klientské tajemství nebo vaše aplikace",
-    "Enable Zammad link previews in Talk" : "Zapnout v Talk náhledy odkazů na Zammad",
     "Zammad admin options saved" : "Předvolby správy Zammad uloženy",
     "Failed to save Zammad admin options" : "Nepodařilo se uložit předvolby správy Zammad",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Pokud si chcete přístupový token vytvořit sami, jděte do sekce „Přístup přes token“ stránky s vaším profilem na Zammad.",

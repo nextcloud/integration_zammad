@@ -19,7 +19,6 @@
     "ID of your application" : "ID Twojej aplikacji",
     "Application secret" : "Tajny klucz aplikacji",
     "Client secret of your application" : "Tajny klucz klienta Twojej aplikacji",
-    "Enable Zammad link previews in Talk" : "Włącz podgląd linków Zammad w Talk",
     "Zammad admin options saved" : "Opcje administratora Zammad zostały zapisane",
     "Failed to save Zammad admin options" : "Nie udało się zapisać opcji administratora Zammad",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Aby samodzielnie utworzyć token dostępu, przejdź do sekcji \"Token Access\" na stronie profilu Zammad.",
