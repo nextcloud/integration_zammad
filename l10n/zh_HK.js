@@ -21,6 +21,7 @@ OC.L10N.register(
     "ID of your application" : "您 Zammad 應用程式的 ID",
     "Application secret" : "應用程式密碼",
     "Client secret of your application" : "您 Zammad 應用程式的客戶端密碼",
+    "Enable Zammad link previews" : "啟用 Zammad 連結預覽",
     "Zammad admin options saved" : "已儲存 Zammad 管理員選項",
     "Failed to save Zammad admin options" : "儲存 Zammad 管理員選項失敗",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "要自己創建存取權杖，請轉到Zammad個人資料頁面的 “權杖存取” 部分。",

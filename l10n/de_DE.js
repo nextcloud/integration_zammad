@@ -21,6 +21,7 @@ OC.L10N.register(
     "ID of your application" : "ID Ihrer Anwendung",
     "Application secret" : "Anwendungsgeheimnis",
     "Client secret of your application" : "Client-Geheimnis Ihrer Anwendung",
+    "Enable Zammad link previews" : "Vorschau von Zammad-Links aktivieren",
     "Zammad admin options saved" : "Zammad-Administrator-Einstellungen gespeichert",
     "Failed to save Zammad admin options" : "Fehler beim Speichern der Zammad-Administrator-Einstellungen",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Um selbst ein Zugriffstoken zu erstellen, gehen Sie zum Abschnitt \"Tokenzugriff\" auf Ihrer Zammad-Profilseite.",
