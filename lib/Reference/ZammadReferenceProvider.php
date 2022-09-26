@@ -22,7 +22,7 @@
 
 namespace OCA\Zammad\Reference;
 
-use OC\Collaboration\Reference\Reference;
+use OCP\Collaboration\Reference\Reference;
 use OC\Collaboration\Reference\ReferenceManager;
 use OCA\Zammad\AppInfo\Application;
 use OCA\Zammad\Service\ZammadAPIService;
