@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 1.0.6 – 2022-09-27
+### Changed
+- use new reference class
+
 ## 1.0.5 – 2022-09-23
 ### Added
 - Link reference widget for tickets and ticket comments
