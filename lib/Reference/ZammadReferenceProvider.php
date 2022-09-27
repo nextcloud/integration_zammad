@@ -22,6 +22,7 @@
 
 namespace OCA\Zammad\Reference;
 
+use Exception;
 use OCP\Collaboration\Reference\Reference;
 use OC\Collaboration\Reference\ReferenceManager;
 use OCA\Zammad\AppInfo\Application;
@@ -83,6 +84,11 @@ class ZammadReferenceProvider implements IReferenceProvider {
 //				$projectLabels = $this->zammadAPIService->getProjectLabels($this->userId, $projectInfo['id']);
 				$commentInfo = $this->getCommentInfo($end);
 				$commentAuthorInfo = null;
+				$commentAuthorOrgInfo = null;
+				$ticketStates = null;
+				$ticketTags = null;
+				$authorInfo = null;
+				$authorOrgInfo = null;
 				$ticketInfo = $this->zammadAPIService->getTicketInfo($this->userId, (int)$ticketId);
 				if (!isset($ticketInfo['error']) && isset($ticketInfo['customer_id'])) {
 					$authorInfo = $this->zammadAPIService->getUserInfo($this->userId, $ticketInfo['customer_id']);
@@ -143,7 +149,7 @@ class ZammadReferenceProvider implements IReferenceProvider {
 	/**
 	 * @param string $end
 	 * @return array|null
-	 * @throws PreConditionNotMetException
+	 * @throws PreConditionNotMetException|Exception
 	 */
 	private function getCommentInfo(string $end): ?array {
 		$commentId = $this->getCommentId($end);
