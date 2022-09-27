@@ -6,9 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## 1.0.6 – 2022-09-27
+## 1.0.7 – 2022-09-27
 ### Changed
 - use new reference class
+
+### Fixed
+- undefined vars
 
 ## 1.0.5 – 2022-09-23
 ### Added
