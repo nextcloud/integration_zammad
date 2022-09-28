@@ -92,6 +92,7 @@ class ZammadAPIService {
 	/**
 	 * @param string $userId
 	 * @return void
+	 * @throws PreConditionNotMetException
 	 */
 	private function checkOpenTicketsForUser(string $userId): void {
 		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token');
@@ -110,9 +111,7 @@ class ZammadAPIService {
 				if (isset($me['id'])) {
 					$my_user_id = $me['id'];
 
-					$notifications = $this->getNotifications(
-						$zammadUrl, $accessToken, $tokenType, $refreshToken, $clientID, $clientSecret, $userId, $lastNotificationCheck
-					);
+					$notifications = $this->getNotifications($userId, $lastNotificationCheck);
 					if (!isset($notifications['error']) && count($notifications) > 0) {
 						$lastNotificationCheck = $notifications[0]['updated_at'];
 						$this->config->setUserValue($userId, Application::APP_ID, 'last_open_check', $lastNotificationCheck);
