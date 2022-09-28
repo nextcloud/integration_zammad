@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 2.0.0 – 2022-09-28
+### Fixed
+- refactoring mistake
+
 ## 1.0.7 – 2022-09-27
 ### Changed
 - use new reference class
