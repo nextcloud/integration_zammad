@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## 1.1.0 – 2022-09-28
+## 1.1.1 – 2022-09-28
 ### Changed
 - set max NC version to 24 to start working with stable24 branch
 
