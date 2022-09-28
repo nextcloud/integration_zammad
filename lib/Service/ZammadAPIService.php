@@ -13,6 +13,7 @@ namespace OCA\Zammad\Service;
 
 use DateTime;
 use Exception;
+use OCP\Http\Client\IClient;
 use OCP\IL10N;
 use OCP\PreConditionNotMetException;
 use Psr\Log\LoggerInterface;
@@ -28,47 +29,23 @@ use GuzzleHttp\Exception\ConnectException;
 use OCA\Zammad\AppInfo\Application;
 
 class ZammadAPIService {
-	/**
-	 * @var string
-	 */
-	private $appName;
-	/**
-	 * @var IUserManager
-	 */
-	private $userManager;
-	/**
-	 * @var LoggerInterface
-	 */
-	private $logger;
-	/**
-	 * @var IL10N
-	 */
-	private $l10n;
-	/**
-	 * @var IConfig
-	 */
-	private $config;
-	/**
-	 * @var INotificationManager
-	 */
-	private $notificationManager;
-	/**
-	 * @var \OCP\Http\Client\IClient
-	 */
-	private $client;
+	private IUserManager $userManager;
+	private LoggerInterface $logger;
+	private IL10N $l10n;
+	private IConfig $config;
+	private INotificationManager $notificationManager;
+	private IClient $client;
 
 	/**
 	 * Service to make requests to Zammad v3 (JSON) API
 	 */
-	public function __construct (
-								string $appName,
+	public function __construct (string $appName,
 								IUserManager $userManager,
 								LoggerInterface $logger,
 								IL10N $l10n,
 								IConfig $config,
 								INotificationManager $notificationManager,
 								IClientService $clientService) {
-		$this->appName = $appName;
 		$this->userManager = $userManager;
 		$this->logger = $logger;
 		$this->l10n = $l10n;
@@ -98,12 +75,9 @@ class ZammadAPIService {
 		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token');
 		$notificationEnabled = ($this->config->getUserValue($userId, Application::APP_ID, 'notification_enabled', '0') === '1');
 		if ($accessToken && $notificationEnabled) {
-			$tokenType = $this->config->getUserValue($userId, Application::APP_ID, 'token_type');
-			$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
-			$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
-			$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
+			$token = $this->config->getUserValue($userId, Application::APP_ID, 'token');
 			$zammadUrl = $this->config->getUserValue($userId, Application::APP_ID, 'url');
-			if ($clientID && $clientSecret && $zammadUrl) {
+			if ($token && $zammadUrl) {
 				$lastNotificationCheck = $this->config->getUserValue($userId, Application::APP_ID, 'last_open_check');
 				$lastNotificationCheck = $lastNotificationCheck === '' ? null : $lastNotificationCheck;
 				// get the zammad user ID
@@ -161,7 +135,7 @@ class ZammadAPIService {
 	 * @param ?string $since
 	 * @param ?int $limit
 	 * @return array
-	 * @throws PreConditionNotMetException
+	 * @throws PreConditionNotMetException|Exception
 	 */
 	public function getNotifications(string $userId, ?string $since = null, ?int $limit = null): array {
 		$params = [
@@ -204,7 +178,7 @@ class ZammadAPIService {
 		$userIds = [];
 		foreach ($result as $k => $v) {
 			if (!in_array($v['updated_by_id'], $userIds)) {
-				array_push($userIds, $v['updated_by_id']);
+				$userIds[] = $v['updated_by_id'];
 			}
 		}
 		$userDetails = [];
@@ -244,7 +218,7 @@ class ZammadAPIService {
 		$result = [];
 		if (isset($searchResult['assets']) && isset($searchResult['assets']['Ticket'])) {
 			foreach ($searchResult['assets']['Ticket'] as $id => $t) {
-				array_push($result, $t);
+				$result[] = $t;
 			}
 		}
 		// get ticket state names
@@ -329,7 +303,7 @@ class ZammadAPIService {
 	 * @param string $userId
 	 * @param int $ticketId
 	 * @return array
-	 * @throws PreConditionNotMetException
+	 * @throws PreConditionNotMetException|Exception
 	 */
 	public function getTicketInfo(string $userId, int $ticketId): array {
 		return $this->request($userId, 'tickets/' . $ticketId);
@@ -459,7 +433,7 @@ class ZammadAPIService {
 				}
 			}
 		} catch (ServerException | ClientException $e) {
-			$this->logger->warning('Zammad API error : '.$e->getMessage(), ['app' => $this->appName]);
+			$this->logger->warning('Zammad API error : '.$e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];
 		} catch (ConnectException $e) {
 			return ['error' => $e->getMessage()];
@@ -482,10 +456,9 @@ class ZammadAPIService {
 	private function refreshToken(string $userId, string $url): bool {
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
-		$redirect_uri = $this->config->getUserValue($userId, Application::APP_ID, 'redirect_uri');
 		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
 		if (!$refreshToken) {
-			$this->logger->error('No Zammad refresh token found', ['app' => $this->appName]);
+			$this->logger->error('No Zammad refresh token found', ['app' => Application::APP_ID]);
 			return false;
 		}
 		$result = $this->requestOAuthAccessToken($url, [
@@ -512,7 +485,7 @@ class ZammadAPIService {
 				'Token is not valid anymore. Impossible to refresh it. '
 					. $result['error'] . ' '
 					. $result['error_description'] ?? '[no error description]',
-				['app' => $this->appName]
+				['app' => Application::APP_ID]
 			);
 			return false;
 		}
@@ -562,7 +535,7 @@ class ZammadAPIService {
 				return json_decode($body, true);
 			}
 		} catch (Exception $e) {
-			$this->logger->warning('Zammad OAuth error : '.$e->getMessage(), ['app' => $this->appName]);
+			$this->logger->warning('Zammad OAuth error : '.$e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];
 		}
 	}

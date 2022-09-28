@@ -23,6 +23,7 @@ use OCP\AppFramework\Controller;
 
 use OCA\Zammad\Service\ZammadAPIService;
 use OCA\Zammad\AppInfo\Application;
+use OCP\PreConditionNotMetException;
 
 class ConfigController extends Controller {
 	private IConfig $config;
@@ -55,6 +56,7 @@ class ConfigController extends Controller {
 	 *
 	 * @param array $values
 	 * @return DataResponse
+	 * @throws PreConditionNotMetException
 	 */
 	public function setConfig(array $values): DataResponse {
 		foreach ($values as $key => $value) {
@@ -64,7 +66,7 @@ class ConfigController extends Controller {
 
 		if (isset($values['token'])) {
 			if ($values['token'] && $values['token'] !== '') {
-				$result = $this->storeUserInfo($values['token']);
+				$result = $this->storeUserInfo();
 			} else {
 				$this->config->deleteUserValue($this->userId, Application::APP_ID, 'user_id');
 				$this->config->deleteUserValue($this->userId, Application::APP_ID, 'user_name');
@@ -106,6 +108,7 @@ class ConfigController extends Controller {
 	 * @param string $code
 	 * @param string $state
 	 * @return RedirectResponse
+	 * @throws PreConditionNotMetException
 	 */
 	public function oauthRedirect(string $code = '', string $state = ''): RedirectResponse {
 		$configState = $this->config->getUserValue($this->userId, Application::APP_ID, 'oauth_state');
@@ -138,7 +141,7 @@ class ConfigController extends Controller {
 					$this->config->setUserValue($this->userId, Application::APP_ID, 'token_expires_at', $expiresAt);
 				}
 				// get user info
-				$this->storeUserInfo($accessToken);
+				$this->storeUserInfo();
 				return new RedirectResponse(
 					$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'connected-accounts']) .
 					'?zammadToken=success'
@@ -155,10 +158,10 @@ class ConfigController extends Controller {
 	}
 
 	/**
-	 * @param string $accessToken
 	 * @return array
+	 * @throws PreConditionNotMetException
 	 */
-	private function storeUserInfo(string $accessToken): array {
+	private function storeUserInfo(): array {
 		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url');
 
 		if (!$zammadUrl || !preg_match('/^(https?:\/\/)?[^.]+\.[^.].*/', $zammadUrl)) {
