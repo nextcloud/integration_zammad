@@ -19,6 +19,7 @@
     "ID of your application" : "ID do seu aplicativo",
     "Application secret" : "Segredo do aplicativo",
     "Client secret of your application" : "Segredo do cliente de seu aplicativo",
+    "Enable Zammad link previews" : "Ativar visualizações de links do Zammad",
     "Zammad admin options saved" : "Opções de administração de Zammad salvas",
     "Failed to save Zammad admin options" : "Falha ao salvar as opções de administração do Zammad",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Para você mesmo criar um token de acesso, vá para a seção \"Token de Acesso\" da página de seu perfil do Zammad.",
