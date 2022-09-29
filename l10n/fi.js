@@ -14,15 +14,17 @@ OC.L10N.register(
     "Zammad address" : "Zammad-osoite",
     "Application ID" : "Sovelluksen ID",
     "Application secret" : "Sovelluksen salaisuus",
-    "Enable navigation link" : "Näytä navigointipalkissa",
     "Access token" : "Käyttöpoletti",
     "Zammad access token" : "Zammad-käyttöpoletti",
     "Connect to Zammad" : "Yhdistä Zammadiin",
     "Connected as {user}" : "Yhdistetty käyttäjänä {user}",
     "Disconnect from Zammad" : "Katkaise yhteys Zammadiin",
+    "Enable navigation link" : "Näytä navigointipalkissa",
     "Incorrect access token" : "Virheellinen käyttöpoletti",
     "No Zammad account connected" : "Zammad-tiliä ei ole yhdistetty",
     "Error connecting to Zammad" : "Virhe yhdistäessä Zammadiin",
-    "No Zammad notifications!" : "Ei Zammad-ilmoituksia!"
+    "No Zammad notifications!" : "Ei Zammad-ilmoituksia!",
+    "Unknown error" : "Tuntematon virhe",
+    "Comments" : "Kommentit"
 },
 "nplurals=2; plural=(n != 1);");

@@ -23,16 +23,16 @@
     "Failed to save Zammad admin options" : "No at fatu a sarvare is sèberos amministrativos de Zammad",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Pro creare unu token de atzessu tue etotu, bae a sa setzione \"Token de Atzessu\" de sa pàgina de su profilu Zammad tuo.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Crea unu \"Token de Atzessu Personale\" e ativa is permissos \"TICKET -> AGENTE\", \"AMMINISTRATZIONE -> OGETU\" and \"PREFERÈNTZIAS_UTENTE -> NOTFICAS\" ",
-    "Enable navigation link" : "Ativa su ligòngiu de navigatzione",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Token de atzessu",
     "Zammad access token" : "Token de intrada in Zammad",
     "Connect to Zammad" : "Connete a Zammad",
     "Connected as {user}" : "Connètidu comente {user}",
     "Disconnect from Zammad" : "Disconnete dae Zammad",
-    "Enable unified search for tickets" : "Ativa chirca unificada pro is tickets",
     "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Avisu: totu su chi iscries in s'istanca de chirca s'at a imbiare a s'istàntzia Zammad tua.",
+    "Enable unified search for tickets" : "Ativa chirca unificada pro is tickets",
     "Enable notifications for open tickets" : "Ativa is notìficas pro is eventos pro tickets abertos",
+    "Enable navigation link" : "Ativa su ligòngiu de navigatzione",
     "Successfully connected to Zammad!" : "Connètidu a Zammad in manera curreta!",
     "OAuth access token could not be obtained:" : "No at fatu a otènnere su token de intrada OAuth:",
     "Zammad options saved" : "Sèberos de Zammad sarvados",
@@ -42,6 +42,8 @@
     "No Zammad account connected" : "Perunu contu Zammad connètidu",
     "Error connecting to Zammad" : "Errore connetende a Zammad",
     "No Zammad notifications!" : "Peruna notìfica de Zammad!",
-    "Failed to get Zammad notifications" : "No at fatu a retzire is notìficas de Zammad"
+    "Failed to get Zammad notifications" : "No at fatu a retzire is notìficas de Zammad",
+    "Unknown error" : "Errore disconnotu",
+    "Comments" : "Cummentos"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

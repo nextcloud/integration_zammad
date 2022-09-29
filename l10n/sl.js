@@ -23,16 +23,16 @@ OC.L10N.register(
     "Zammad admin options saved" : "Skrbniške nastavitve povezave Zammad so shranjene",
     "Failed to save Zammad admin options" : "Shranjevanje skrbniških nastavitev računa Zammad je spodletelo",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Žeton za dostop je mogoče ustvariti v razdelku »Dostop do žetonov« na strani profila programa Zammad.",
-    "Enable navigation link" : "Omogoči povezave za krmarjenje",
     "https://my.zammad.org" : "https://moj.zammad.org",
     "Access token" : "Žeton dostopa",
     "Zammad access token" : "Žeton dostopa Zammad",
     "Connect to Zammad" : "Poveži z računom Zammad",
     "Connected as {user}" : "Povezan je uporabniški račun {user}",
     "Disconnect from Zammad" : "Prekini povezavo s programom Zammad",
-    "Enable unified search for tickets" : "Omogoči enotno iskanje med objavami",
     "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Opozorilo! Karkoli vpišete v iskalno polje bo poslano na strežnik Zammad.",
+    "Enable unified search for tickets" : "Omogoči enotno iskanje med objavami",
     "Enable notifications for open tickets" : "Pošlji obvestila za odprte kartice",
+    "Enable navigation link" : "Omogoči povezave za krmarjenje",
     "Successfully connected to Zammad!" : "Povezava z Zammad je uspešno vzpostavljena!",
     "OAuth access token could not be obtained:" : "Žetona OAuth za dostop ni mogoče pridobiti:",
     "Zammad options saved" : "Nastavitve Zammad so shranjene",
@@ -42,6 +42,8 @@ OC.L10N.register(
     "No Zammad account connected" : "Ni še povezanega računa Zammad",
     "Error connecting to Zammad" : "Napaka povezovanja z računom Zammad",
     "No Zammad notifications!" : "Ni obvestil Zammad!",
-    "Failed to get Zammad notifications" : "Pridobivanje obvestil Zammad je spodletelo"
+    "Failed to get Zammad notifications" : "Pridobivanje obvestil Zammad je spodletelo",
+    "Unknown error" : "Neznana napaka",
+    "Comments" : "Opombe"
 },
 "nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);");

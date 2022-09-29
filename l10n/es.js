@@ -25,16 +25,16 @@ OC.L10N.register(
     "Failed to save Zammad admin options" : "Fallo al guardar las opciones de administración de Zammad",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Para crear tú mismo un token de acceso, ve a la sección «Token de acceso» de tu página de perfil de Zammad.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Crea un «Token de acceso personal» y dale permisos «TICKET -> AGENT», «ADMIN -> OBJECT» Y «USER_PREFERENCIES -> NOTIFICACIONES».",
-    "Enable navigation link" : "Habilita el enlace de navegación",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Token de acceso",
     "Zammad access token" : "Token de acceso a Zammad",
     "Connect to Zammad" : "Conectar con Zammad",
     "Connected as {user}" : "Conectado como {user}",
     "Disconnect from Zammad" : "Desconectar de Zammad",
-    "Enable unified search for tickets" : "Activar la búsqueda unificada de tickets",
     "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Cuidado, todo lo que escribas en la barra de búsqueda será enviado a tu instancia de Zammad.",
+    "Enable unified search for tickets" : "Activar la búsqueda unificada de tickets",
     "Enable notifications for open tickets" : "Activar notificaciones de tickets abiertos",
+    "Enable navigation link" : "Habilita el enlace de navegación",
     "Successfully connected to Zammad!" : "¡Conectado con éxito a Zammad!",
     "OAuth access token could not be obtained:" : "No se ha podido obtener el token de acceso OAuth:",
     "Zammad options saved" : "Opciones de Zammad guardadas",
@@ -44,6 +44,8 @@ OC.L10N.register(
     "No Zammad account connected" : "No hay ninguna cuenta de Zammad conectada",
     "Error connecting to Zammad" : "Error al conectar con Zammad",
     "No Zammad notifications!" : "No hay notificaciones de Zammad",
-    "Failed to get Zammad notifications" : "Fallo al obtener las notificaciones de Zammad"
+    "Failed to get Zammad notifications" : "Fallo al obtener las notificaciones de Zammad",
+    "Unknown error" : "Error desconocido",
+    "Comments" : "Comentarios"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

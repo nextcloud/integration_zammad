@@ -8,6 +8,8 @@ OC.L10N.register(
     "Connected accounts" : "계정 연결됨",
     "Connected as {user}" : "[user]로 연결됨",
     "OAuth access token could not be obtained:" : "OAuth 접근 토큰을 얻을 수 없었습니다: ",
-    "Incorrect access token" : "잘못된 액세스 토큰"
+    "Incorrect access token" : "잘못된 액세스 토큰",
+    "Unknown error" : "알 수 없는 오류",
+    "Comments" : "댓글"
 },
 "nplurals=1; plural=0;");

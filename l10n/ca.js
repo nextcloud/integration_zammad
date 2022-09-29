@@ -17,7 +17,6 @@ OC.L10N.register(
     "Application secret" : "Secret de l'aplicació",
     "Client secret of your application" : "Secret del client de la vostra aplicació",
     "Failed to save Zammad admin options" : "No s'han pogut desar les opcions d'administració de Zammad",
-    "Enable navigation link" : "Habilita l'enllaç de navegació",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Testimoni d'aplicació",
     "Zammad access token" : "Testimoni d'accés de Zammad",
@@ -26,12 +25,15 @@ OC.L10N.register(
     "Disconnect from Zammad" : "Desconnectar-se de Zammad",
     "Enable unified search for tickets" : "Habilita la cerca unificada de peticions",
     "Enable notifications for open tickets" : "Activar les notificacions de peticions obertes",
+    "Enable navigation link" : "Habilita l'enllaç de navegació",
     "OAuth access token could not be obtained:" : "No s'ha pogut obtenir el testimoni d'accés oAuth:",
     "Incorrect access token" : "Testimoni d'accés incorrecte",
     "Failed to save Zammad options" : "No s'han pogut desar les opcions de Zammad",
     "Failed to save Zammad OAuth state" : "No s'ha pogut desar l'estat de Zammad OAuth",
     "No Zammad account connected" : "No s'ha connectat el compte de Zammad",
     "Error connecting to Zammad" : "S'ha produït un error en connectar a Zammad",
-    "No Zammad notifications!" : "No hi ha notificacions de Zammad!"
+    "No Zammad notifications!" : "No hi ha notificacions de Zammad!",
+    "Unknown error" : "Error desconegut",
+    "Comments" : "Comentaris"
 },
 "nplurals=2; plural=(n != 1);");

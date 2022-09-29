@@ -25,6 +25,8 @@ OC.L10N.register(
     "No Zammad account connected" : "Neprijungta jokia „Zammad“ paskyra",
     "Error connecting to Zammad" : "Klaida jungiantis prie „Zammad“",
     "No Zammad notifications!" : "Nėra „Zammad“ pranešimų!",
-    "Failed to get Zammad notifications" : "Nepavyko gauti „Zammad“ pranešimų"
+    "Failed to get Zammad notifications" : "Nepavyko gauti „Zammad“ pranešimų",
+    "Unknown error" : "Nežinoma klaida",
+    "Comments" : "Komentarai"
 },
 "nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);");

@@ -22,16 +22,16 @@
     "Failed to save Zammad admin options" : "Не удалось сохранить параметры администратора Zammad",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Чтобы создать токен доступа самостоятельно, перейдите в раздел \"Доступ к токену\" на странице вашего профиля Zammad.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Создайте \"Personal Access Token\" и дайте ему разрешения \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" и \"USER_PREFERENCES -> NOTIFICATIONS\".",
-    "Enable navigation link" : "Включить ссылку для навигации",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Токен доступа",
     "Zammad access token" : "Токен доступа Zammad",
     "Connect to Zammad" : "Подключиться к Zammad",
     "Connected as {user}" : "Подключено под именем {user}",
     "Disconnect from Zammad" : "Отключиться от Zammad",
-    "Enable unified search for tickets" : "Включить унифицированный поиск билетов",
     "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Внимание, все, что вы набираете в строке поиска, будет отправлено в ваш экземпляр Zammad.",
+    "Enable unified search for tickets" : "Включить унифицированный поиск билетов",
     "Enable notifications for open tickets" : "Включить уведомления для открытых билетов",
+    "Enable navigation link" : "Включить ссылку для навигации",
     "Successfully connected to Zammad!" : "Успешно подключено к Zammad!",
     "OAuth access token could not be obtained:" : "Токен доступа OAuth не может быть получен:",
     "Zammad options saved" : "Настройки Zammad сохранены",
@@ -41,6 +41,8 @@
     "No Zammad account connected" : "Учетная запись Zammad не подключена",
     "Error connecting to Zammad" : "Ошибка подключения к Zammad",
     "No Zammad notifications!" : "Никаких уведомлений Zammad!",
-    "Failed to get Zammad notifications" : "Не удалось получить уведомления Zammad"
+    "Failed to get Zammad notifications" : "Не удалось получить уведомления Zammad",
+    "Unknown error" : "Неизвестная ошибка",
+    "Comments" : "Комментарии"
 },"pluralForm" :"nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
 }

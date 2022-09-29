@@ -9,11 +9,13 @@ OC.L10N.register(
     "Zammad address" : "Zammadアドレス",
     "Application ID" : "アプリケーション ID",
     "Application secret" : "アプリケーションシークレット",
-    "Enable navigation link" : "ナビゲーションリンクを有効化",
     "Connect to Zammad" : "Zammadに接続",
     "Connected as {user}" : "{user} を接続済み",
+    "Enable navigation link" : "ナビゲーションリンクを有効化",
     "Incorrect access token" : "正しくないアクセストークン",
     "No Zammad account connected" : "接続済みZammadアカウントがありません",
-    "No Zammad notifications!" : "Zammad通知がありません！"
+    "No Zammad notifications!" : "Zammad通知がありません！",
+    "Unknown error" : "不明なエラー",
+    "Comments" : "コメント"
 },
 "nplurals=1; plural=0;");

@@ -25,16 +25,16 @@ OC.L10N.register(
     "Failed to save Zammad admin options" : "Αποτυχία αποθήκευσης επιλογών διαχειριστή του Zammad",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Για να δημιουργήσετε μόνοι σας ένα διακριτικό πρόσβασης, μεταβείτε στην ενότητα «Διακριτικό πρόσβασης» της σελίδας προφίλ Zammad.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Δημιουργήστε ένα \"Προσωπικό διακριτικό πρόσβασης\" και δώστε του δικαιώματα \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" και \"USER_PREFERENCES -> NOTIFICATIONS\".",
-    "Enable navigation link" : "Ενεργοποίηση συνδέσμου πλοήγησης",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Διακριτικό πρόσβασης",
     "Zammad access token" : "Διακριτικό πρόσβασης Zammad",
     "Connect to Zammad" : "Σύνδεση στο Zammad",
     "Connected as {user}" : "Συνδεδεμένος ως {user}",
     "Disconnect from Zammad" : "Αποσύνδεση από το Zammad",
-    "Enable unified search for tickets" : "Ενεργοποίηση ενοποιημένης αναζήτησης εισιτηρίων",
     "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Προειδοποίηση, όλα όσα πληκτρολογείτε στη γραμμή αναζήτησης θα σταλούν στην εγκατάσταση Zammad.",
+    "Enable unified search for tickets" : "Ενεργοποίηση ενοποιημένης αναζήτησης εισιτηρίων",
     "Enable notifications for open tickets" : "Ενεργοποίηση ειδοποιήσεων για ανοιχτά εισιτήρια",
+    "Enable navigation link" : "Ενεργοποίηση συνδέσμου πλοήγησης",
     "Successfully connected to Zammad!" : "Επιτυχής σύνδεση στο Zammad!",
     "OAuth access token could not be obtained:" : "Δεν ήταν δυνατή η λήψη διακριτικού πρόσβασης OAuth:",
     "Zammad options saved" : "Οι επιλογές του Zammad αποθηκεύτηκαν",
@@ -44,6 +44,8 @@ OC.L10N.register(
     "No Zammad account connected" : "Κανένας συνδεδεμένος λογαριασμός Zammad",
     "Error connecting to Zammad" : "Σφάλμα σύνδεσης στο Zammad",
     "No Zammad notifications!" : "Καμία ειδοποίηση Zammad!",
-    "Failed to get Zammad notifications" : "Αποτυχία λήψης ειδοποιήσεων του Zammad"
+    "Failed to get Zammad notifications" : "Αποτυχία λήψης ειδοποιήσεων του Zammad",
+    "Unknown error" : "Άγνωστο σφάλμα",
+    "Comments" : "Σχόλια"
 },
 "nplurals=2; plural=(n != 1);");

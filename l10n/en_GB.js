@@ -5,6 +5,8 @@ OC.L10N.register(
     "Bad HTTP method" : "Bad HTTP method",
     "Bad credentials" : "Bad credentials",
     "OAuth access token refused" : "OAuth access token refused",
-    "OAuth access token could not be obtained:" : "OAuth access token could not be obtained:"
+    "OAuth access token could not be obtained:" : "OAuth access token could not be obtained:",
+    "Unknown error" : "Unknown error",
+    "Comments" : "Comments"
 },
 "nplurals=2; plural=(n != 1);");

@@ -25,16 +25,16 @@ OC.L10N.register(
     "Failed to save Zammad admin options" : "Spremanje administratorskih postavki Zammada nije uspjelo",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Kako biste sami stvorili token za pristup idite na odjeljak „Pristup tokenima“ na stranici svojeg profila na Zammadu.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Stvorite „Osobni token za pristup“ i dodijelite mu dopuštenja „TICKET -> AGENT“, „ADMIN -> OBJECT“ i „USER_PREFERENCES -> NOTIFICATIONS“.",
-    "Enable navigation link" : "Omogući navigacijsku poveznicu",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Token za pristup",
     "Zammad access token" : "Zammad token za pristup",
     "Connect to Zammad" : "Poveži se sa Zammadom",
     "Connected as {user}" : "Povezan kao {user}",
     "Disconnect from Zammad" : "Odspoji se sa Zammada",
-    "Enable unified search for tickets" : "Omogući objedinjeno pretraživanje prijava",
     "Warning, everything you type in the search bar will be sent to your Zammad instance." : "Upozorenje, sve što upišete u traku za pretraživanje bit će poslano vašoj instanci Zammada.",
+    "Enable unified search for tickets" : "Omogući objedinjeno pretraživanje prijava",
     "Enable notifications for open tickets" : "Omogući obavijesti za otvorene prijave",
+    "Enable navigation link" : "Omogući navigacijsku poveznicu",
     "Successfully connected to Zammad!" : "Uspješno povezivanje sa Zammadom!",
     "OAuth access token could not be obtained:" : "Nije moguće dohvatiti token za pristup OAuth:",
     "Zammad options saved" : "Postavke Zammada su spremljene",
@@ -44,6 +44,8 @@ OC.L10N.register(
     "No Zammad account connected" : "Nema povezanih Zammad računa",
     "Error connecting to Zammad" : "Pogreška pri povezivanju sa Zammadom",
     "No Zammad notifications!" : "Nema Zammad obavijesti!",
-    "Failed to get Zammad notifications" : "Dohvaćanje Zammad obavijesti nije uspjelo"
+    "Failed to get Zammad notifications" : "Dohvaćanje Zammad obavijesti nije uspjelo",
+    "Unknown error" : "Nepoznata pogreška",
+    "Comments" : "Komentari"
 },
 "nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;");
