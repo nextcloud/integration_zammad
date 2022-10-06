@@ -25,6 +25,8 @@ OC.L10N.register(
     "Error connecting to Zammad" : "Virhe yhdistäessä Zammadiin",
     "No Zammad notifications!" : "Ei Zammad-ilmoituksia!",
     "Unknown error" : "Tuntematon virhe",
-    "Comments" : "Kommentit"
+    "by {creator}" : "tehnyt {creator}",
+    "Comments" : "Kommentit",
+    "Click to expand comment" : "Napsauta laajentaaksesi kommentin"
 },
 "nplurals=2; plural=(n != 1);");
