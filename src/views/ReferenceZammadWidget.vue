@@ -87,15 +87,16 @@
 					</span>
 				</div>
 			</div>
-			<div class="spacer" />
 			<div class="right-content">
 				<div>
 					<NcAvatar v-if="authorAvatarUrl"
+						:tooltip-message="authorTooltip"
 						class="ticket-author-avatar"
 						:is-no-user="true"
 						:size="20"
 						:url="authorAvatarUrl" />
 					<NcAvatar v-else
+						:tooltip-message="authorTooltip"
 						class="ticket-author-avatar"
 						:is-no-user="true"
 						:size="20"
@@ -112,12 +113,12 @@
 				<div v-if="richObject.close_at"
 					v-tooltip.top="{ content: closedAtFormatted }"
 					class="closed-at date-with-tooltip">
-					{{ closedAtText }}
+					&nbsp;· {{ closedAtText }}
 				</div>
 				<div v-else-if="richObject.updated_at"
 					v-tooltip.top="{ content: updatedAtFormatted }"
 					class="updated-at date-with-tooltip">
-					{{ updatedAtText }}
+					&nbsp;· {{ updatedAtText }}
 				</div>
 			</div>
 		</div>
@@ -361,6 +362,7 @@ export default {
 	.ticket-wrapper {
 		width: 100%;
 		display: flex;
+		flex-direction: column;
 		align-items: start;
 
 		.title {
@@ -396,22 +398,19 @@ export default {
 			}
 
 			.icon {
-				margin-right: 4px;
+				width: 20px;
+				margin-right: 8px;
 			}
 		}
 
 		.closed-at,
 		.updated-at {
 			color: var(--color-text-maxcontrast);
-			white-space: nowrap;
 		}
 
 		.right-content {
 			display: flex;
-			flex-direction: column;
-			align-items: end;
-			text-align: right;
-			white-space: nowrap;
+			flex-wrap: wrap;
 
 			> * {
 				display: flex;
@@ -451,13 +450,13 @@ export default {
 			&--bubble {
 				// TODO improve this
 				display: grid;
-				//flex-direction: column;
 				width: 100%;
 				padding: 4px 8px;
 				border: 1px solid var(--color-border-dark);
 				border-radius: var(--border-radius);
 				&--header {
 					display: flex;
+					flex-wrap: wrap;
 					align-items: center;
 					margin-bottom: 6px;
 					color: var(--color-text-maxcontrast);
