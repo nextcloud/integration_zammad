@@ -49,6 +49,7 @@ OC.L10N.register(
     "Ticket#{number}" : "Ticket #{number}",
     "by {creator}" : "par {creator}",
     "Comments" : "Commentaires",
+    "internal" : "interne",
     "Click to expand comment" : "Cliquer pour déplier le commentaire",
     "created {relativeDate}" : "créé {relativeDate}",
     "closed {relativeDate}" : "fermé {relativeDate}",
