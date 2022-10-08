@@ -46,6 +46,8 @@ OC.L10N.register(
     "No Zammad notifications!" : "Žiadne upozornenia zo Zammadu!",
     "Failed to get Zammad notifications" : "Chyba pri získavaní upozornení zo Zammadu",
     "Unknown error" : "Neznáma chyba",
-    "Comments" : "Komentáre"
+    "by {creator}" : "od {creator}",
+    "Comments" : "Komentáre",
+    "Click to expand comment" : "Kliknite pre zobrazenie komentára"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");
