@@ -21,6 +21,7 @@ OC.L10N.register(
     "ID of your application" : "ID vašej aplikácie",
     "Application secret" : "Aplikačný tajný kľúč",
     "Client secret of your application" : "Tajomstvo klienta vašej aplikácie",
+    "Enable Zammad link previews" : "Povoliť ukážky odkazov Zammad",
     "Zammad admin options saved" : "Možnosti administrátora Zammad boli uložené",
     "Failed to save Zammad admin options" : "Nepodarilo sa uložiť možnosti administrátora Zammad",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Ak si chcete prístupový token vytvoriť sami, prejdite na stránke svojho profilu v službe Zammad do sekcie „Prístup k tokenom“.",
@@ -45,9 +46,18 @@ OC.L10N.register(
     "Error connecting to Zammad" : "Chyba pri pripájaní k Zammadu",
     "No Zammad notifications!" : "Žiadne upozornenia zo Zammadu!",
     "Failed to get Zammad notifications" : "Chyba pri získavaní upozornení zo Zammadu",
+    "Zammad API error" : "Chyba Zammad API",
     "Unknown error" : "Neznáma chyba",
+    "Zammad connected accounts settings" : "Nastavenia pripojených účtov Zammad",
+    "Ticket#{number}" : "Tiket#{number}",
     "by {creator}" : "od {creator}",
     "Comments" : "Komentáre",
-    "Click to expand comment" : "Kliknite pre zobrazenie komentára"
+    "internal" : "interné",
+    "Click to expand comment" : "Kliknite pre zobrazenie komentára",
+    "Account manager" : "Manažér účtu",
+    "Subscription ends" : "Predplatné vypršalo",
+    "created {relativeDate}" : "vytvorené {relativeDate}",
+    "closed {relativeDate}" : "zatvorené {relativeDate}",
+    "updated {relativeDate}" : "upravené {relativeDate}"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");
