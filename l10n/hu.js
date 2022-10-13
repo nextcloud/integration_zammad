@@ -21,6 +21,7 @@ OC.L10N.register(
     "ID of your application" : "Az alkalmazásának azonosítója",
     "Application secret" : "Az alkalmazás titka",
     "Client secret of your application" : "Az alkalmazás klienstitka",
+    "Enable Zammad link previews" : "Zammad hivatkozások előnézetének engedélyezése",
     "Zammad admin options saved" : "A Zammad rendszergazdai beállítások mentve",
     "Failed to save Zammad admin options" : "A Zammad rendszergazdai beállítások mentése sikertelen",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Ha saját maga szeretne hozzáférési tokent létrehozni, ugorjon a Zammad profiloldalának „Tokenhozzáférs” szakaszához.",
@@ -45,7 +46,18 @@ OC.L10N.register(
     "Error connecting to Zammad" : "Hiba történt a Zammadhoz való csatlakozáskor",
     "No Zammad notifications!" : "Nincsenek Zammad-értesítések.",
     "Failed to get Zammad notifications" : "A Zammad-értesítések lekérése sikertelen",
+    "Zammad API error" : "Zammad API hiba",
     "Unknown error" : "Ismeretlen hiba",
-    "Comments" : "Hozzászólások"
+    "Zammad connected accounts settings" : "A Zammadhoz kapcsolt fiókok beállításai",
+    "Ticket#{number}" : "Jegy#{number}",
+    "by {creator}" : "létrehozta: {creator}l",
+    "Comments" : "Hozzászólások",
+    "internal" : "belső",
+    "Click to expand comment" : "Kattintson a megjegyzés kibontásához",
+    "Account manager" : "Fiókkezelő",
+    "Subscription ends" : "Az előfizetés vége:",
+    "created {relativeDate}" : "létrehozva: {relativeDate}",
+    "closed {relativeDate}" : "lezárva: {relativeDate}",
+    "updated {relativeDate}" : "frissítve: {relativeDate}"
 },
 "nplurals=2; plural=(n != 1);");
