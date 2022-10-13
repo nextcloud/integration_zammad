@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 2.0.1 – 2022-10-13
+### Changed
+- use @nextcloud/vue v7.0.0
+
+### Fixed
+- Avoid reference provider crash when customer has no org
+  [#35](https://github.com/nextcloud/integration_zammad/issues/35) @nickvergessen
+- better wrapping when reference widget gets narrow
+
 ## 2.0.0 – 2022-09-28
 ### Fixed
 - refactoring mistake
