@@ -92,7 +92,9 @@ class ZammadReferenceProvider implements IReferenceProvider {
 				$ticketInfo = $this->zammadAPIService->getTicketInfo($this->userId, (int)$ticketId);
 				if (!isset($ticketInfo['error']) && isset($ticketInfo['customer_id'])) {
 					$authorInfo = $this->zammadAPIService->getUserInfo($this->userId, $ticketInfo['customer_id']);
-					$authorOrgInfo = $this->zammadAPIService->getOrganizationInfo($this->userId, $ticketInfo['organization_id']);
+					if (isset($ticketInfo['organization_id']) && $ticketInfo['organization_id'] !== null) {
+						$authorOrgInfo = $this->zammadAPIService->getOrganizationInfo($this->userId, $ticketInfo['organization_id']);
+					}
 					$ticketStates = $this->zammadAPIService->getTicketStates($this->userId);
 					$ticketTags = $this->zammadAPIService->getTicketTags($this->userId, (int)$ticketId);
 					if ($commentInfo !== null) {
@@ -101,7 +103,9 @@ class ZammadReferenceProvider implements IReferenceProvider {
 							$commentAuthorOrgInfo = $authorOrgInfo;
 						} else {
 							$commentAuthorInfo = $this->zammadAPIService->getUserInfo($this->userId, $commentInfo['created_by_id']);
-							$commentAuthorOrgInfo = $this->zammadAPIService->getOrganizationInfo($this->userId, $commentAuthorInfo['organization_id']);
+							if (isset($commentAuthorInfo['organization_id']) && $commentAuthorInfo['organization_id'] !== null) {
+								$commentAuthorOrgInfo = $this->zammadAPIService->getOrganizationInfo($this->userId, $commentAuthorInfo['organization_id']);
+							}
 						}
 					}
 				}

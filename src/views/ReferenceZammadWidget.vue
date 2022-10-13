@@ -73,7 +73,7 @@
 						class="author-link">
 						{{ t('integration_zammad', 'by {creator}', { creator: authorName }) }}
 					</a>
-					<a
+					<a v-if="richObject.zammad_ticket_author_organization"
 						v-tooltip.top="{ html: true, content: $safeHTML(authorOrgTooltip) }"
 						:href="authorOrgUrl"
 						target="_blank"
@@ -145,7 +145,7 @@
 							<strong class="comment-author-display-name">{{ commentAuthorName }}</strong>
 						</a>
 						&nbsp;
-						<a
+						<a v-if="richObject.zammad_comment_author_organization"
 							v-tooltip.top="{ html: true, content: commentAuthorOrgTooltip }"
 							:href="commentAuthorOrgUrl"
 							target="_blank"
