@@ -21,6 +21,7 @@ OC.L10N.register(
     "ID of your application" : "ID de tu aplicación",
     "Application secret" : "Secreto de la aplicación",
     "Client secret of your application" : "Secreto de cliente de tu aplicación",
+    "Enable Zammad link previews" : "Habilitar la vista previa de los links de Zammad",
     "Zammad admin options saved" : "Opciones de administración de Zammad guardadas",
     "Failed to save Zammad admin options" : "Fallo al guardar las opciones de administración de Zammad",
     "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Para crear tú mismo un token de acceso, ve a la sección «Token de acceso» de tu página de perfil de Zammad.",
@@ -45,7 +46,18 @@ OC.L10N.register(
     "Error connecting to Zammad" : "Error al conectar con Zammad",
     "No Zammad notifications!" : "No hay notificaciones de Zammad",
     "Failed to get Zammad notifications" : "Fallo al obtener las notificaciones de Zammad",
+    "Zammad API error" : "Error del API Zammad",
     "Unknown error" : "Error desconocido",
-    "Comments" : "Comentarios"
+    "Zammad connected accounts settings" : "Configuraciones de las cuentas Zammad conectadas ",
+    "Ticket#{number}" : "Ticket#{number}",
+    "by {creator}" : "por {creator}",
+    "Comments" : "Comentarios",
+    "internal" : "interno",
+    "Click to expand comment" : "Pulse para expandir el comentario",
+    "Account manager" : "Gestor de cuenta",
+    "Subscription ends" : "La suscripción termina",
+    "created {relativeDate}" : "creado {relativeDate}",
+    "closed {relativeDate}" : "cerrado {relativeDate}",
+    "updated {relativeDate}" : "actualizado {relativeDate}"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
