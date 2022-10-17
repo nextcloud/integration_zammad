@@ -46,6 +46,7 @@ OC.L10N.register(
     "No Zammad notifications!" : "Geen Zammad meldingen!",
     "Failed to get Zammad notifications" : "Kon Zammad-meldingen niet ophalen",
     "Unknown error" : "Onbekende fout",
+    "by {creator}" : "door {creator}",
     "Comments" : "Reacties"
 },
 "nplurals=2; plural=(n != 1);");
