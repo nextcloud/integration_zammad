@@ -25,11 +25,14 @@
     "Connect to Zammad" : "连接到Zammad",
     "Connected as {user}" : "作为 {user} 已连接",
     "Disconnect from Zammad" : "与Zammad端开连接",
+    "Warning, everything you type in the search bar will be sent to your Zammad instance." : "警告：您在搜索栏中输入的所有内容都将发送到您的 Zammad 实例。",
     "Enable unified search for tickets" : "启用统一的票证搜索",
     "Enable notifications for open tickets" : "为打开的票证启用通知",
     "Enable navigation link" : "启用导航链接",
     "OAuth access token could not be obtained:" : "无法获取 OAuth 访问令牌：",
     "Incorrect access token" : "访问令牌不正确",
+    "Failed to save Zammad options" : "保存 Zammad 选项失败",
+    "No Zammad notifications!" : "无 Zammad 通知",
     "Unknown error" : "未知错误",
     "Comments" : "评论"
 },"pluralForm" :"nplurals=1; plural=0;"
