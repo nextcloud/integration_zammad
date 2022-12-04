@@ -34,8 +34,11 @@ OC.L10N.register(
     "OAuth access token could not be obtained:" : "无法获取 OAuth 访问令牌：",
     "Incorrect access token" : "访问令牌不正确",
     "Failed to save Zammad options" : "保存 Zammad 选项失败",
+    "No Zammad account connected" : "未连接至 Zammad 账号",
     "No Zammad notifications!" : "无 Zammad 通知",
     "Unknown error" : "未知错误",
-    "Comments" : "评论"
+    "Comments" : "评论",
+    "internal" : "内部",
+    "Account manager" : "账号管理器"
 },
 "nplurals=1; plural=0;");
