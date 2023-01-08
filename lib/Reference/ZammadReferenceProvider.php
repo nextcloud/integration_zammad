@@ -23,29 +23,84 @@
 namespace OCA\Zammad\Reference;
 
 use Exception;
+use OCP\Collaboration\Reference\ADiscoverableReferenceProvider;
+use OCP\Collaboration\Reference\ISearchableReferenceProvider;
 use OCP\Collaboration\Reference\Reference;
 use OC\Collaboration\Reference\ReferenceManager;
 use OCA\Zammad\AppInfo\Application;
 use OCA\Zammad\Service\ZammadAPIService;
 use OCP\Collaboration\Reference\IReference;
-use OCP\Collaboration\Reference\IReferenceProvider;
 use OCP\IConfig;
+use OCP\IL10N;
+use OCP\IURLGenerator;
 use OCP\PreConditionNotMetException;
 
-class ZammadReferenceProvider implements IReferenceProvider {
+class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements ISearchableReferenceProvider {
 	private ZammadAPIService $zammadAPIService;
 	private IConfig $config;
 	private ReferenceManager $referenceManager;
 	private ?string $userId;
+	private IURLGenerator $urlGenerator;
+	private IL10N $l10n;
 
 	public function __construct(ZammadAPIService $zammadAPIService,
 								IConfig $config,
 								ReferenceManager $referenceManager,
+								IURLGenerator $urlGenerator,
+								IL10N $l10n,
 								?string $userId) {
 		$this->zammadAPIService = $zammadAPIService;
 		$this->config = $config;
 		$this->referenceManager = $referenceManager;
 		$this->userId = $userId;
+		$this->urlGenerator = $urlGenerator;
+		$this->l10n = $l10n;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getId(): string	{
+		return 'zammad-ticket';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getTitle(): string {
+		return $this->l10n->t('Zammad tickets');
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getOrder(): int	{
+		return 10;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getIconUrl(): string {
+		return $this->urlGenerator->getAbsoluteURL(
+			$this->urlGenerator->imagePath(Application::APP_ID, 'app-dark.svg')
+		);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getSupportedSearchProviderIds(): array {
+		if ($this->userId !== null) {
+			$ids = [];
+			$searchEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'search_enabled', '0') === '1';
+			if ($searchEnabled) {
+				$ids[] = 'zammad-search';
+			}
+			return $ids;
+		}
+		return ['zammad-search'];
+
 	}
 
 	private function isMatching(string $referenceText, string $url): bool {
