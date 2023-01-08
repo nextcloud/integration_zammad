@@ -203,7 +203,7 @@ class ZammadSearchProvider implements IProvider {
 			$initials = $entry['u_firstname'][0] . $entry['u_lastname'][0];
 		}
 		return isset($entry['u_image'])
-			? $this->urlGenerator->linkToRoute('integration_zammad.zammadAPI.getZammadAvatar', []) . '?imageId=' . urlencode($entry['u_image'])
+			? $this->urlGenerator->linkToRoute('integration_zammad.zammadAPI.getZammadAvatar', ['imageId' => $entry['u_image']])
 			: ($initials
 				? $this->urlGenerator->linkToRouteAbsolute('core.GuestAvatar.getAvatar', ['guestName' => $initials, 'size' => 64])
 				: $thumbnailUrl);
