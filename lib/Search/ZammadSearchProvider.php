@@ -86,7 +86,7 @@ class ZammadSearchProvider implements IProvider {
 	 * @inheritDoc
 	 */
 	public function getName(): string {
-		return $this->l10n->t('Zammad');
+		return $this->l10n->t('Zammad tickets');
 	}
 
 	/**
@@ -127,8 +127,7 @@ class ZammadSearchProvider implements IProvider {
 			return SearchResult::paginated($this->getName(), [], 0);
 		}
 
-		$searchResults = $this->service->search($user->getUID(), $term);
-		$searchResults = array_slice($searchResults, $offset, $limit);
+		$searchResults = $this->service->search($user->getUID(), $term, $offset, $limit);
 
 		if (isset($searchResults['error'])) {
 			return SearchResult::paginated($this->getName(), [], 0);

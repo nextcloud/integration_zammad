@@ -14,6 +14,8 @@ namespace OCA\Zammad\Service;
 use DateTime;
 use Exception;
 use OCP\Http\Client\IClient;
+use OCP\ICache;
+use OCP\ICacheFactory;
 use OCP\IL10N;
 use OCP\PreConditionNotMetException;
 use Psr\Log\LoggerInterface;
@@ -35,6 +37,8 @@ class ZammadAPIService {
 	private IConfig $config;
 	private INotificationManager $notificationManager;
 	private IClient $client;
+	private ICacheFactory $cacheFactory;
+	private ICache $cache;
 
 	/**
 	 * Service to make requests to Zammad v3 (JSON) API
@@ -45,6 +49,7 @@ class ZammadAPIService {
 								IL10N $l10n,
 								IConfig $config,
 								INotificationManager $notificationManager,
+								ICacheFactory $cacheFactory,
 								IClientService $clientService) {
 		$this->userManager = $userManager;
 		$this->logger = $logger;
@@ -52,6 +57,8 @@ class ZammadAPIService {
 		$this->config = $config;
 		$this->notificationManager = $notificationManager;
 		$this->client = $clientService->newClient();
+		$this->cacheFactory = $cacheFactory;
+		$this->cache = $cacheFactory->createDistributed(Application::APP_ID . '_global_info');
 	}
 
 	/**
@@ -204,87 +211,137 @@ class ZammadAPIService {
 
 	/**
 	 * @param string $userId
-	 * @param string $query
 	 * @return array
-	 * @throws PreConditionNotMetException
+	 * @throws Exception
 	 */
-	public function search(string $userId, string $query): array {
-		$params = [
-			'query' => $query,
-			'limit' => 20,
-		];
-		$searchResult = $this->request($userId, 'tickets/search', $params);
-
-		$result = [];
-		if (isset($searchResult['assets']) && isset($searchResult['assets']['Ticket'])) {
-			foreach ($searchResult['assets']['Ticket'] as $id => $t) {
-				$result[] = $t;
-			}
+	public function getTicketStateNames(string $userId): array {
+		$cacheKey = md5('states_by_id');
+		$hit = $this->cache->get($cacheKey);
+		if ($hit !== null) {
+			return $hit;
 		}
-		// get ticket state names
+
 		$states = $this->request($userId, 'ticket_states');
 		$statesById = [];
 		if (!isset($states['error'])) {
 			foreach ($states as $state) {
-				$id = $state['id'];
+				$id = (int) $state['id'];
 				$name = $state['name'];
 				if ($id && $name) {
 					$statesById[$id] = $name;
 				}
 			}
 		}
-		foreach ($result as $k => $v) {
-			if (array_key_exists($v['state_id'], $statesById)) {
-				$result[$k]['state_name'] = $statesById[$v['state_id']];
-			}
+
+		$this->cache->set($cacheKey, $statesById, 60 * 60 * 24);
+		return $statesById;
+	}
+
+	/**
+	 * @param string $userId
+	 * @return array
+	 * @throws Exception
+	 */
+	public function getPriorityNames(string $userId): array {
+		$cacheKey = md5('priorities_by_id');
+		$hit = $this->cache->get($cacheKey);
+		if ($hit !== null) {
+			return $hit;
 		}
-		// get ticket priority names
+
 		$prios = $this->request($userId, 'ticket_priorities');
 		$priosById = [];
 		if (!isset($prios['error'])) {
 			foreach ($prios as $prio) {
-				$id = $prio['id'];
+				$id = (int) $prio['id'];
 				$name = $prio['name'];
 				if ($id && $name) {
 					$priosById[$id] = $name;
 				}
 			}
 		}
-		foreach ($result as $k => $v) {
-			if (array_key_exists($v['priority_id'], $priosById)) {
-				$result[$k]['priority_name'] = $priosById[$v['priority_id']];
+
+		$this->cache->set($cacheKey, $priosById, 60 * 60 * 24);
+		return $priosById;
+	}
+
+	/**
+	 * @param int $offset
+	 * @param int $limit
+	 * @return array [perPage, page, leftPadding]
+	 */
+	public static function getZammadPaginationValues(int $offset = 0, int $limit = 5): array {
+		// compute pagination values
+		// indexes offset => offset + limit
+		if (($offset % $limit) === 0) {
+			$perPage = $limit;
+			// page number starts at 1
+			$page = ($offset / $limit) + 1;
+			return [$perPage, $page, 0];
+		} else {
+			$firstIndex = $offset;
+			$lastIndex = $offset + $limit - 1;
+			$perPage = $limit;
+			// while there is no page that contains them'all
+			while (intdiv($firstIndex, $perPage) !== intdiv($lastIndex, $perPage)) {
+				$perPage++;
+			}
+			$page = intdiv($offset, $perPage) + 1;
+			$leftPadding = $firstIndex % $perPage;
+
+			return [$perPage, $page, $leftPadding];
+		}
+	}
+
+	/**
+	 * @param string $userId
+	 * @param string $query
+	 * @param int $offset
+	 * @param int $limit
+	 * @return array
+	 * @throws Exception
+	 */
+	public function search(string $userId, string $query, int $offset = 0, int $limit = 5): array {
+		[$perPage, $page, $leftPadding] = self::getZammadPaginationValues($offset, $limit);
+		$params = [
+			'query' => $query,
+			//'limit' => $limit,
+			'per_page' => $perPage,
+			'page' => $page,
+		];
+		$searchResult = $this->request($userId, 'tickets/search', $params);
+
+		$tickets = $searchResult['assets']['Ticket'] ?? [];
+		$tickets = array_slice($tickets, $leftPadding, $limit);
+		$users = $searchResult['assets']['User'] ?? [];
+
+		$statesById = $this->getTicketStateNames($userId);
+		foreach ($tickets as $k => $ticket) {
+			$stateId = (int) $ticket['state_id'];
+			if (array_key_exists($stateId, $statesById)) {
+				$tickets[$k]['state_name'] = $statesById[$stateId];
+			}
+		}
+		// get ticket priority names
+		$prioritiesById = $this->getPriorityNames($userId);
+		foreach ($tickets as $k => $ticket) {
+			$priorityId = (int) $ticket['priority_id'];
+			if (array_key_exists($priorityId, $prioritiesById)) {
+				$tickets[$k]['priority_name'] = $prioritiesById[$priorityId];
 			}
 		}
 		// add owner information
-		$userIds = [];
-		$field = 'customer_id';
-		foreach ($result as $k => $v) {
-			if (!in_array($v[$field], $userIds)) {
-				$userIds[] = $v[$field];
+		foreach ($tickets as $k => $ticket) {
+			$customerId = (string) $ticket['customer_id'];
+			if (isset($users[$customerId])) {
+				$user = $users[$customerId];
+				$tickets[$k]['u_firstname'] = $user['firstname'];
+				$tickets[$k]['u_lastname'] = $user['lastname'];
+				$tickets[$k]['u_organization_id'] = $user['organization_id'];
+				$tickets[$k]['u_image'] = $user['image'];
 			}
 		}
-		$userDetails = [];
-		foreach ($userIds as $uid) {
-			$user = $this->request($userId, 'users/' . $uid);
-			if (!isset($user['error'])) {
-				$userDetails[$uid] = [
-					'firstname' => $user['firstname'],
-					'lastname' => $user['lastname'],
-					'organization_id' => $user['organization_id'],
-					'image' => $user['image'],
-				];
-			}
-		}
-		foreach ($result as $k => $v) {
-			if (array_key_exists($v[$field], $userDetails)) {
-				$user = $userDetails[$v[$field]];
-				$result[$k]['u_firstname'] = $user['firstname'];
-				$result[$k]['u_lastname'] = $user['lastname'];
-				$result[$k]['u_organization_id'] = $user['organization_id'];
-				$result[$k]['u_image'] = $user['image'];
-			}
-		}
-		return $result;
+		return $tickets;
 	}
 
 	/**
