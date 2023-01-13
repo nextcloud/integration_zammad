@@ -24,9 +24,11 @@ declare(strict_types=1);
  */
 namespace OCA\Zammad\Search;
 
+use DateTime;
 use OCA\Zammad\Service\ZammadAPIService;
 use OCA\Zammad\AppInfo\Application;
 use OCP\App\IAppManager;
+use OCP\IDateTimeFormatter;
 use OCP\IL10N;
 use OCP\IConfig;
 use OCP\IURLGenerator;
@@ -36,42 +38,24 @@ use OCP\Search\ISearchQuery;
 use OCP\Search\SearchResult;
 
 class ZammadSearchProvider implements IProvider {
+	private IAppManager $appManager;
+	private IL10N $l10n;
+	private IConfig $config;
+	private IURLGenerator $urlGenerator;
+	private IDateTimeFormatter $dateTimeFormatter;
+	private ZammadAPIService $service;
 
-	/** @var IAppManager */
-	private $appManager;
-
-	/** @var IL10N */
-	private $l10n;
-
-	/** @var IURLGenerator */
-	private $urlGenerator;
-	/**
-	 * @var IConfig
-	 */
-	private $config;
-	/**
-	 * @var ZammadAPIService
-	 */
-	private $service;
-
-	/**
-	 * CospendSearchProvider constructor.
-	 *
-	 * @param IAppManager $appManager
-	 * @param IL10N $l10n
-	 * @param IConfig $config
-	 * @param IURLGenerator $urlGenerator
-	 * @param ZammadAPIService $service
-	 */
 	public function __construct(IAppManager $appManager,
 								IL10N $l10n,
 								IConfig $config,
 								IURLGenerator $urlGenerator,
+								IDateTimeFormatter $dateTimeFormatter,
 								ZammadAPIService $service) {
 		$this->appManager = $appManager;
 		$this->l10n = $l10n;
 		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;
+		$this->dateTimeFormatter = $dateTimeFormatter;
 		$this->service = $service;
 	}
 
@@ -164,11 +148,20 @@ class ZammadSearchProvider implements IProvider {
 	 * @return string
 	 */
 	protected function getSubline(array $entry): string {
-		$priorityName = $entry['priority_name'] ?: $entry['priority_id'];
-		$prefix = $entry['state_name']
-			? '[' . $this->truncate($entry['state_name'], 10) . '/' . $priorityName . '] '
-			: '[' . $priorityName . '] ';
-		return $prefix . $entry['u_firstname'] . ' ' . $entry['u_lastname'];
+		$severity = '[' . ($entry['severity'] ?? 'sev?') . '] ';
+		$state = $entry['state_name']
+			? '[' . $this->truncate($entry['state_name'], 10) . '] '
+			: '';
+		$date = '';
+		if (isset($entry['close_at']) && $entry['close_at']) {
+			$rel = $this->dateTimeFormatter->formatTimeSpan(new DateTime($entry['close_at']));
+			$date = $this->l10n->t('closed %1$s', [$rel]);
+		} elseif (isset($entry['updated_at']) && $entry['updated_at']) {
+			$rel = $this->dateTimeFormatter->formatTimeSpan(new DateTime($entry['updated_at']));
+			$date = $this->l10n->t('updated %1$s', [$rel]);
+		}
+		return $severity . $state . $entry['u_firstname'] . ' ' . $entry['u_lastname']
+			. ' [' . $entry['org_name'] . '] ' . $date;
 	}
 
 	/**

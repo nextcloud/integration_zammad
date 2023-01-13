@@ -65,6 +65,7 @@
 						<a :href="ticketUrl" class="slug-link" target="_blank">
 							{{ t('integration_zammad', 'Ticket#{number}', { number: richObject.number }) }}
 						</a>
+						[{{ richObject.severity }}]
 					</span>
 					<a
 						v-tooltip.top="{ content: authorTooltip }"

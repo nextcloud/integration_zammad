@@ -215,7 +215,8 @@ class ZammadAPIService {
 	 * @throws Exception
 	 */
 	public function getTicketStateNames(string $userId): array {
-		$cacheKey = md5('states_by_id');
+		$zammadUrl = $this->config->getUserValue($userId, Application::APP_ID, 'url');
+		$cacheKey = md5($zammadUrl . '_states_by_id');
 		$hit = $this->cache->get($cacheKey);
 		if ($hit !== null) {
 			return $hit;
@@ -243,7 +244,8 @@ class ZammadAPIService {
 	 * @throws Exception
 	 */
 	public function getPriorityNames(string $userId): array {
-		$cacheKey = md5('priorities_by_id');
+		$zammadUrl = $this->config->getUserValue($userId, Application::APP_ID, 'url');
+		$cacheKey = md5($zammadUrl . '_priorities_by_id');
 		$hit = $this->cache->get($cacheKey);
 		if ($hit !== null) {
 			return $hit;
@@ -314,6 +316,7 @@ class ZammadAPIService {
 		$tickets = $searchResult['assets']['Ticket'] ?? [];
 		$tickets = array_slice($tickets, $leftPadding, $limit);
 		$users = $searchResult['assets']['User'] ?? [];
+		$orgs = $searchResult['assets']['Organization'] ?? [];
 
 		$statesById = $this->getTicketStateNames($userId);
 		foreach ($tickets as $k => $ticket) {
@@ -330,7 +333,7 @@ class ZammadAPIService {
 				$tickets[$k]['priority_name'] = $prioritiesById[$priorityId];
 			}
 		}
-		// add owner information
+		// add owner/org information
 		foreach ($tickets as $k => $ticket) {
 			$customerId = (string) $ticket['customer_id'];
 			if (isset($users[$customerId])) {
@@ -339,6 +342,11 @@ class ZammadAPIService {
 				$tickets[$k]['u_lastname'] = $user['lastname'];
 				$tickets[$k]['u_organization_id'] = $user['organization_id'];
 				$tickets[$k]['u_image'] = $user['image'];
+			}
+			$orgId = (string) $ticket['organization_id'];
+			if (isset($orgs[$orgId])) {
+				$org = $orgs[$orgId];
+				$tickets[$k]['org_name'] = $org['name'];
 			}
 		}
 		return $tickets;
