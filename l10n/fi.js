@@ -27,6 +27,9 @@ OC.L10N.register(
     "Unknown error" : "Tuntematon virhe",
     "by {creator}" : "tehnyt {creator}",
     "Comments" : "Kommentit",
-    "Click to expand comment" : "Napsauta laajentaaksesi kommentin"
+    "Click to expand comment" : "Napsauta laajentaaksesi kommentin",
+    "created {relativeDate}" : "luotu {relativeDate}",
+    "closed {relativeDate}" : "suljettu {relativeDate}",
+    "updated {relativeDate}" : "päivitetty {relativeDate}"
 },
 "nplurals=2; plural=(n != 1);");
