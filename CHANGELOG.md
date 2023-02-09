@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 2.0.2 – 2023-02-09
+### Added
+- make reference provider discoverable and searchable
+
+### Changed
+- speedup search provider by at least x10
+- use proper pagination
+- add org info and severity in search result
+- add severity in ref widget
+- lazy load dashboard widget and reference widget
+
+### Fixed
+- search provider incorrect avatar URLs
+
 ## 2.0.1 – 2022-10-13
 ### Changed
 - use @nextcloud/vue v7.0.0
