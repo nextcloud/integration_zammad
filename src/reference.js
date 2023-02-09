@@ -20,11 +20,14 @@
  */
 
 import { registerWidget } from '@nextcloud/vue-richtext'
-import './bootstrap.js'
-import Vue from 'vue'
-import ReferenceZammadWidget from './views/ReferenceZammadWidget.vue'
 
-registerWidget('integration_zammad', (el, { richObjectType, richObject, accessible }) => {
+__webpack_nonce__ = btoa(OC.requestToken) // eslint-disable-line
+__webpack_public_path__ = OC.linkTo('integration_zammad', 'js/') // eslint-disable-line
+
+registerWidget('integration_zammad', async (el, { richObjectType, richObject, accessible }) => {
+	const { default: Vue } = await import(/* webpackChunkName: "reference-lazy" */'vue')
+	const { default: ReferenceZammadWidget } = await import(/* webpackChunkName: "reference-lazy" */'./views/ReferenceZammadWidget.vue')
+	Vue.mixin({ methods: { t, n } })
 	const Widget = Vue.extend(ReferenceZammadWidget)
 	new Widget({
 		propsData: {
