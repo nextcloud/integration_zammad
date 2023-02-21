@@ -7,6 +7,7 @@ OC.L10N.register(
     "OAuth access token refused" : "OAuth access token ble avslått",
     "OAuth access token could not be obtained:" : "OAuth access token kunne ikke innhentes:",
     "Unknown error" : "Ukjent feil",
-    "Comments" : "Kommentarer"
+    "Comments" : "Kommentarer",
+    "Click to expand comment" : "Klikk for å utvide kommentaren"
 },
 "nplurals=2; plural=(n != 1);");
