@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 2.0.3 – 2023-02-23
+### Changed
+- update npm pkgs
+
+### Fixed
+- screenshot URL for the appstore
+
 ## 2.0.2 – 2023-02-09
 ### Added
 - make reference provider discoverable and searchable
