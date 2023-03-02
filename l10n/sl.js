@@ -46,6 +46,7 @@ OC.L10N.register(
     "Unknown error" : "Neznana napaka",
     "Comments" : "Opombe",
     "Click to expand comment" : "Kliknite za razširitev opombe",
+    "Account manager" : "Upravljalnik računov",
     "created {relativeDate}" : "ustvarjeno {relativeDate}",
     "closed {relativeDate}" : "zaprto {relativeDate}",
     "updated {relativeDate}" : "posodobljeno {relativeDate}"
