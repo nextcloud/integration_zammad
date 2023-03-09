@@ -23,6 +23,7 @@ OC.L10N.register(
     "Enable notifications for open tickets" : "Aktivera aviseringar för öppna ärenden",
     "Enable navigation link" : "Aktivera navigeringslänk",
     "Successfully connected to Zammad!" : "Ansluten till Zammad!",
+    "OAuth access token could not be obtained:" : "OAuth-åtkomsttoken kunde inte erhållas:",
     "Zammad options saved" : "Zammad-inställningarna har sparats",
     "Incorrect access token" : "Ogiltig åtkomst-token",
     "Failed to save Zammad options" : "Kunde inte spara Zammad-inställningarna",
