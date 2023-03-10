@@ -2,6 +2,7 @@
     "Connected accounts" : "Forbundne konti",
     "Connected as {user}" : "Forbundet som {user}",
     "Unknown error" : "Ukendt fejl",
-    "Comments" : "Kommentarer"
+    "Comments" : "Kommentarer",
+    "Account manager" : "Konto bestyrer"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
