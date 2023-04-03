@@ -11,7 +11,6 @@
 
 namespace OCA\Zammad\Notification;
 
-
 use InvalidArgumentException;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
@@ -23,32 +22,19 @@ use OCA\Zammad\AppInfo\Application;
 
 class Notifier implements INotifier {
 
-	/** @var IFactory */
-	protected $factory;
+	private IFactory $factory;
+	private IUserManager $userManager;
+	private INotificationManager $notificationManager;
+	private IURLGenerator $urlGenerator;
 
-	/** @var IUserManager */
-	protected $userManager;
-
-	/** @var INotificationManager */
-	protected $notificationManager;
-
-	/** @var IURLGenerator */
-	protected $url;
-
-	/**
-	 * @param IFactory $factory
-	 * @param IUserManager $userManager
-	 * @param INotificationManager $notificationManager
-	 * @param IURLGenerator $urlGenerator
-	 */
-	public function __construct(IFactory $factory,
-								IUserManager $userManager,
+	public function __construct(IFactory             $factory,
+								IUserManager         $userManager,
 								INotificationManager $notificationManager,
-								IURLGenerator $urlGenerator) {
+								IURLGenerator        $urlGenerator) {
 		$this->factory = $factory;
 		$this->userManager = $userManager;
 		$this->notificationManager = $notificationManager;
-		$this->url = $urlGenerator;
+		$this->urlGenerator = $urlGenerator;
 	}
 
 	/**
@@ -61,7 +47,7 @@ class Notifier implements INotifier {
 		return 'integration_zammad';
 	}
 	/**
-	 * Human readable name describing the notifier
+	 * Human-readable name describing the notifier
 	 *
 	 * @return string
 	 * @since 17.0.0
@@ -89,7 +75,7 @@ class Notifier implements INotifier {
 		case 'new_open_tickets':
 			$p = $notification->getSubjectParameters();
 			$nbOpen = (int) ($p['nbOpen'] ?? 0);
-			$content = $l->n('You have %s open ticket in Zammad.', 'You have %s open tickets in Zammad.', $nbOpen, [$nbOpen]);
+			$content = $l->n('You have %n open ticket in Zammad.', 'You have %n open tickets in Zammad.', $nbOpen);
 
 			//$theme = $this->config->getUserValue($userId, 'accessibility', 'theme', '');
 			//$iconUrl = ($theme === 'dark')
@@ -98,7 +84,11 @@ class Notifier implements INotifier {
 
 			$notification->setParsedSubject($content)
 				->setLink($p['link'] ?? '')
-				->setIcon($this->url->getAbsoluteURL($this->url->imagePath(Application::APP_ID, 'app-dark.svg')));
+				->setIcon(
+					$this->urlGenerator->getAbsoluteURL(
+						$this->urlGenerator->imagePath(Application::APP_ID, 'app-dark.svg')
+					)
+				);
 				//->setIcon($this->url->getAbsoluteURL($iconUrl));
 			return $notification;
 
