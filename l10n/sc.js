@@ -5,7 +5,6 @@ OC.L10N.register(
     "Error getting OAuth access token." : "Errore recuperende su token de intrada OAuth.",
     "Error during OAuth exchanges" : "Errore cuncambiende OAuth",
     "Zammad notifications" : "Notìficas de Zammad",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Tenes %s ticket abertu in Zammad.","Tenes %s ticket abertos in Zammad."],
     "Bad HTTP method" : "Mètodu HTTP no bàlidu",
     "Bad credentials" : "Credentziales non bàlidas",
     "OAuth access token refused" : "Token de intrada OAuth refudadu",
@@ -46,6 +45,7 @@ OC.L10N.register(
     "No Zammad notifications!" : "Peruna notìfica de Zammad!",
     "Failed to get Zammad notifications" : "No at fatu a retzire is notìficas de Zammad",
     "Unknown error" : "Errore disconnotu",
-    "Comments" : "Cummentos"
+    "Comments" : "Cummentos",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Tenes %s ticket abertu in Zammad.","Tenes %s ticket abertos in Zammad."]
 },
 "nplurals=2; plural=(n != 1);");

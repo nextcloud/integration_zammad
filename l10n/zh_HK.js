@@ -5,7 +5,6 @@ OC.L10N.register(
     "Error getting OAuth access token." : "取得 OAuth 存取權杖時發生錯誤。",
     "Error during OAuth exchanges" : "OAuth 交換時發生錯誤",
     "Zammad notifications" : "Zammad 通告",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["您在Zammad有 %s 張公開票。"],
     "Zammad tickets" : "Zammad 工單",
     "closed %1$s" : "已關閉 %1$s",
     "updated %1$s" : "已更新 %1$s",
@@ -61,6 +60,7 @@ OC.L10N.register(
     "Subscription ends" : "訂閱結束日",
     "created {relativeDate}" : "於 {relativeDate} 天前創建",
     "closed {relativeDate}" : "有效期至 {relativeDate}",
-    "updated {relativeDate}" : "於 {relativeDate} 更新"
+    "updated {relativeDate}" : "於 {relativeDate} 更新",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["您在Zammad有 %s 張公開票。"]
 },
 "nplurals=1; plural=0;");

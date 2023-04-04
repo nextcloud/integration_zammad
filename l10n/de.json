@@ -3,7 +3,6 @@
     "Error getting OAuth access token." : "Fehler beim Abrufen des OAuth-Zugriffstokens",
     "Error during OAuth exchanges" : "Fehler beim OAuth-Austausch",
     "Zammad notifications" : "Zammad-Benachrichtigungen",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Du hast %s offenes Ticket in Zammad.","Du hast %s offene Tickets in Zammad."],
     "Zammad tickets" : "Zammad Tickets",
     "closed %1$s" : "Geschlossen %1$s",
     "updated %1$s" : "Aktualisiert %1$s",
@@ -59,6 +58,7 @@
     "Subscription ends" : "Abonnement endet",
     "created {relativeDate}" : "erstellt {relativeDate}",
     "closed {relativeDate}" : "geschlossen {relativeDate}",
-    "updated {relativeDate}" : "aktualisiert {relativeDate}"
+    "updated {relativeDate}" : "aktualisiert {relativeDate}",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Du hast %s offenes Ticket in Zammad.","Du hast %s offene Tickets in Zammad."]
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

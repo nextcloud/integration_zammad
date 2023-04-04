@@ -5,7 +5,6 @@ OC.L10N.register(
     "Error getting OAuth access token." : "Chyba pri získavaní prístupového tokenu OAuth.",
     "Error during OAuth exchanges" : "Chyba počas výmeny OAuth",
     "Zammad notifications" : "Oznámenia Zammadu",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Máte %s otvorený ticket v Zammade.","Máte %s otvorených ticketov v Zammade.","Máte %s otvorených ticketov v Zammade.","Máte %s otvorených ticketov v Zammade."],
     "Bad HTTP method" : "Zlá metóda HTTP",
     "Bad credentials" : "Nesprávne prihlasovacie údaje",
     "OAuth access token refused" : "Prístupový token OAuth bol zamietnutý",
@@ -58,6 +57,7 @@ OC.L10N.register(
     "Subscription ends" : "Predplatné vypršalo",
     "created {relativeDate}" : "vytvorené {relativeDate}",
     "closed {relativeDate}" : "zatvorené {relativeDate}",
-    "updated {relativeDate}" : "upravené {relativeDate}"
+    "updated {relativeDate}" : "upravené {relativeDate}",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Máte %s otvorený ticket v Zammade.","Máte %s otvorených ticketov v Zammade.","Máte %s otvorených ticketov v Zammade.","Máte %s otvorených ticketov v Zammade."]
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");

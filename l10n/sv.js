@@ -5,7 +5,6 @@ OC.L10N.register(
     "Error getting OAuth access token." : "Kunde inte hämta OAuth-token.",
     "Error during OAuth exchanges" : "Fel vid utväxling av OAuth-token",
     "Zammad notifications" : "Zammad-aviseringar",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Du har %s öppet ärende i Zammad.","Du har %s öppna ärenden i Zammad."],
     "Bad HTTP method" : "Felaktig HTTP-metod",
     "Bad credentials" : "Ogiltiga inloggningsuppgifter",
     "OAuth access token refused" : "OAuth-token avvisades",
@@ -41,6 +40,7 @@ OC.L10N.register(
     "Subscription ends" : "Prenumerationen upphör",
     "created {relativeDate}" : "skapad {relativeDate}",
     "closed {relativeDate}" : "stängd {relativeDate}",
-    "updated {relativeDate}" : "uppdaterad {relativeDate}"
+    "updated {relativeDate}" : "uppdaterad {relativeDate}",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Du har %s öppet ärende i Zammad.","Du har %s öppna ärenden i Zammad."]
 },
 "nplurals=2; plural=(n != 1);");

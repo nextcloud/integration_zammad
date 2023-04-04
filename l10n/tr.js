@@ -5,7 +5,6 @@ OC.L10N.register(
     "Error getting OAuth access token." : "OAuth erişim kodu alınırken sorun çıktı.",
     "Error during OAuth exchanges" : "OAuth takasında sorun çıktı",
     "Zammad notifications" : "Zammad bildirimleri",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Zammad üzerinde açık %s destek kaydınız var.","Zammad üzerinde açık %s destek kaydınız var."],
     "Zammad tickets" : "Zammad destek kayıtları",
     "closed %1$s" : "%1$s kapatıldı",
     "updated %1$s" : "%1$s güncellendi",
@@ -61,6 +60,7 @@ OC.L10N.register(
     "Subscription ends" : "Abonelik sonu",
     "created {relativeDate}" : "{relativeDate} oluşturuldu",
     "closed {relativeDate}" : "{relativeDate} kapatıldı",
-    "updated {relativeDate}" : "{relativeDate} güncellendi"
+    "updated {relativeDate}" : "{relativeDate} güncellendi",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Zammad üzerinde açık %s destek kaydınız var.","Zammad üzerinde açık %s destek kaydınız var."]
 },
 "nplurals=2; plural=(n > 1);");

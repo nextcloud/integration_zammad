@@ -3,7 +3,6 @@
     "Error getting OAuth access token." : "Pogreška pri dohvaćanju tokena za pristup OAuth.",
     "Error during OAuth exchanges" : "Pogreška tijekom razmjene radi autentifikacije OAuth",
     "Zammad notifications" : "Zammad obavijesti",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Imate %s otvorenu prijavu u Zammadu.","Imate %s otvorene prijave u Zammadu.","Imate %s otvorenih prijava u Zammadu."],
     "Bad HTTP method" : "Pogrešna metoda HTTP-a",
     "Bad credentials" : "Pogrešne vjerodajnice",
     "OAuth access token refused" : "Odbijen token za pristup OAuth",
@@ -44,6 +43,7 @@
     "No Zammad notifications!" : "Nema Zammad obavijesti!",
     "Failed to get Zammad notifications" : "Dohvaćanje Zammad obavijesti nije uspjelo",
     "Unknown error" : "Nepoznata pogreška",
-    "Comments" : "Komentari"
+    "Comments" : "Komentari",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Imate %s otvorenu prijavu u Zammadu.","Imate %s otvorene prijave u Zammadu.","Imate %s otvorenih prijava u Zammadu."]
 },"pluralForm" :"nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;"
 }

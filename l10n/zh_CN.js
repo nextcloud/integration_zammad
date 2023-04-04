@@ -5,7 +5,6 @@ OC.L10N.register(
     "Error getting OAuth access token." : "获取OAuth访问令牌错误",
     "Error during OAuth exchanges" : "交换 OAuth 时出错",
     "Zammad notifications" : "Zammad通知",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["你在Zammad有1%s张工单"],
     "Bad HTTP method" : "错误的HTTP方法",
     "Bad credentials" : "错误的凭据",
     "OAuth access token refused" : "OAuth 访问令牌拒绝",
@@ -39,6 +38,7 @@ OC.L10N.register(
     "Unknown error" : "未知错误",
     "Comments" : "评论",
     "internal" : "内部",
-    "Account manager" : "账号管理器"
+    "Account manager" : "账号管理器",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["你在Zammad有1%s张工单"]
 },
 "nplurals=1; plural=0;");

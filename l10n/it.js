@@ -5,7 +5,6 @@ OC.L10N.register(
     "Error getting OAuth access token." : "Errore durante il recupero del token di accesso OAuth.",
     "Error during OAuth exchanges" : "Errore durante le negoziazioni OAuth",
     "Zammad notifications" : "Notifiche Zammad",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Hai %s ticket aperto in Zammad.","Hai %s ticket aperti in Zammad.","Hai %s ticket aperti in Zammad."],
     "Bad HTTP method" : "Metodo HTTP non corretto",
     "Bad credentials" : "Credenziali non valide",
     "OAuth access token refused" : "Token di accesso OAuth rifiutato",
@@ -46,6 +45,7 @@ OC.L10N.register(
     "No Zammad notifications!" : "Nessuna notifica Zammad!",
     "Failed to get Zammad notifications" : "Impossibile ricevere le notifiche di Zammad",
     "Unknown error" : "Errore sconosciuto",
-    "Comments" : "Commenti"
+    "Comments" : "Commenti",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Hai %s ticket aperto in Zammad.","Hai %s ticket aperti in Zammad.","Hai %s ticket aperti in Zammad."]
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
