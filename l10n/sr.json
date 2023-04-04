@@ -3,7 +3,6 @@
     "Error getting OAuth access token." : "Грешка при добијању OAuth приступног жетона.",
     "Error during OAuth exchanges" : "Грешко приликом OAuth размена",
     "Zammad notifications" : "Zammad обавештења",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Имате %s отворени тикет у Zammad.","Имате %s отворена тикета у Zammad.","Имате %s отворених тикета у Zammad."],
     "Zammad tickets" : "Zammad тикети",
     "closed %1$s" : "затворено %1$s",
     "updated %1$s" : "ажурирано %1$s",
@@ -59,6 +58,7 @@
     "Subscription ends" : "Претплата се завршава",
     "created {relativeDate}" : "креирано је {relativeDate}",
     "closed {relativeDate}" : "затворено је {relativeDate}",
-    "updated {relativeDate}" : "ажурирано је {relativeDate}"
+    "updated {relativeDate}" : "ажурирано је {relativeDate}",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Имате %s отворени тикет у Zammad.","Имате %s отворена тикета у Zammad.","Имате %s отворених тикета у Zammad."]
 },"pluralForm" :"nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
 }

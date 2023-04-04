@@ -3,7 +3,6 @@
     "Error getting OAuth access token." : "Błąd podczas pobierania tokena dostępu OAuth.",
     "Error during OAuth exchanges" : "Błąd podczas zamiany OAuth",
     "Zammad notifications" : "Powiadomienia Zammad",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Masz %s otwarte zgłoszenie w Zammadzie.","Masz %s otwarte zgłoszenia w Zammadzie.","Masz %s otwartych zgłoszeń w Zammadzie.","Masz %s otwartych zgłoszeń w Zammadzie."],
     "Zammad tickets" : "Zgłoszenia Zammad",
     "closed %1$s" : "zamknięte %1$s",
     "updated %1$s" : "zaktualizowane %1$s",
@@ -59,6 +58,7 @@
     "Subscription ends" : "Kończy się subskrypcja",
     "created {relativeDate}" : "utworzone {relativeDate}",
     "closed {relativeDate}" : "zamknięte {relativeDate}",
-    "updated {relativeDate}" : "zaktualizowane {relativeDate}"
+    "updated {relativeDate}" : "zaktualizowane {relativeDate}",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Masz %s otwarte zgłoszenie w Zammadzie.","Masz %s otwarte zgłoszenia w Zammadzie.","Masz %s otwartych zgłoszeń w Zammadzie.","Masz %s otwartych zgłoszeń w Zammadzie."]
 },"pluralForm" :"nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);"
 }

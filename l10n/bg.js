@@ -5,7 +5,6 @@ OC.L10N.register(
     "Error getting OAuth access token." : "Грешка при получаване на маркер за достъп на OAuth.",
     "Error during OAuth exchanges" : "Грешка по време на обмен на OAuth",
     "Zammad notifications" : "Zammad известия",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Вие имате %s отворени картони в Zammad.","Вие имате %s отворени картони в Zammad."],
     "Zammad tickets" : "Билети на Zammad",
     "closed %1$s" : "приключени%1$s ",
     "updated %1$s" : "актуализирани %1$s",
@@ -61,6 +60,7 @@ OC.L10N.register(
     "Subscription ends" : "Абонаментът приключва",
     "created {relativeDate}" : "създаден на {relativeDate}",
     "closed {relativeDate}" : "затворен на {relativeDate}",
-    "updated {relativeDate}" : "обновен на {relativeDate}"
+    "updated {relativeDate}" : "обновен на {relativeDate}",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Вие имате %s отворени картони в Zammad.","Вие имате %s отворени картони в Zammad."]
 },
 "nplurals=2; plural=(n != 1);");

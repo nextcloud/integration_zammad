@@ -3,7 +3,6 @@
     "Error getting OAuth access token." : "Fout bij ophalen OAuth access token",
     "Error during OAuth exchanges" : "Fout tijdens OAuth uitwisselingen",
     "Zammad notifications" : "Zammad meldingen",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Je hebt%s open ticket in Zammad.","Je hebt%s open tickets in Zammad."],
     "Bad HTTP method" : "Foute HTTP methode",
     "Bad credentials" : "Foute inloggegevens",
     "OAuth access token refused" : "OAuth access token geweigerd",
@@ -45,6 +44,7 @@
     "Failed to get Zammad notifications" : "Kon Zammad-meldingen niet ophalen",
     "Unknown error" : "Onbekende fout",
     "by {creator}" : "door {creator}",
-    "Comments" : "Reacties"
+    "Comments" : "Reacties",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Je hebt%s open ticket in Zammad.","Je hebt%s open tickets in Zammad."]
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

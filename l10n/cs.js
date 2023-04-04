@@ -5,7 +5,6 @@ OC.L10N.register(
     "Error getting OAuth access token." : "Chyba při získávání OAuth přístupového tokenu.",
     "Error during OAuth exchanges" : "Chyba při výměnách informací v rámci OAuth",
     "Zammad notifications" : "Upozorňování ze Zammad",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Máte %s otevřený požadavek v Zammad.","Máte %s otevřené požadavky v Zammad.","Máte %s otevřených požadavků v Zammad.","Máte %s otevřené požadavky v Zammad."],
     "Zammad tickets" : "Zammad hlášení požadavků",
     "closed %1$s" : "uzavřené %1$s",
     "updated %1$s" : "aktualizované %1$s",
@@ -61,6 +60,7 @@ OC.L10N.register(
     "Subscription ends" : "Předplatné skončí",
     "created {relativeDate}" : "vytvořeno {relativeDate}",
     "closed {relativeDate}" : "uzavřeno {relativeDate}",
-    "updated {relativeDate}" : "zaktualizováno {relativeDate}"
+    "updated {relativeDate}" : "zaktualizováno {relativeDate}",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Máte %s otevřený požadavek v Zammad.","Máte %s otevřené požadavky v Zammad.","Máte %s otevřených požadavků v Zammad.","Máte %s otevřené požadavky v Zammad."]
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;");

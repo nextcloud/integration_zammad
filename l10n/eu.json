@@ -3,7 +3,6 @@
     "Error getting OAuth access token." : "Errorea OAuth sarbide tokena eskuratzean.",
     "Error during OAuth exchanges" : "Errorea QAuth trukeak egitean",
     "Zammad notifications" : "Zammad jakinarazpenak",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["%seskaera ireki dituzu Zammaden.","%seskaera ireki dituzu Zammaden."],
     "Zammad tickets" : "Zammat tiketak",
     "closed %1$s" : "%1$s itxi da",
     "updated %1$s" : "%1$s eguneratu da",
@@ -59,6 +58,7 @@
     "Subscription ends" : "Harpidetza bukatzen da",
     "created {relativeDate}" : "sortua {relativeDate}",
     "closed {relativeDate}" : "ixte-data {relativeDate}",
-    "updated {relativeDate}" : "eguneratze-data {relativeDate}"
+    "updated {relativeDate}" : "eguneratze-data {relativeDate}",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["%seskaera ireki dituzu Zammaden.","%seskaera ireki dituzu Zammaden."]
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

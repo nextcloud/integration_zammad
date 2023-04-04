@@ -5,7 +5,6 @@ OC.L10N.register(
     "Error getting OAuth access token." : "Erro ao obter o token de acesso OAuth.",
     "Error during OAuth exchanges" : "Erro durante trocas com o OAuth",
     "Zammad notifications" : "Notificações Zammad",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Você tem 1%s tickets abertos em Zammad.","Você tem %s tickets aberto em Zammad.","Você tem %s tickets aberto em Zammad."],
     "Zammad tickets" : "Tickets Zammad",
     "closed %1$s" : "fechado %1$s",
     "updated %1$s" : "atualizado %1$s",
@@ -61,6 +60,7 @@ OC.L10N.register(
     "Subscription ends" : "A assinatura termina",
     "created {relativeDate}" : "criado {relativeDate}",
     "closed {relativeDate}" : "fechada {relativeDate}",
-    "updated {relativeDate}" : "atualizada {relativeDate}"
+    "updated {relativeDate}" : "atualizada {relativeDate}",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Você tem 1%s tickets abertos em Zammad.","Você tem %s tickets aberto em Zammad.","Você tem %s tickets aberto em Zammad."]
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

@@ -5,7 +5,6 @@ OC.L10N.register(
     "Error getting OAuth access token." : "Hiba történt az OAuth hozzáférési token lekérése során.",
     "Error during OAuth exchanges" : "Hiba történt az OAuth üzenetváltások során",
     "Zammad notifications" : "Zammad értesítések",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["%s nyitott jegye van Zammadban.","%s nyitott jegye van Zammadban."],
     "Zammad tickets" : "Zammad jegyek",
     "closed %1$s" : "%1$s lezárva",
     "updated %1$s" : "%1$s frissítve",
@@ -61,6 +60,7 @@ OC.L10N.register(
     "Subscription ends" : "Az előfizetés vége:",
     "created {relativeDate}" : "létrehozva: {relativeDate}",
     "closed {relativeDate}" : "lezárva: {relativeDate}",
-    "updated {relativeDate}" : "frissítve: {relativeDate}"
+    "updated {relativeDate}" : "frissítve: {relativeDate}",
+    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["%s nyitott jegye van Zammadban.","%s nyitott jegye van Zammadban."]
 },
 "nplurals=2; plural=(n != 1);");
