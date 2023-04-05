@@ -3,6 +3,7 @@
     "Error getting OAuth access token." : "Error getting OAuth access token.",
     "Error during OAuth exchanges" : "Error during OAuth exchanges",
     "Zammad notifications" : "Zammad notifications",
+    "_You have %n open ticket in Zammad._::_You have %n open tickets in Zammad._" : ["You have %n open ticket in Zammad.","You have %n open tickets in Zammad."],
     "Zammad tickets" : "Zammad tickets",
     "closed %1$s" : "closed %1$s",
     "updated %1$s" : "updated %1$s",

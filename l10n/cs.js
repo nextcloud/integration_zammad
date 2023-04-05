@@ -5,6 +5,7 @@ OC.L10N.register(
     "Error getting OAuth access token." : "Chyba při získávání OAuth přístupového tokenu.",
     "Error during OAuth exchanges" : "Chyba při výměnách informací v rámci OAuth",
     "Zammad notifications" : "Upozorňování ze Zammad",
+    "_You have %n open ticket in Zammad._::_You have %n open tickets in Zammad._" : ["Máte %n otevřený požadavek v Zammad.","Máte %n otevřené požadavky v Zammad.","Máte %n otevřených požadavků v Zammad.","Máte %n otevřené požadavky v Zammad."],
     "Zammad tickets" : "Zammad hlášení požadavků",
     "closed %1$s" : "uzavřené %1$s",
     "updated %1$s" : "aktualizované %1$s",
