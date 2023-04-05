@@ -5,6 +5,7 @@ OC.L10N.register(
     "Error getting OAuth access token." : "Erreur lors de l'obtention du jeton d'accès OAuth.",
     "Error during OAuth exchanges" : "Erreur lors des échanges OAuth",
     "Zammad notifications" : "Notifications Zammad",
+    "_You have %n open ticket in Zammad._::_You have %n open tickets in Zammad._" : ["Vous avez %n ticket ouvert dans Zammad.","Vous avez %n tickets ouverts dans Zammad.","Vous avez %n tickets ouverts dans Zammad."],
     "Zammad tickets" : "Tickets Zammad",
     "closed %1$s" : "%1$s fermé",
     "updated %1$s" : "%1$s mis à jour",

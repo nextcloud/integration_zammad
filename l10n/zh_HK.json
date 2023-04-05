@@ -3,6 +3,7 @@
     "Error getting OAuth access token." : "取得 OAuth 存取權杖時發生錯誤。",
     "Error during OAuth exchanges" : "OAuth 交換時發生錯誤",
     "Zammad notifications" : "Zammad 通告",
+    "_You have %n open ticket in Zammad._::_You have %n open tickets in Zammad._" : ["您在Zammad有 %n 張公開票。"],
     "Zammad tickets" : "Zammad 工單",
     "closed %1$s" : "已關閉 %1$s",
     "updated %1$s" : "已更新 %1$s",
