@@ -5,6 +5,7 @@ OC.L10N.register(
     "Error getting OAuth access token." : "Грешка при добијању OAuth приступног жетона.",
     "Error during OAuth exchanges" : "Грешко приликом OAuth размена",
     "Zammad notifications" : "Zammad обавештења",
+    "_You have %n open ticket in Zammad._::_You have %n open tickets in Zammad._" : ["Имате %n отворени тикет у Zammad.","Имате %n отворена тикета у Zammad.","Имате %n отворених тикета у Zammad."],
     "Zammad tickets" : "Zammad тикети",
     "closed %1$s" : "затворено %1$s",
     "updated %1$s" : "ажурирано %1$s",
