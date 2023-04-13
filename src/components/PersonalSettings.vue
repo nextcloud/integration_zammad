@@ -170,21 +170,12 @@ export default {
 		},
 		onInput() {
 			this.loading = true
-			if (this.state.url !== '' && !this.state.url.startsWith('https://')) {
-				if (this.state.url.startsWith('http://')) {
-					this.state.url = this.state.url.replace('http://', 'https://')
-				} else {
-					this.state.url = 'https://' + this.state.url
-				}
-			}
 			delay(() => {
-				// check the domain name has at least one dot
-				const pattern = /^(https?:\/\/)?[^.]+\.[^.].*/
-				if (pattern.test(this.state.url)) {
-					this.saveOptions({ url: this.state.url, token: this.state.token, token_type: this.showOAuth ? 'oauth' : 'access' })
-				} else {
-					this.saveOptions({ url: '', token: this.state.token, token_type: this.showOAuth ? 'oauth' : 'access' })
-				}
+				this.saveOptions({
+					url: this.state.url,
+					token: this.state.token,
+					token_type: this.showOAuth ? 'oauth' : 'access',
+				})
 			}, 2000)()
 		},
 		saveOptions(values) {
