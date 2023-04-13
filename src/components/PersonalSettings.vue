@@ -206,7 +206,7 @@ export default {
 					console.debug(error)
 					showError(
 						t('integration_zammad', 'Failed to save Zammad options')
-						+ ': ' + error.response?.request?.responseText
+						+ ': ' + (error.response?.data?.error ?? error.response?.request?.responseText)
 					)
 				})
 				.then(() => {
