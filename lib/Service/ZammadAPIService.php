@@ -13,6 +13,7 @@ namespace OCA\Zammad\Service;
 
 use DateTime;
 use Exception;
+use OCP\AppFramework\Http;
 use OCP\Http\Client\IClient;
 use OCP\ICache;
 use OCP\ICacheFactory;
@@ -499,6 +500,13 @@ class ZammadAPIService {
 			}
 		} catch (ServerException | ClientException $e) {
 			$this->logger->warning('Zammad API error : '.$e->getMessage(), ['app' => Application::APP_ID]);
+			$response = $e->getResponse();
+			$statusCode = $response->getStatusCode();
+			if ($statusCode === Http::STATUS_FORBIDDEN) {
+				return ['error' => 'Forbidden'];
+			} elseif ($statusCode === Http::STATUS_NOT_FOUND) {
+				return ['error' => 'Not found'];
+			}
 			return ['error' => $e->getMessage()];
 		} catch (ConnectException $e) {
 			return ['error' => $e->getMessage()];

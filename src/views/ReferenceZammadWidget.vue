@@ -355,6 +355,7 @@ export default {
 		display: flex;
 		align-items: center;
 		font-weight: bold;
+		margin-top: 0;
 		.icon {
 			margin-right: 8px;
 		}
