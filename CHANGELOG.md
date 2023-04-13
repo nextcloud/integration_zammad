@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 2.0.4 – 2023-04-13
+### Changed
+- Improve errors in the reference widget and on settings save failures
+- Do not enforce https anymore
+
+### Fixed
+- fix plural translation in notifier
+
 ## 2.0.3 – 2023-02-23
 ### Changed
 - update npm pkgs
