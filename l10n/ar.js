@@ -6,6 +6,9 @@ OC.L10N.register(
     "Bad credentials" : "رموز التعريف غير صحيحة",
     "OAuth access token refused" : "أمارة token مرفوضة",
     "Connected accounts" : "حسابات مترابطة",
+    "Application ID" : "الرقم المُعرّف للتطبيق ",
+    "Application secret" : "الرمر السري للتطبيق",
+    "Connected as {user}" : "متصل بصفته {user}",
     "Unknown error" : "خطأ غير معروف",
     "Comments" : "تعليقات"
 },
