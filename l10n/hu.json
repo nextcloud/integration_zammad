@@ -3,6 +3,7 @@
     "Error getting OAuth access token." : "Hiba történt az OAuth hozzáférési token lekérése során.",
     "Error during OAuth exchanges" : "Hiba történt az OAuth üzenetváltások során",
     "Zammad notifications" : "Zammad értesítések",
+    "_You have %n open ticket in Zammad._::_You have %n open tickets in Zammad._" : ["%n nyitott jegye van a Zammadban.","%n nyitott jegye van a Zammadban."],
     "Zammad tickets" : "Zammad jegyek",
     "closed %1$s" : "%1$s lezárva",
     "updated %1$s" : "%1$s frissítve",
