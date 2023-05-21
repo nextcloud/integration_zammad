@@ -3,7 +3,7 @@ OC.L10N.register(
     {
     "Error during OAuth exchanges" : "خطأ أثناء تبادل OAuth.",
     "Bad HTTP method" : "دالة HTTP  غير صحيحة",
-    "Bad credentials" : "رموز التعريف غير صحيحة",
+    "Bad credentials" : "معلومات تسجيل الدخول غير صحيحة",
     "OAuth access token refused" : "أمارة token مرفوضة",
     "Connected accounts" : "حسابات مترابطة",
     "Application ID" : "الرقم المُعرّف للتطبيق ",
