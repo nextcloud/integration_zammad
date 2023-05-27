@@ -60,7 +60,6 @@ OC.L10N.register(
     "Subscription ends" : "Harpidetza bukatzen da",
     "created {relativeDate}" : "sortua {relativeDate}",
     "closed {relativeDate}" : "ixte-data {relativeDate}",
-    "updated {relativeDate}" : "eguneratze-data {relativeDate}",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["%seskaera ireki dituzu Zammaden.","%seskaera ireki dituzu Zammaden."]
+    "updated {relativeDate}" : "eguneratze-data {relativeDate}"
 },
 "nplurals=2; plural=(n != 1);");

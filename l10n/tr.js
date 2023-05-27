@@ -61,7 +61,6 @@ OC.L10N.register(
     "Subscription ends" : "Abonelik sonu",
     "created {relativeDate}" : "{relativeDate} oluşturuldu",
     "closed {relativeDate}" : "{relativeDate} kapatıldı",
-    "updated {relativeDate}" : "{relativeDate} güncellendi",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Zammad üzerinde açık %s destek kaydınız var.","Zammad üzerinde açık %s destek kaydınız var."]
+    "updated {relativeDate}" : "{relativeDate} güncellendi"
 },
 "nplurals=2; plural=(n > 1);");

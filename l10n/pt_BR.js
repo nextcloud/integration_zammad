@@ -61,7 +61,6 @@ OC.L10N.register(
     "Subscription ends" : "A assinatura termina",
     "created {relativeDate}" : "criado {relativeDate}",
     "closed {relativeDate}" : "fechada {relativeDate}",
-    "updated {relativeDate}" : "atualizada {relativeDate}",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Você tem 1%s tickets abertos em Zammad.","Você tem %s tickets aberto em Zammad.","Você tem %s tickets aberto em Zammad."]
+    "updated {relativeDate}" : "atualizada {relativeDate}"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

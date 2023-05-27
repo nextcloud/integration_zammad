@@ -61,7 +61,6 @@ OC.L10N.register(
     "Subscription ends" : "訂閱結束日",
     "created {relativeDate}" : "於 {relativeDate} 天前創建",
     "closed {relativeDate}" : "有效期至 {relativeDate}",
-    "updated {relativeDate}" : "於 {relativeDate} 更新",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["您在Zammad有 %s 張公開票。"]
+    "updated {relativeDate}" : "於 {relativeDate} 更新"
 },
 "nplurals=1; plural=0;");

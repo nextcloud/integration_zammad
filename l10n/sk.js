@@ -57,7 +57,6 @@ OC.L10N.register(
     "Subscription ends" : "Predplatné vypršalo",
     "created {relativeDate}" : "vytvorené {relativeDate}",
     "closed {relativeDate}" : "zatvorené {relativeDate}",
-    "updated {relativeDate}" : "upravené {relativeDate}",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Máte %s otvorený ticket v Zammade.","Máte %s otvorených ticketov v Zammade.","Máte %s otvorených ticketov v Zammade.","Máte %s otvorených ticketov v Zammade."]
+    "updated {relativeDate}" : "upravené {relativeDate}"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");

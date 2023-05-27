@@ -61,7 +61,6 @@ OC.L10N.register(
     "Subscription ends" : "Абонаментът приключва",
     "created {relativeDate}" : "създаден на {relativeDate}",
     "closed {relativeDate}" : "затворен на {relativeDate}",
-    "updated {relativeDate}" : "обновен на {relativeDate}",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Вие имате %s отворени картони в Zammad.","Вие имате %s отворени картони в Zammad."]
+    "updated {relativeDate}" : "обновен на {relativeDate}"
 },
 "nplurals=2; plural=(n != 1);");

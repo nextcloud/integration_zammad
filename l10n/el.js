@@ -46,7 +46,6 @@ OC.L10N.register(
     "Failed to get Zammad notifications" : "Αποτυχία λήψης ειδοποιήσεων του Zammad",
     "Unknown error" : "Άγνωστο σφάλμα",
     "Comments" : "Σχόλια",
-    "Click to expand comment" : "Κλικ για επέκταση σχολίου",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Έχετε %s ανοιχτό εισιτήριο στο Zammad.","Έχετε %s ανοιχτά εισιτήρια στο Zammad."]
+    "Click to expand comment" : "Κλικ για επέκταση σχολίου"
 },
 "nplurals=2; plural=(n != 1);");

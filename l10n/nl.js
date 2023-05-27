@@ -46,7 +46,6 @@ OC.L10N.register(
     "Failed to get Zammad notifications" : "Kon Zammad-meldingen niet ophalen",
     "Unknown error" : "Onbekende fout",
     "by {creator}" : "door {creator}",
-    "Comments" : "Reacties",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Je hebt%s open ticket in Zammad.","Je hebt%s open tickets in Zammad."]
+    "Comments" : "Reacties"
 },
 "nplurals=2; plural=(n != 1);");

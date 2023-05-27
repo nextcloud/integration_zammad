@@ -45,7 +45,6 @@ OC.L10N.register(
     "No Zammad notifications!" : "Peruna notìfica de Zammad!",
     "Failed to get Zammad notifications" : "No at fatu a retzire is notìficas de Zammad",
     "Unknown error" : "Errore disconnotu",
-    "Comments" : "Cummentos",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Tenes %s ticket abertu in Zammad.","Tenes %s ticket abertos in Zammad."]
+    "Comments" : "Cummentos"
 },
 "nplurals=2; plural=(n != 1);");

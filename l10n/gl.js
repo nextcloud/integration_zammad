@@ -45,7 +45,6 @@ OC.L10N.register(
     "No Zammad notifications!" : "Non hai notificacións do Zammad.",
     "Failed to get Zammad notifications" : "Produciuse un fallo ao obter as notificacións de Zammad.",
     "Unknown error" : "Erro descoñecido",
-    "Comments" : "Comentarios",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Ten %s billete aberto no Zammad.","Ten %s billetes abertos no Zammad."]
+    "Comments" : "Comentarios"
 },
 "nplurals=2; plural=(n != 1);");

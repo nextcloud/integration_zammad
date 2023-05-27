@@ -41,7 +41,6 @@ OC.L10N.register(
     "Unknown error" : "未知错误",
     "Comments" : "评论",
     "internal" : "内部",
-    "Account manager" : "账号管理器",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["你在Zammad有1%s张工单"]
+    "Account manager" : "账号管理器"
 },
 "nplurals=1; plural=0;");

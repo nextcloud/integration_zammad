@@ -45,7 +45,6 @@ OC.L10N.register(
     "No Zammad notifications!" : "Nema Zammad obavijesti!",
     "Failed to get Zammad notifications" : "Dohvaćanje Zammad obavijesti nije uspjelo",
     "Unknown error" : "Nepoznata pogreška",
-    "Comments" : "Komentari",
-    "_You have %s open ticket in Zammad._::_You have %s open tickets in Zammad._" : ["Imate %s otvorenu prijavu u Zammadu.","Imate %s otvorene prijave u Zammadu.","Imate %s otvorenih prijava u Zammadu."]
+    "Comments" : "Komentari"
 },
 "nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;");
