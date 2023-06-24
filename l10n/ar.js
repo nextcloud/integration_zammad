@@ -9,6 +9,7 @@ OC.L10N.register(
     "Application ID" : "الرقم المُعرّف للتطبيق ",
     "Application secret" : "الرمر السري للتطبيق",
     "Connected as {user}" : "متصل بصفته {user}",
+    "Enable navigation link" : "تميكن رابط التنقُّل",
     "Unknown error" : "خطأ غير معروف",
     "Comments" : "تعليقات",
     "Click to expand comment" : "إضغط للتوسع في الملاحظات"
