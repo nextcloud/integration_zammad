@@ -41,6 +41,7 @@ OC.L10N.register(
     "Unknown error" : "未知错误",
     "Comments" : "评论",
     "internal" : "内部",
+    "Click to expand comment" : "点击展开评论",
     "Account manager" : "账号管理器"
 },
 "nplurals=1; plural=0;");
