@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 2.0.6 – 2023-06-30
+
+### Changed
+
+- Add debug log when something goes wrong when getting notifications
+- Handle missing user/ticket information when getting notifications
+
 ## 2.0.5 – 2023-06-30
 
 ### Changed
