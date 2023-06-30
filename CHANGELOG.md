@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 2.0.5 – 2023-06-30
+
+### Changed
+
+- Use `@nextcloud/vue` only and remove `@nextcloud/vue-dashboard`
+
+### Fixed
+
+- Handle missing user information when getting notifications
+
 ## 2.0.4 – 2023-04-13
 ### Changed
 - Improve errors in the reference widget and on settings save failures
