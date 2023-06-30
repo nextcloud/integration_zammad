@@ -149,42 +149,42 @@ class ZammadAPIService {
 		$params = [
 			'state' => 'pending',
 		];
-		$result = $this->request($userId, 'online_notifications', $params);
-		if (isset($result['error'])) {
-			return $result;
+		$notifications = $this->request($userId, 'online_notifications', $params);
+		if (isset($notifications['error'])) {
+			return $notifications;
 		}
 		// filter seen ones
-		$result = array_filter($result, function($elem) {
+		$notifications = array_filter($notifications, static function($elem) {
 			return !$elem['seen'];
 		});
 		// filter results by date
 		if (!is_null($since)) {
 			$sinceDate = new DateTime($since);
 			$sinceTimestamp = $sinceDate->getTimestamp();
-			$result = array_filter($result, function($elem) use ($sinceTimestamp) {
+			$notifications = array_filter($notifications, function($elem) use ($sinceTimestamp) {
 				$date = new Datetime($elem['updated_at']);
 				$ts = $date->getTimestamp();
 				return $ts > $sinceTimestamp;
 			});
 		}
 		if ($limit) {
-			$result = array_slice($result, 0, $limit);
+			$notifications = array_slice($notifications, 0, $limit);
 		}
-		$result = array_values($result);
+		$notifications = array_values($notifications);
 		// get details
-		foreach ($result as $k => $v) {
-			$details = $this->request($userId, 'tickets/' . $v['o_id']);
+		foreach ($notifications as $i => $n) {
+			$details = $this->request($userId, 'tickets/' . $n['o_id']);
 			if (!isset($details['error'])) {
-				$result[$k]['title'] = $details['title'];
-				$result[$k]['note'] = $details['note'];
-				$result[$k]['state_id'] = $details['state_id'];
-				$result[$k]['owner_id'] = $details['owner_id'];
-				$result[$k]['type'] = $details['type'];
+				$notifications[$i]['title'] = $details['title'];
+				$notifications[$i]['note'] = $details['note'];
+				$notifications[$i]['state_id'] = $details['state_id'];
+				$notifications[$i]['owner_id'] = $details['owner_id'];
+				$notifications[$i]['type'] = $details['type'];
 			}
 		}
 		// get user details
 		$userIds = [];
-		foreach ($result as $k => $v) {
+		foreach ($notifications as $k => $v) {
 			if (!in_array($v['updated_by_id'], $userIds)) {
 				$userIds[] = $v['updated_by_id'];
 			}
@@ -195,19 +195,20 @@ class ZammadAPIService {
 			$userDetails[$uid] = [
 				'firstname' => $user['firstname'],
 				'lastname' => $user['lastname'],
-				'organization_id' => $user['organization_id'],
 				'image' => $user['image'],
+				// 'organization_id' => $user['organization_id'],
 			];
 		}
-		foreach ($result as $k => $v) {
-			$user = $userDetails[$v['updated_by_id']];
-			$result[$k]['firstname'] = $user['firstname'];
-			$result[$k]['lastname'] = $user['lastname'];
-			$result[$k]['organization_id'] = $user['organization_id'];
-			$result[$k]['image'] = $user['image'];
+		foreach ($notifications as $i => $n) {
+			$user = $userDetails[$n['updated_by_id']];
+			$notifications[$i]['firstname'] = $user['firstname'] ?? '??';
+			$notifications[$i]['lastname'] = $user['lastname'] ?? '??';
+			$notifications[$i]['image'] = $user['image'] ?? null;
+			// not used in the UI
+			// $notifications[$i]['organization_id'] = $user['organization_id'] ?? '??';
 		}
 
-		return $result;
+		return $notifications;
 	}
 
 	/**
