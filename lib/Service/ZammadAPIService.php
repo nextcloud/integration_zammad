@@ -161,7 +161,7 @@ class ZammadAPIService {
 		if (!is_null($since)) {
 			$sinceDate = new DateTime($since);
 			$sinceTimestamp = $sinceDate->getTimestamp();
-			$notifications = array_filter($notifications, function($elem) use ($sinceTimestamp) {
+			$notifications = array_filter($notifications, static function($elem) use ($sinceTimestamp) {
 				$date = new Datetime($elem['updated_at']);
 				$ts = $date->getTimestamp();
 				return $ts > $sinceTimestamp;
@@ -174,7 +174,9 @@ class ZammadAPIService {
 		// get details
 		foreach ($notifications as $i => $n) {
 			$details = $this->request($userId, 'tickets/' . $n['o_id']);
-			if (!isset($details['error'])) {
+			if (isset($details['error'])) {
+				$this->logger->debug('Zammad API error: Impossible to get Zammad ticket information. ' . $details['error'], ['app' => Application::APP_ID]);
+			} else {
 				$notifications[$i]['title'] = $details['title'];
 				$notifications[$i]['note'] = $details['note'];
 				$notifications[$i]['state_id'] = $details['state_id'];
@@ -191,21 +193,29 @@ class ZammadAPIService {
 		}
 		$userDetails = [];
 		foreach ($userIds as $uid) {
-			$user = $this->request($userId, 'users/' . $uid);
-			$userDetails[$uid] = [
-				'firstname' => $user['firstname'],
-				'lastname' => $user['lastname'],
-				'image' => $user['image'],
-				// 'organization_id' => $user['organization_id'],
-			];
+			$user = $this->request($userId, 'users/' . urlencode($uid));
+			if (isset($user['error'])) {
+				$this->logger->debug('Zammad API error: Impossible to get Zammad user information. ' . $user['error'], ['app' => Application::APP_ID]);
+			} else {
+				$userDetails[$uid] = [
+					'firstname' => $user['firstname'] ?? '??',
+					'lastname' => $user['lastname'] ?? '??',
+					'image' => $user['image'] ?? null,
+				];
+			}
 		}
 		foreach ($notifications as $i => $n) {
-			$user = $userDetails[$n['updated_by_id']];
-			$notifications[$i]['firstname'] = $user['firstname'] ?? '??';
-			$notifications[$i]['lastname'] = $user['lastname'] ?? '??';
-			$notifications[$i]['image'] = $user['image'] ?? null;
-			// not used in the UI
-			// $notifications[$i]['organization_id'] = $user['organization_id'] ?? '??';
+			$zammadUpdaterId = $n['updated_by_id'];
+			if (isset($userDetails[$zammadUpdaterId])) {
+				$user = $userDetails[$zammadUpdaterId];
+				$notifications[$i]['firstname'] = $user['firstname'] ?? '??';
+				$notifications[$i]['lastname'] = $user['lastname'] ?? '??';
+				$notifications[$i]['image'] = $user['image'] ?? null;
+			} else {
+				$notifications[$i]['firstname'] = '??';
+				$notifications[$i]['lastname'] = '??';
+				$notifications[$i]['image'] = null;
+			}
 		}
 
 		return $notifications;
