@@ -56,7 +56,7 @@ OC.L10N.register(
     "by {creator}" : "por {creator}",
     "Comments" : "Comentarios",
     "internal" : "Interna",
-    "Click to expand comment" : "Prema para ampliar o comentario",
+    "Click to expand comment" : "Prema para despregar o comentario",
     "Account manager" : "Xestor de contas",
     "Subscription ends" : "Finaliza a subscrición",
     "created {relativeDate}" : "creado o {relativeDate}",
