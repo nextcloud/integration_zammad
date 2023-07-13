@@ -25,7 +25,7 @@
     "Enable Zammad link previews" : "Activar as vistas previas das ligazóns de Zammad",
     "Zammad admin options saved" : "Gardáronse as opcións de administración de Zammad",
     "Failed to save Zammad admin options" : "Produciuse un fallo ao gardar as opcións de administración de Zammad.",
-    "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Para crear vostede mesmo un testemuño de acceso, vaia á sección «Acceso ao testemuño» da páxina do seu perfil de Zammad.",
+    "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Para crear Vde. mesmo un testemuño de acceso, vaia á sección «Acceso ao testemuño» da páxina do seu perfil de Zammad.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Cree un «Testemuño de acceso persoal» e déalle permisos de «TICKET → AGENT», «ADMIN → OBJECT» e «USER_PREFERENCES → NOTIFICATIONS».",
     "https://my.zammad.org" : "https://omeu.zammad.org",
     "Access token" : "Testemuño de acceso",

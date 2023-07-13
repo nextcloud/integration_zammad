@@ -5,6 +5,7 @@ OC.L10N.register(
     "Error getting OAuth access token." : "خطأ في الحصول على أَمَارَة الوصول access token لتطبيق OAuth.",
     "Error during OAuth exchanges" : "خطأ أثناء تبادلات OAuth.",
     "Zammad notifications" : "إشعارات Zammad",
+    "_You have %n open ticket in Zammad._::_You have %n open tickets in Zammad._" : ["لديك %n تذاكر مفتوحة في تطبيق Zammad.","لديك %nتذكرة مفتوحة في تطبيق Zammad.","لديك %n تذاكر مفتوحة في تطبيق Zammad.","لديك %n تذاكر مفتوحة في تطبيق Zammad.","لديك%n تذاكر مفتوحة في تطبيق Zammad.","لديك %n تذاكر مفتوحة في تطبيق Zammad."],
     "Zammad tickets" : "تذاكر Zammad ",
     "closed %1$s" : "قُفِلَت %1$s",
     "updated %1$s" : "حُدِّثَت %1$s",

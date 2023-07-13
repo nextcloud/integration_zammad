@@ -37,6 +37,7 @@
     "No Zammad notifications!" : "无 Zammad 通知",
     "Failed to get Zammad notifications" : "获取Zammad通知失败",
     "Unknown error" : "未知错误",
+    "by {creator}" : "由{creator}创建",
     "Comments" : "评论",
     "internal" : "内部",
     "Click to expand comment" : "点击展开评论",
