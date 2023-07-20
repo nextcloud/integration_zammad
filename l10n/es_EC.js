@@ -1,13 +1,28 @@
 OC.L10N.register(
     "integration_zammad",
     {
+    "Error getting OAuth access token." : "Error al obtener el token de acceso de OAuth.",
     "Error during OAuth exchanges" : "Error durante los intercambios de OAuth",
     "Bad HTTP method" : "Método HTTP incorrecto",
     "Bad credentials" : "Credenciales incorrectas",
     "OAuth access token refused" : "Se rechazó el token de acceso de OAuth",
+    "Connected accounts" : "Cuentas conectadas",
+    "Application ID" : "ID de la aplicación",
+    "ID of your application" : "ID de tu aplicación",
+    "Application secret" : "Secreto de la aplicación",
+    "Connected as {user}" : "Conectado como {usuario}",
+    "Enable unified search for tickets" : "Habilitar búsqueda unificada para tickets",
+    "Enable notifications for open tickets" : "Habilitar notificaciones para tickets abiertos",
+    "Enable navigation link" : "Habilitar enlace de navegación",
     "OAuth access token could not be obtained:" : "No se pudo obtener el token de acceso de OAuth:",
+    "Incorrect access token" : "Token de acceso incorrecto",
     "Unknown error" : "Error desconocido",
+    "by {creator}" : "por {creator}",
     "Comments" : "Comentarios",
-    "Click to expand comment" : "Haz clic para expandir el comentario"
+    "Click to expand comment" : "Haz clic para expandir el comentario",
+    "Account manager" : "Gerente de cuentas",
+    "created {relativeDate}" : "creada {relativeDate}",
+    "closed {relativeDate}" : "cerrada {relativeDate}",
+    "updated {relativeDate}" : "actualizada {relativeDate}"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
