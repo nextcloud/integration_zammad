@@ -14,7 +14,7 @@ OC.L10N.register(
     "OAuth access token refused" : "Foi rexeitado o testemuño de acceso de OAuth",
     "Connected accounts" : "Contas conectadas",
     "Zammad integration" : "Integración de Zammad",
-    "Integration of Zammad user support/ticketing solution" : "Integración da solución de asistencia ao usuario/billetado de Zammad",
+    "Integration of Zammad user support/ticketing solution" : "Integración coa solución de asistencia ao usuario/billetado de Zammad",
     "Zammad integration provides a dashboard widget displaying your important notifications,\n\ta search provider for tickets and notifications for new open tickets." : "A integración de Zammad fornece un trebello de taboleiro que amosa as súas notificacións\n\timportantes, un provedor de buscas e notificacións de novos billetes abertos.",
     "If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below." : "Se quere permitir que os seus usuarios de Nextcloud usen OAuth para autenticarse nunha instancia de Zammad, cree unha aplicación nos axustes de administración de Zammad e poña o ID da aplicación (AppId) e o segredo a seguir.",
     "Make sure you set the \"Callback URL\" to" : "Asegúrese de estabelecer o «URL de devolución de chamada» como",
