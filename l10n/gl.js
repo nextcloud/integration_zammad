@@ -50,7 +50,7 @@ OC.L10N.register(
     "No Zammad notifications!" : "Non hai notificacións de Zammad.",
     "Failed to get Zammad notifications" : "Produciuse un fallo ao obter as notificacións de Zammad.",
     "Zammad API error" : "Produciuse un erro na API de Zammad",
-    "Unknown error" : "Erro descoñecido",
+    "Unknown error" : "Produciuse un erro descoñecido",
     "Zammad connected accounts settings" : "Axustes das contas conectadas de Zammad",
     "Ticket#{number}" : "Billete núm. {number}",
     "by {creator}" : "por {creator}",
