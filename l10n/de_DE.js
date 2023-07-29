@@ -23,7 +23,7 @@ OC.L10N.register(
     "Application ID" : "Anwendungs-ID",
     "ID of your application" : "ID Ihrer Anwendung",
     "Application secret" : "Anwendungsgeheimnis",
-    "Client secret of your application" : "Client-Geheimnis Ihrer Anwendung",
+    "Client secret of your application" : "Geheime Zeichenkette des Clients Ihrer Anwendung",
     "Enable Zammad link previews" : "Vorschau von Zammad-Links aktivieren",
     "Zammad admin options saved" : "Zammad-Administrator-Einstellungen gespeichert",
     "Failed to save Zammad admin options" : "Fehler beim Speichern der Zammad-Administrator-Einstellungen",
