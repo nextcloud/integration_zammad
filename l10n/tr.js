@@ -46,7 +46,7 @@ OC.L10N.register(
     "Failed to save Zammad options" : "Zammad ayarları kaydedilemedi",
     "Failed to save Zammad OAuth state" : "Zammad OAuth durumu kaydedilemedi",
     "No Zammad account connected" : "Bağlı bir Zammad hesabı yok",
-    "Error connecting to Zammad" : "Zammad bağlantısı kurulurken sorun çıktı",
+    "Error connecting to Zammad" : "Zammad ile bağlantı kurulurken sorun çıktı",
     "No Zammad notifications!" : "Herhangi bir Zammad bildirimi yok!",
     "Failed to get Zammad notifications" : "Zammad bildirimleri alınamadı",
     "Zammad API error" : "Zammad API sorunu",
