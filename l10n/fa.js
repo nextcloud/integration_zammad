@@ -8,8 +8,10 @@ OC.L10N.register(
     "OAuth access token refused" : "نشانه دسترسی OAuth رد شد",
     "Connected accounts" : "حساب‌های متصل",
     "ID of your application" : "شناسه درخواست شما",
+    "Connected as {user}" : "متصل به عنوان {user}",
     "Enable unified search for tickets" : "جستجوی یکپارچه برای بلیط ها را فعال کنید",
     "Enable notifications for open tickets" : "اعلان‌ها را برای بلیط‌های باز فعال کنید",
+    "OAuth access token could not be obtained:" : "نشانه دسترسی OAuth بدست نیامد:",
     "Unknown error" : "خطای ناشناخته",
     "Comments" : "نظرات"
 },
