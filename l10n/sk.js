@@ -19,7 +19,7 @@ OC.L10N.register(
     "Application ID" : "ID aplikácie",
     "ID of your application" : "ID vašej aplikácie",
     "Application secret" : "Aplikačný tajný kľúč",
-    "Client secret of your application" : "Tajomstvo klienta vašej aplikácie",
+    "Client secret of your application" : "Tajný kľúč klienta vašej aplikácie",
     "Enable Zammad link previews" : "Povoliť ukážky odkazov Zammad",
     "Zammad admin options saved" : "Možnosti administrátora Zammad boli uložené",
     "Failed to save Zammad admin options" : "Nepodarilo sa uložiť možnosti administrátora Zammad",
