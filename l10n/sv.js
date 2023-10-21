@@ -18,6 +18,7 @@ OC.L10N.register(
     "Make sure you set the \"Callback URL\" to" : "Se till att du ställer in \"Callback URL\" till",
     "Zammad instance address" : "Zammad-instansens adress",
     "Zammad address" : "Zammad-adress",
+    "Application secret" : "Applikationshemlighet",
     "Access token" : "Åtkomst-token",
     "Connect to Zammad" : "Anslut till Zammad",
     "Connected as {user}" : "Ansluten som {user}",
