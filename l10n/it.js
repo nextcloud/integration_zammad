@@ -45,6 +45,8 @@ OC.L10N.register(
     "No Zammad notifications!" : "Nessuna notifica Zammad!",
     "Failed to get Zammad notifications" : "Impossibile ricevere le notifiche di Zammad",
     "Unknown error" : "Errore sconosciuto",
-    "Comments" : "Commenti"
+    "Ticket#{number}" : "Biglietto#{number}",
+    "Comments" : "Commenti",
+    "internal" : "interno"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
