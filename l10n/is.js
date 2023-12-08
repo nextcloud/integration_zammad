@@ -9,6 +9,7 @@ OC.L10N.register(
     "Enable navigation link" : "Virkja flakktengil",
     "Incorrect access token" : "Rangt aðgangsteikn",
     "Unknown error" : "Óþekkt villa",
-    "Comments" : "Athugasemdir"
+    "Comments" : "Athugasemdir",
+    "Click to expand comment" : "Smelltu til að fella út athugasemd"
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");
