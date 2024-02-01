@@ -12,6 +12,7 @@
     "Incorrect access token" : "Feil tilgangstoken",
     "Unknown error" : "Ukjent feil",
     "Comments" : "Kommentarer",
-    "Click to expand comment" : "Klikk for å utvide kommentaren"
+    "Click to expand comment" : "Klikk for å utvide kommentaren",
+    "Account manager" : "Kontoadministrator"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

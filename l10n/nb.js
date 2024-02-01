@@ -14,6 +14,7 @@ OC.L10N.register(
     "Incorrect access token" : "Feil tilgangstoken",
     "Unknown error" : "Ukjent feil",
     "Comments" : "Kommentarer",
-    "Click to expand comment" : "Klikk for å utvide kommentaren"
+    "Click to expand comment" : "Klikk for å utvide kommentaren",
+    "Account manager" : "Kontoadministrator"
 },
 "nplurals=2; plural=(n != 1);");
