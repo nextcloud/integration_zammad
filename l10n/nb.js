@@ -18,6 +18,9 @@ OC.L10N.register(
     "by {creator}" : "av {creator}",
     "Comments" : "Kommentarer",
     "Click to expand comment" : "Klikk for å utvide kommentaren",
-    "Account manager" : "Kontoadministrator"
+    "Account manager" : "Kontoadministrator",
+    "created {relativeDate}" : "opprettet {relativeDate}",
+    "closed {relativeDate}" : "lukket {relativeDate}",
+    "updated {relativeDate}" : "oppdatert {relativeDate}"
 },
 "nplurals=2; plural=(n != 1);");
