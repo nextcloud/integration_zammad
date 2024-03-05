@@ -16,6 +16,7 @@ OC.L10N.register(
     "No Zammad account connected" : "接続済みZammadアカウントがありません",
     "No Zammad notifications!" : "Zammad通知がありません！",
     "Unknown error" : "不明なエラー",
-    "Comments" : "コメント"
+    "Comments" : "コメント",
+    "Account manager" : "アカウント管理者"
 },
 "nplurals=1; plural=0;");
