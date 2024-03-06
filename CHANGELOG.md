@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 2.0.7 – 2024-03-06
+
+### Changed
+
+- Bumped max-version for Nexcloud v29
+ 
 ## 2.0.6 – 2023-06-30
 
 ### Changed
