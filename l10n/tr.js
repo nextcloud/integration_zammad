@@ -3,7 +3,7 @@ OC.L10N.register(
     {
     "Zammad" : "Zammad",
     "Error getting OAuth access token." : "OAuth erişim kodu alınırken sorun çıktı.",
-    "Error during OAuth exchanges" : "OAuth alış verişinde sorun çıktı",
+    "Error during OAuth exchanges" : "OAuth alışverişinde sorun çıktı",
     "Zammad notifications" : "Zammad bildirimleri",
     "_You have %n open ticket in Zammad._::_You have %n open tickets in Zammad._" : ["Zammad üzerinde açık %n destek kaydınız var.","Zammad üzerinde açık %n destek kaydınız var."],
     "Zammad tickets" : "Zammad destek kayıtları",
