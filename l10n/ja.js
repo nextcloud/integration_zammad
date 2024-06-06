@@ -17,6 +17,7 @@ OC.L10N.register(
     "No Zammad notifications!" : "Zammad通知がありません！",
     "Unknown error" : "不明なエラー",
     "Comments" : "コメント",
+    "Click to expand comment" : "コメントを展開するにはクリックしてください",
     "Account manager" : "アカウント管理者"
 },
 "nplurals=1; plural=0;");
