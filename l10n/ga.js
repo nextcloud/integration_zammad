@@ -5,6 +5,8 @@ OC.L10N.register(
     "Bad HTTP method" : "Droch-mhodh HTTP",
     "Bad credentials" : "Dintiúir dona",
     "OAuth access token refused" : "Diúltaíodh comhartha rochtana OAuth",
+    "Connected accounts" : "Cuntais nasctha",
+    "Connected as {user}" : "Ceangailte mar {user}",
     "OAuth access token could not be obtained:" : "Níorbh fhéidir comhartha rochtana OAuth a fháil:",
     "Unknown error" : "Earráid anaithnid",
     "Comments" : "Tuairimí",
