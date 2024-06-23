@@ -13,6 +13,7 @@ OC.L10N.register(
     "No Zammad account connected" : "연결된 Zammad 계정이 없음",
     "Unknown error" : "알 수 없는 오류",
     "Comments" : "댓글",
+    "Click to expand comment" : "댓글을 더 보려면 클릭하세요.",
     "Account manager" : "계정 관리자"
 },
 "nplurals=1; plural=0;");
