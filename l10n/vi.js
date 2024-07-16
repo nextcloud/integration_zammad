@@ -1,6 +1,7 @@
 OC.L10N.register(
     "integration_zammad",
     {
+    "Zammad notifications" : "Thông báo Zammad",
     "Bad HTTP method" : "Phương thức HTTP không hợp lệ",
     "Connected as {user}" : "Kết nối bởi {user}",
     "Unknown error" : "Lỗi không xác định",
