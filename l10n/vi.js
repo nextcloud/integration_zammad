@@ -8,6 +8,7 @@ OC.L10N.register(
     "Connected as {user}" : "Kết nối bởi {user}",
     "Unknown error" : "Lỗi không xác định",
     "Comments" : "Các bình luận",
-    "Click to expand comment" : "Nhấp để mở rộng bình luận"
+    "Click to expand comment" : "Nhấp để mở rộng bình luận",
+    "Account manager" : "Quản lý tài khoản"
 },
 "nplurals=1; plural=0;");
