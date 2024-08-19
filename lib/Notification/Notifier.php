@@ -22,19 +22,12 @@ use OCP\Notification\INotifier;
 
 class Notifier implements INotifier {
 
-	private IFactory $factory;
-	private IUserManager $userManager;
-	private INotificationManager $notificationManager;
-	private IURLGenerator $urlGenerator;
-
-	public function __construct(IFactory             $factory,
-		IUserManager         $userManager,
-		INotificationManager $notificationManager,
-		IURLGenerator        $urlGenerator) {
-		$this->factory = $factory;
-		$this->userManager = $userManager;
-		$this->notificationManager = $notificationManager;
-		$this->urlGenerator = $urlGenerator;
+	public function __construct(
+		private IFactory $factory,
+		private IUserManager $userManager,
+		private INotificationManager $notificationManager,
+		private IURLGenerator $urlGenerator
+	) {
 	}
 
 	/**

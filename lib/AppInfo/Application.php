@@ -29,11 +29,6 @@ use OCP\IURLGenerator;
 use OCP\IUserSession;
 use OCP\Notification\IManager as INotificationManager;
 
-/**
- * Class Application
- *
- * @package OCA\Zammad\AppInfo
- */
 class Application extends App implements IBootstrap {
 
 	public const APP_ID = 'integration_zammad';

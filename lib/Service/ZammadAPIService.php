@@ -32,34 +32,28 @@ use OCP\PreConditionNotMetException;
 use Psr\Log\LoggerInterface;
 
 class ZammadAPIService {
-	private IUserManager $userManager;
-	private LoggerInterface $logger;
-	private IL10N $l10n;
-	private IConfig $config;
-	private INotificationManager $notificationManager;
-	private IClient $client;
-	private ICacheFactory $cacheFactory;
 	private ICache $cache;
+	private IClient $client;
 
 	/**
 	 * Service to make requests to Zammad v3 (JSON) API
 	 */
-	public function __construct(string $appName,
-		IUserManager $userManager,
-		LoggerInterface $logger,
-		IL10N $l10n,
-		IConfig $config,
-		INotificationManager $notificationManager,
+	public function __construct (
+		private IUserManager $userManager,
+		private LoggerInterface $logger,
+		private IL10N $l10n,
+		private IConfig $config,
+		private INotificationManager $notificationManager,
 		ICacheFactory $cacheFactory,
-		IClientService $clientService) {
-		$this->userManager = $userManager;
-		$this->logger = $logger;
-		$this->l10n = $l10n;
-		$this->config = $config;
-		$this->notificationManager = $notificationManager;
+		IClientService $clientService
+	) {
 		$this->client = $clientService->newClient();
-		$this->cacheFactory = $cacheFactory;
 		$this->cache = $cacheFactory->createDistributed(Application::APP_ID . '_global_info');
+	}
+
+	private function getZammadUrl(string $userId): string {
+		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		return $this->config->getUserValue($userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
 	}
 
 	/**
@@ -84,7 +78,7 @@ class ZammadAPIService {
 		$notificationEnabled = ($this->config->getUserValue($userId, Application::APP_ID, 'notification_enabled', '0') === '1');
 		if ($accessToken && $notificationEnabled) {
 			$token = $this->config->getUserValue($userId, Application::APP_ID, 'token');
-			$zammadUrl = $this->config->getUserValue($userId, Application::APP_ID, 'url');
+			$zammadUrl = $this->getZammadUrl($userId);
 			if ($token && $zammadUrl) {
 				$lastNotificationCheck = $this->config->getUserValue($userId, Application::APP_ID, 'last_open_check');
 				$lastNotificationCheck = $lastNotificationCheck === '' ? null : $lastNotificationCheck;
@@ -227,7 +221,7 @@ class ZammadAPIService {
 	 * @throws Exception
 	 */
 	public function getTicketStateNames(string $userId): array {
-		$zammadUrl = $this->config->getUserValue($userId, Application::APP_ID, 'url');
+		$zammadUrl = $this->getZammadUrl($userId);
 		$cacheKey = md5($zammadUrl . '_states_by_id');
 		$hit = $this->cache->get($cacheKey);
 		if ($hit !== null) {
@@ -256,7 +250,7 @@ class ZammadAPIService {
 	 * @throws Exception
 	 */
 	public function getPriorityNames(string $userId): array {
-		$zammadUrl = $this->config->getUserValue($userId, Application::APP_ID, 'url');
+		$zammadUrl = $this->getZammadUrl($userId);
 		$cacheKey = md5($zammadUrl . '_priorities_by_id');
 		$hit = $this->cache->get($cacheKey);
 		if ($hit !== null) {
@@ -448,10 +442,11 @@ class ZammadAPIService {
 	 * @return array
 	 * @throws Exception
 	 */
-	public function request(string $userId, string $endPoint, array $params = [], string $method = 'GET',
-		bool $jsonResponse = true): array {
-		$zammadUrl = $this->config->getUserValue($userId, Application::APP_ID, 'url');
-		$this->checkTokenExpiration($userId, $zammadUrl);
+	public function request(
+		string $userId, string $endPoint, array $params = [], string $method = 'GET', bool $jsonResponse = true
+	): array {
+		$zammadUrl = $this->getZammadUrl($userId);
+		$this->checkTokenExpiration($userId);
 		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token');
 		$authType = $this->config->getUserValue($userId, Application::APP_ID, 'token_type');
 		try {
@@ -524,7 +519,7 @@ class ZammadAPIService {
 		}
 	}
 
-	private function checkTokenExpiration(string $userId, string $url): void {
+	private function checkTokenExpiration(string $userId): void {
 		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
 		$expireAt = $this->config->getUserValue($userId, Application::APP_ID, 'token_expires_at');
 		if ($refreshToken !== '' && $expireAt !== '') {
@@ -532,20 +527,21 @@ class ZammadAPIService {
 			$expireAt = (int)$expireAt;
 			// if token expires in less than a minute or is already expired
 			if ($nowTs > $expireAt - 60) {
-				$this->refreshToken($userId, $url);
+				$this->refreshToken($userId);
 			}
 		}
 	}
 
-	private function refreshToken(string $userId, string $url): bool {
+	private function refreshToken(string $userId): bool {
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
 		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
+		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
 		if (!$refreshToken) {
 			$this->logger->error('No Zammad refresh token found', ['app' => Application::APP_ID]);
 			return false;
 		}
-		$result = $this->requestOAuthAccessToken($url, [
+		$result = $this->requestOAuthAccessToken($adminZammadOauthUrl, [
 			'client_id' => $clientID,
 			'client_secret' => $clientSecret,
 			'grant_type' => 'refresh_token',

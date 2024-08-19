@@ -11,44 +11,31 @@ use OCP\Settings\ISettings;
 
 class Personal implements ISettings {
 
-	/**
-	 * @var IConfig
-	 */
-	private $config;
-	/**
-	 * @var IInitialState
-	 */
-	private $initialStateService;
-	/**
-	 * @var string|null
-	 */
-	private $userId;
-
-	public function __construct(IConfig $config,
-		IInitialState $initialStateService,
-		?string $userId) {
-		$this->config = $config;
-		$this->initialStateService = $initialStateService;
-		$this->userId = $userId;
+	public function __construct(
+		private IConfig $config,
+		private IInitialState $initialStateService,
+		private ?string $userId
+	) {
 	}
 
 	/**
 	 * @return TemplateResponse
 	 */
 	public function getForm(): TemplateResponse {
-		$token = $this->config->getUserValue($this->userId, Application::APP_ID, 'token');
+		// for OAuth
+		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
+		// don't expose the client secret to the user
+		$clientSecret = ($this->config->getAppValue(Application::APP_ID, 'client_secret') !== '');
+		$oauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+
+		// don't expose the token to the user
+		$token = $this->config->getUserValue($this->userId, Application::APP_ID, 'token') !== '' ? 'dummyToken' : '';
 		$userName = $this->config->getUserValue($this->userId, Application::APP_ID, 'user_name');
-		$url = $this->config->getUserValue($this->userId, Application::APP_ID, 'url');
+		$url = $this->config->getUserValue($this->userId, Application::APP_ID, 'url') ?: $oauthUrl;
 		$searchEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'search_enabled', '0') === '1';
 		$notificationEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'notification_enabled', '0') === '1';
 		$navigationEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'navigation_enabled', '0') === '1';
 		$linkPreviewEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'link_preview_enabled', '1') === '1';
-
-		// for OAuth
-		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
-		// don't expose the client secret to users
-		$clientSecret = ($this->config->getAppValue(Application::APP_ID, 'client_secret') !== '');
-		$oauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
 
 		$userConfig = [
 			'token' => $token,

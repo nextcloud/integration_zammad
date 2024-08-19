@@ -18,47 +18,61 @@ use OCA\Zammad\Service\ZammadAPIService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\Attribute\PasswordConfirmationRequired;
+use OCP\IURLGenerator;
 use OCP\IConfig;
 use OCP\IL10N;
 
 use OCP\IRequest;
-use OCP\IURLGenerator;
 use OCP\PreConditionNotMetException;
 
 class ConfigController extends Controller {
-	private IConfig $config;
-	private IURLGenerator $urlGenerator;
-	private IL10N $l;
-	private ZammadAPIService $zammadAPIService;
-	private ZammadReferenceProvider $zammadReferenceProvider;
-	private ?string $userId;
 
-	public function __construct(string $appName,
+	public function __construct(
+		string $appName,
 		IRequest $request,
-		IConfig $config,
-		IURLGenerator $urlGenerator,
-		IL10N $l,
-		ZammadAPIService $zammadAPIService,
-		ZammadReferenceProvider $zammadReferenceProvider,
-		?string $userId) {
+		private IConfig $config,
+		private IURLGenerator $urlGenerator,
+		private IL10N $l,
+		private ZammadAPIService $zammadAPIService,
+		private ZammadReferenceProvider $zammadReferenceProvider,
+		private ?string $userId
+	) {
 		parent::__construct($appName, $request);
-		$this->config = $config;
-		$this->urlGenerator = $urlGenerator;
-		$this->l = $l;
-		$this->zammadAPIService = $zammadAPIService;
-		$this->zammadReferenceProvider = $zammadReferenceProvider;
-		$this->userId = $userId;
 	}
 
 	/**
-	 * set config values
-	 * @NoAdminRequired
+	 * Set config values
 	 *
 	 * @param array $values
 	 * @return DataResponse
 	 * @throws PreConditionNotMetException
 	 */
+	#[NoAdminRequired]
 	public function setConfig(array $values): DataResponse {
+		foreach ($values as $key => $value) {
+			if (in_array($key, ['token', 'token_type', 'url', 'oauth_state', 'redirect_uri'], true)) {
+				return new DataResponse([], Http::STATUS_BAD_REQUEST);
+			}
+			$this->config->setUserValue($this->userId, Application::APP_ID, $key, trim($value));
+		}
+
+		return new DataResponse([]);
+	}
+
+	/**
+	 * Set sensitive config values
+	 *
+	 * @param array $values
+	 * @return DataResponse
+	 * @throws PreConditionNotMetException
+	 */
+	#[NoAdminRequired]
+	#[PasswordConfirmationRequired]
+	public function setSensitiveConfig(array $values): DataResponse {
 		foreach ($values as $key => $value) {
 			$this->config->setUserValue($this->userId, Application::APP_ID, $key, trim($value));
 		}
@@ -81,35 +95,52 @@ class ConfigController extends Controller {
 			$this->config->deleteUserValue($this->userId, Application::APP_ID, 'token_expires_at');
 		}
 		if (isset($result['error'])) {
-			return new DataResponse($result, 401);
+			return new DataResponse($result, Http::STATUS_UNAUTHORIZED);
 		} else {
 			return new DataResponse($result);
 		}
 	}
 
 	/**
-	 * set admin config values
+	 * Set admin config values
 	 *
 	 * @param array $values
 	 * @return DataResponse
 	 */
 	public function setAdminConfig(array $values): DataResponse {
 		foreach ($values as $key => $value) {
+			if (in_array($key, ['client_id', 'client_secret', 'oauth_instance_url'], true)) {
+				return new DataResponse([], Http::STATUS_BAD_REQUEST);
+			}
 			$this->config->setAppValue(Application::APP_ID, $key, $value);
 		}
-		return new DataResponse(1);
+		return new DataResponse([]);
 	}
 
 	/**
-	 * receive oauth code and get oauth access token
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
+	 * Set sensitive admin config values
+	 *
+	 * @param array $values
+	 * @return DataResponse
+	 */
+	#[PasswordConfirmationRequired]
+	public function setSensitiveAdminConfig(array $values): DataResponse {
+		foreach ($values as $key => $value) {
+			$this->config->setAppValue(Application::APP_ID, $key, $value);
+		}
+		return new DataResponse([]);
+	}
+
+	/**
+	 * Receive oauth code and get oauth access token
 	 *
 	 * @param string $code
 	 * @param string $state
 	 * @return RedirectResponse
 	 * @throws PreConditionNotMetException
 	 */
+	#[NoAdminRequired]
+	#[NoCSRFRequired]
 	public function oauthRedirect(string $code = '', string $state = ''): RedirectResponse {
 		$configState = $this->config->getUserValue($this->userId, Application::APP_ID, 'oauth_state');
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
@@ -118,10 +149,11 @@ class ConfigController extends Controller {
 		// anyway, reset state
 		$this->config->setUserValue($this->userId, Application::APP_ID, 'oauth_state', '');
 
+		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+
 		if ($clientID && $clientSecret && $configState !== '' && $configState === $state) {
 			$redirect_uri = $this->config->getUserValue($this->userId, Application::APP_ID, 'redirect_uri');
-			$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url');
-			$result = $this->zammadAPIService->requestOAuthAccessToken($zammadUrl, [
+			$result = $this->zammadAPIService->requestOAuthAccessToken($adminZammadOauthUrl, [
 				'client_id' => $clientID,
 				'client_secret' => $clientSecret,
 				'code' => $code,
@@ -162,7 +194,8 @@ class ConfigController extends Controller {
 	 * @throws PreConditionNotMetException
 	 */
 	private function storeUserInfo(): array {
-		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url');
+		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
 
 		if (!$zammadUrl || !preg_match('/^(https?:\/\/)?[^.]+\.[^.].*/', $zammadUrl)) {
 			return ['error' => 'Zammad URL is invalid'];

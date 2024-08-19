@@ -72,8 +72,10 @@ import { NcCheckboxRadioSwitch } from '@nextcloud/vue'
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
-import { delay } from '../utils.js'
 import { showSuccess, showError } from '@nextcloud/dialogs'
+import { confirmPassword } from '@nextcloud/password-confirmation'
+
+import { delay } from '../utils.js'
 
 export default {
 	name: 'AdminSettings',
@@ -105,33 +107,38 @@ export default {
 
 	methods: {
 		onInput() {
-			const that = this
 			delay(() => {
-				that.saveOptions({
+				const values = {
 					client_id: this.state.client_id,
-					client_secret: this.state.client_secret,
 					oauth_instance_url: this.state.oauth_instance_url,
-				})
+				}
+				if (this.state.client_secret !== 'dummySecret') {
+					values.client_secret = this.state.client_secret
+				}
+				this.saveOptions(values)
 			}, 2000)()
 		},
 		onCheckboxChanged(newValue, key) {
 			this.state[key] = newValue
-			this.saveOptions({ [key]: this.state[key] ? '1' : '0' })
+			this.saveOptions({ [key]: this.state[key] ? '1' : '0' }, false)
 		},
-		saveOptions(values) {
+		async saveOptions(values, sensitive = true) {
+			if (sensitive) {
+				await confirmPassword()
+			}
 			const req = {
 				values,
 			}
-			const url = generateUrl('/apps/integration_zammad/admin-config')
+			const url = sensitive
+				? generateUrl('/apps/integration_zammad/sensitive-admin-config')
+				: generateUrl('/apps/integration_zammad/admin-config')
 			axios.put(url, req)
 				.then((response) => {
 					showSuccess(t('integration_zammad', 'Zammad admin options saved'))
 				})
 				.catch((error) => {
-					showError(
-						t('integration_zammad', 'Failed to save Zammad admin options')
-						+ ': ' + error.response.request.responseText
-					)
+					showError(t('integration_zammad', 'Failed to save Zammad admin options'))
+					console.error(error)
 				})
 		},
 	},

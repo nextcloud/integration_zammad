@@ -38,25 +38,15 @@ use OCP\Search\ISearchQuery;
 use OCP\Search\SearchResult;
 
 class ZammadSearchProvider implements IProvider {
-	private IAppManager $appManager;
-	private IL10N $l10n;
-	private IConfig $config;
-	private IURLGenerator $urlGenerator;
-	private IDateTimeFormatter $dateTimeFormatter;
-	private ZammadAPIService $service;
 
-	public function __construct(IAppManager $appManager,
-		IL10N $l10n,
-		IConfig $config,
-		IURLGenerator $urlGenerator,
-		IDateTimeFormatter $dateTimeFormatter,
-		ZammadAPIService $service) {
-		$this->appManager = $appManager;
-		$this->l10n = $l10n;
-		$this->config = $config;
-		$this->urlGenerator = $urlGenerator;
-		$this->dateTimeFormatter = $dateTimeFormatter;
-		$this->service = $service;
+	public function __construct(
+		private IAppManager $appManager,
+		private IL10N $l10n,
+		private IConfig $config,
+		private IURLGenerator $urlGenerator,
+		private IDateTimeFormatter $dateTimeFormatter,
+		private ZammadAPIService $service
+	) {
 	}
 
 	/**
@@ -103,7 +93,8 @@ class ZammadSearchProvider implements IProvider {
 			? $this->urlGenerator->imagePath(Application::APP_ID, 'app.svg')
 			: $this->urlGenerator->imagePath(Application::APP_ID, 'app-dark.svg');
 
-		$zammadUrl = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'url');
+		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		$zammadUrl = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
 		$accessToken = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'token');
 
 		$searchEnabled = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'search_enabled', '0') === '1';
