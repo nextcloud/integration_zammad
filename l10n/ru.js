@@ -45,6 +45,7 @@ OC.L10N.register(
     "No Zammad notifications!" : "Никаких уведомлений Zammad!",
     "Failed to get Zammad notifications" : "Не удалось получить уведомления Zammad",
     "Unknown error" : "Неизвестная ошибка",
+    "Zammad connected accounts settings" : "Настройки подключенных учетных записей Zammad",
     "Comments" : "Комментарии",
     "Click to expand comment" : "Нажмите, чтобы развернуть комментарии",
     "Account manager" : "Менеджер аккаунта"
