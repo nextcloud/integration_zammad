@@ -34,9 +34,7 @@ import LoginVariantIcon from 'vue-material-design-icons/LoginVariant.vue'
 
 import ZammadIcon from '../components/icons/ZammadIcon.vue'
 
-import NcEmptyContent from '@nextcloud/vue/dist/Components/NcEmptyContent.js'
-import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
-import NcDashboardWidget from '@nextcloud/vue/dist/Components/NcDashboardWidget.js'
+import { NcDashboardWidget, NcButton, NcEmptyContent } from '@nextcloud/vue'
 
 import axios from '@nextcloud/axios'
 import { generateUrl, imagePath } from '@nextcloud/router'

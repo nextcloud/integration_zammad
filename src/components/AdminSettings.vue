@@ -67,7 +67,7 @@ import EarthIcon from 'vue-material-design-icons/Earth.vue'
 
 import ZammadIcon from './icons/ZammadIcon.vue'
 
-import NcCheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
+import { NcCheckboxRadioSwitch } from '@nextcloud/vue'
 
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'

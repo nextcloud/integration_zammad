@@ -186,8 +186,7 @@ import CommentIcon from '../components/icons/CommentIcon.vue'
 import { generateUrl } from '@nextcloud/router'
 import moment from '@nextcloud/moment'
 
-import NcAvatar from '@nextcloud/vue/dist/Components/NcAvatar.js'
-import Tooltip from '@nextcloud/vue/dist/Directives/Tooltip.js'
+import { Tooltip, NcAvatar } from '@nextcloud/vue'
 import VueSecureHTML from 'vue-html-secure'
 import Vue from 'vue'
 

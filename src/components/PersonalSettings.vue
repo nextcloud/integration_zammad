@@ -99,8 +99,7 @@ import InformationOutlineIcon from 'vue-material-design-icons/InformationOutline
 
 import ZammadIcon from './icons/ZammadIcon.vue'
 
-import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
-import NcCheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
+import { NcButton, NcCheckboxRadioSwitch } from '@nextcloud/vue'
 
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
