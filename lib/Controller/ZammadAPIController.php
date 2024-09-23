@@ -11,15 +11,15 @@
 
 namespace OCA\Zammad\Controller;
 
+use OCA\Zammad\AppInfo\Application;
+use OCA\Zammad\Service\ZammadAPIService;
+use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataDisplayResponse;
+use OCP\AppFramework\Http\DataResponse;
+
 use OCP\IConfig;
 use OCP\IRequest;
-use OCP\AppFramework\Http\DataResponse;
-use OCP\AppFramework\Controller;
-
-use OCA\Zammad\Service\ZammadAPIService;
-use OCA\Zammad\AppInfo\Application;
 use OCP\PreConditionNotMetException;
 
 class ZammadAPIController extends Controller {
@@ -58,10 +58,10 @@ class ZammadAPIController extends Controller {
 	private $zammadUrl;
 
 	public function __construct(string $appName,
-								IRequest $request,
-								IConfig $config,
-								ZammadAPIService $zammadAPIService,
-								?string $userId) {
+		IRequest $request,
+		IConfig $config,
+		ZammadAPIService $zammadAPIService,
+		?string $userId) {
 		parent::__construct($appName, $request);
 		$this->zammadAPIService = $zammadAPIService;
 		$this->userId = $userId;

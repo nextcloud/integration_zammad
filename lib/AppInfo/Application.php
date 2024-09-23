@@ -10,24 +10,24 @@
 namespace OCA\Zammad\AppInfo;
 
 use Closure;
+use OCA\Zammad\Dashboard\ZammadWidget;
 use OCA\Zammad\Listener\ZammadReferenceListener;
+use OCA\Zammad\Notification\Notifier;
 use OCA\Zammad\Reference\ZammadReferenceProvider;
+use OCA\Zammad\Search\ZammadSearchProvider;
+use OCP\AppFramework\App;
+use OCP\AppFramework\Bootstrap\IBootContext;
+use OCP\AppFramework\Bootstrap\IBootstrap;
+
+use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\Collaboration\Reference\RenderReferenceEvent;
 use OCP\IConfig;
 use OCP\IL10N;
 use OCP\INavigationManager;
+
 use OCP\IURLGenerator;
 use OCP\IUserSession;
-
-use OCP\AppFramework\App;
-use OCP\AppFramework\Bootstrap\IRegistrationContext;
-use OCP\AppFramework\Bootstrap\IBootContext;
-use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\Notification\IManager as INotificationManager;
-
-use OCA\Zammad\Dashboard\ZammadWidget;
-use OCA\Zammad\Search\ZammadSearchProvider;
-use OCA\Zammad\Notification\Notifier;
 
 /**
  * Class Application
@@ -98,4 +98,3 @@ class Application extends App implements IBootstrap {
 		}
 	}
 }
-

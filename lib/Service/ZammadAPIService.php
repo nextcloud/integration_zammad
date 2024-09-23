@@ -13,23 +13,23 @@ namespace OCA\Zammad\Service;
 
 use DateTime;
 use Exception;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\ServerException;
+use OCA\Zammad\AppInfo\Application;
 use OCP\AppFramework\Http;
 use OCP\Http\Client\IClient;
+use OCP\Http\Client\IClientService;
 use OCP\ICache;
 use OCP\ICacheFactory;
-use OCP\IL10N;
-use OCP\PreConditionNotMetException;
-use Psr\Log\LoggerInterface;
 use OCP\IConfig;
-use OCP\IUserManager;
+use OCP\IL10N;
 use OCP\IUser;
-use OCP\Http\Client\IClientService;
+use OCP\IUserManager;
 use OCP\Notification\IManager as INotificationManager;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ServerException;
-use GuzzleHttp\Exception\ConnectException;
+use OCP\PreConditionNotMetException;
 
-use OCA\Zammad\AppInfo\Application;
+use Psr\Log\LoggerInterface;
 
 class ZammadAPIService {
 	private IUserManager $userManager;
@@ -44,14 +44,14 @@ class ZammadAPIService {
 	/**
 	 * Service to make requests to Zammad v3 (JSON) API
 	 */
-	public function __construct (string $appName,
-								IUserManager $userManager,
-								LoggerInterface $logger,
-								IL10N $l10n,
-								IConfig $config,
-								INotificationManager $notificationManager,
-								ICacheFactory $cacheFactory,
-								IClientService $clientService) {
+	public function __construct(string $appName,
+		IUserManager $userManager,
+		LoggerInterface $logger,
+		IL10N $l10n,
+		IConfig $config,
+		INotificationManager $notificationManager,
+		ICacheFactory $cacheFactory,
+		IClientService $clientService) {
 		$this->userManager = $userManager;
 		$this->logger = $logger;
 		$this->l10n = $l10n;
@@ -99,7 +99,7 @@ class ZammadAPIService {
 						$this->config->setUserValue($userId, Application::APP_ID, 'last_open_check', $lastNotificationCheck);
 						$nbOpen = 0;
 						foreach ($notifications as $n) {
-//							$user_id = $n['user_id'];
+							//							$user_id = $n['user_id'];
 							$state_id = $n['state_id'];
 							$owner_id = $n['owner_id'];
 							// if ($state_id === 1) {
@@ -154,14 +154,14 @@ class ZammadAPIService {
 			return $notifications;
 		}
 		// filter seen ones
-		$notifications = array_filter($notifications, static function($elem) {
+		$notifications = array_filter($notifications, static function ($elem) {
 			return !$elem['seen'];
 		});
 		// filter results by date
 		if (!is_null($since)) {
 			$sinceDate = new DateTime($since);
 			$sinceTimestamp = $sinceDate->getTimestamp();
-			$notifications = array_filter($notifications, static function($elem) use ($sinceTimestamp) {
+			$notifications = array_filter($notifications, static function ($elem) use ($sinceTimestamp) {
 				$date = new Datetime($elem['updated_at']);
 				$ts = $date->getTimestamp();
 				return $ts > $sinceTimestamp;
@@ -238,7 +238,7 @@ class ZammadAPIService {
 		$statesById = [];
 		if (!isset($states['error'])) {
 			foreach ($states as $state) {
-				$id = (int) $state['id'];
+				$id = (int)$state['id'];
 				$name = $state['name'];
 				if ($id && $name) {
 					$statesById[$id] = $name;
@@ -267,7 +267,7 @@ class ZammadAPIService {
 		$priosById = [];
 		if (!isset($prios['error'])) {
 			foreach ($prios as $prio) {
-				$id = (int) $prio['id'];
+				$id = (int)$prio['id'];
 				$name = $prio['name'];
 				if ($id && $name) {
 					$priosById[$id] = $name;
@@ -332,7 +332,7 @@ class ZammadAPIService {
 
 		$statesById = $this->getTicketStateNames($userId);
 		foreach ($tickets as $k => $ticket) {
-			$stateId = (int) $ticket['state_id'];
+			$stateId = (int)$ticket['state_id'];
 			if (array_key_exists($stateId, $statesById)) {
 				$tickets[$k]['state_name'] = $statesById[$stateId];
 			}
@@ -340,14 +340,14 @@ class ZammadAPIService {
 		// get ticket priority names
 		$prioritiesById = $this->getPriorityNames($userId);
 		foreach ($tickets as $k => $ticket) {
-			$priorityId = (int) $ticket['priority_id'];
+			$priorityId = (int)$ticket['priority_id'];
 			if (array_key_exists($priorityId, $prioritiesById)) {
 				$tickets[$k]['priority_name'] = $prioritiesById[$priorityId];
 			}
 		}
 		// add owner/org information
 		foreach ($tickets as $k => $ticket) {
-			$customerId = (string) $ticket['customer_id'];
+			$customerId = (string)$ticket['customer_id'];
 			if (isset($users[$customerId])) {
 				$user = $users[$customerId];
 				$tickets[$k]['u_firstname'] = $user['firstname'];
@@ -355,7 +355,7 @@ class ZammadAPIService {
 				$tickets[$k]['u_organization_id'] = $user['organization_id'];
 				$tickets[$k]['u_image'] = $user['image'];
 			}
-			$orgId = (string) $ticket['organization_id'];
+			$orgId = (string)$ticket['organization_id'];
 			if (isset($orgs[$orgId])) {
 				$org = $orgs[$orgId];
 				$tickets[$k]['org_name'] = $org['name'];
@@ -391,7 +391,7 @@ class ZammadAPIService {
 	 * @return array
 	 * @throws Exception
 	 */
-	public function getTicketStates(string $userId): array	{
+	public function getTicketStates(string $userId): array {
 		return $this->request($userId, 'ticket_states');
 	}
 
@@ -401,7 +401,7 @@ class ZammadAPIService {
 	 * @return array
 	 * @throws Exception
 	 */
-	public function getTickettags(string $userId, int $ticketId): array	{
+	public function getTickettags(string $userId, int $ticketId): array {
 		$params = [
 			'object' => 'Ticket',
 			'o_id' => $ticketId,
@@ -449,7 +449,7 @@ class ZammadAPIService {
 	 * @throws Exception
 	 */
 	public function request(string $userId, string $endPoint, array $params = [], string $method = 'GET',
-							bool $jsonResponse = true): array {
+		bool $jsonResponse = true): array {
 		$zammadUrl = $this->config->getUserValue($userId, Application::APP_ID, 'url');
 		$this->checkTokenExpiration($userId, $zammadUrl);
 		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token');
@@ -459,7 +459,7 @@ class ZammadAPIService {
 			$authHeader = ($authType === 'access') ? 'Token token=' : 'Bearer ';
 			$options = [
 				'headers' => [
-					'Authorization'  => $authHeader . $accessToken,
+					'Authorization' => $authHeader . $accessToken,
 					'User-Agent' => 'Nextcloud Zammad integration',
 				]
 			];
@@ -485,11 +485,11 @@ class ZammadAPIService {
 
 			if ($method === 'GET') {
 				$response = $this->client->get($url, $options);
-			} else if ($method === 'POST') {
+			} elseif ($method === 'POST') {
 				$response = $this->client->post($url, $options);
-			} else if ($method === 'PUT') {
+			} elseif ($method === 'PUT') {
 				$response = $this->client->put($url, $options);
-			} else if ($method === 'DELETE') {
+			} elseif ($method === 'DELETE') {
 				$response = $this->client->delete($url, $options);
 			} else {
 				return ['error' => $this->l10n->t('Bad HTTP method')];
@@ -509,8 +509,8 @@ class ZammadAPIService {
 					];
 				}
 			}
-		} catch (ServerException | ClientException $e) {
-			$this->logger->warning('Zammad API error : '.$e->getMessage(), ['app' => Application::APP_ID]);
+		} catch (ServerException|ClientException $e) {
+			$this->logger->warning('Zammad API error : ' . $e->getMessage(), ['app' => Application::APP_ID]);
 			$response = $e->getResponse();
 			$statusCode = $response->getStatusCode();
 			if ($statusCode === Http::STATUS_FORBIDDEN) {
@@ -529,7 +529,7 @@ class ZammadAPIService {
 		$expireAt = $this->config->getUserValue($userId, Application::APP_ID, 'token_expires_at');
 		if ($refreshToken !== '' && $expireAt !== '') {
 			$nowTs = (new Datetime())->getTimestamp();
-			$expireAt = (int) $expireAt;
+			$expireAt = (int)$expireAt;
 			// if token expires in less than a minute or is already expired
 			if ($nowTs > $expireAt - 60) {
 				$this->refreshToken($userId, $url);
@@ -555,12 +555,12 @@ class ZammadAPIService {
 			$accessToken = $result['access_token'];
 			$this->config->setUserValue($userId, Application::APP_ID, 'token', $accessToken);
 			// TODO check if we need to store the refresh token here
-//			$refreshToken = $result['refresh_token'];
-//			$this->config->setUserValue($userId, Application::APP_ID, 'refresh_token', $refreshToken);
+			//			$refreshToken = $result['refresh_token'];
+			//			$this->config->setUserValue($userId, Application::APP_ID, 'refresh_token', $refreshToken);
 			if (isset($result['expires_in'])) {
 				$nowTs = (new Datetime())->getTimestamp();
-				$expiresAt = $nowTs + (int) $result['expires_in'];
-				$this->config->setUserValue($userId, Application::APP_ID, 'token_expires_at', $expiresAt);
+				$expiresAt = $nowTs + (int)$result['expires_in'];
+				$this->config->setUserValue($userId, Application::APP_ID, 'token_expires_at', (string)$expiresAt);
 			}
 			return true;
 		} else {
@@ -568,7 +568,7 @@ class ZammadAPIService {
 			$this->logger->error(
 				'Token is not valid anymore. Impossible to refresh it. '
 					. $result['error'] . ' '
-					. $result['error_description'] ?? '[no error description]',
+					. ($result['error_description'] ?? '[no error description]'),
 				['app' => Application::APP_ID]
 			);
 			return false;
@@ -586,7 +586,7 @@ class ZammadAPIService {
 			$url = $url . '/oauth/token';
 			$options = [
 				'headers' => [
-					'User-Agent'  => 'Nextcloud Zammad integration',
+					'User-Agent' => 'Nextcloud Zammad integration',
 				]
 			];
 
@@ -601,11 +601,11 @@ class ZammadAPIService {
 
 			if ($method === 'GET') {
 				$response = $this->client->get($url, $options);
-			} else if ($method === 'POST') {
+			} elseif ($method === 'POST') {
 				$response = $this->client->post($url, $options);
-			} else if ($method === 'PUT') {
+			} elseif ($method === 'PUT') {
 				$response = $this->client->put($url, $options);
-			} else if ($method === 'DELETE') {
+			} elseif ($method === 'DELETE') {
 				$response = $this->client->delete($url, $options);
 			} else {
 				return ['error' => $this->l10n->t('Bad HTTP method')];
@@ -619,7 +619,7 @@ class ZammadAPIService {
 				return json_decode($body, true);
 			}
 		} catch (Exception $e) {
-			$this->logger->warning('Zammad OAuth error : '.$e->getMessage(), ['app' => Application::APP_ID]);
+			$this->logger->warning('Zammad OAuth error : ' . $e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];
 		}
 	}

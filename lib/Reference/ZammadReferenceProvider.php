@@ -23,13 +23,13 @@
 namespace OCA\Zammad\Reference;
 
 use Exception;
-use OCP\Collaboration\Reference\ADiscoverableReferenceProvider;
-use OCP\Collaboration\Reference\ISearchableReferenceProvider;
-use OCP\Collaboration\Reference\Reference;
-use OC\Collaboration\Reference\ReferenceManager;
 use OCA\Zammad\AppInfo\Application;
 use OCA\Zammad\Service\ZammadAPIService;
+use OCP\Collaboration\Reference\ADiscoverableReferenceProvider;
 use OCP\Collaboration\Reference\IReference;
+use OCP\Collaboration\Reference\IReferenceManager;
+use OCP\Collaboration\Reference\ISearchableReferenceProvider;
+use OCP\Collaboration\Reference\Reference;
 use OCP\IConfig;
 use OCP\IL10N;
 use OCP\IURLGenerator;
@@ -38,17 +38,17 @@ use OCP\PreConditionNotMetException;
 class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements ISearchableReferenceProvider {
 	private ZammadAPIService $zammadAPIService;
 	private IConfig $config;
-	private ReferenceManager $referenceManager;
+	private IReferenceManager $referenceManager;
 	private ?string $userId;
 	private IURLGenerator $urlGenerator;
 	private IL10N $l10n;
 
 	public function __construct(ZammadAPIService $zammadAPIService,
-								IConfig $config,
-								ReferenceManager $referenceManager,
-								IURLGenerator $urlGenerator,
-								IL10N $l10n,
-								?string $userId) {
+		IConfig $config,
+		IReferenceManager $referenceManager,
+		IURLGenerator $urlGenerator,
+		IL10N $l10n,
+		?string $userId) {
 		$this->zammadAPIService = $zammadAPIService;
 		$this->config = $config;
 		$this->referenceManager = $referenceManager;
@@ -60,7 +60,7 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 	/**
 	 * @inheritDoc
 	 */
-	public function getId(): string	{
+	public function getId(): string {
 		return 'zammad-ticket';
 	}
 
@@ -74,7 +74,7 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 	/**
 	 * @inheritDoc
 	 */
-	public function getOrder(): int	{
+	public function getOrder(): int {
 		return 10;
 	}
 
@@ -136,7 +136,7 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 			$parts = $this->getLinkParts($zammadUrl, $referenceText);
 			if ($parts !== null) {
 				[$ticketId, $end] = $parts;
-//				$projectLabels = $this->zammadAPIService->getProjectLabels($this->userId, $projectInfo['id']);
+				//				$projectLabels = $this->zammadAPIService->getProjectLabels($this->userId, $projectInfo['id']);
 				$commentInfo = $this->getCommentInfo($end);
 				$commentAuthorInfo = null;
 				$commentAuthorOrgInfo = null;
@@ -202,7 +202,7 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 	 */
 	private function getCommentId(string $urlEnd): ?int {
 		preg_match('/^\/([0-9]+)$/', $urlEnd, $matches);
-		return (is_array($matches) && count($matches) > 1) ? ((int) $matches[1]) : null;
+		return count($matches) > 1 ? ((int)$matches[1]) : null;
 	}
 
 	/**
