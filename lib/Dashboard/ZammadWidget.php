@@ -23,12 +23,12 @@
 
 namespace OCA\Zammad\Dashboard;
 
+use OCA\Zammad\AppInfo\Application;
 use OCP\Dashboard\IWidget;
 use OCP\IL10N;
 use OCP\IURLGenerator;
-use OCP\Util;
 
-use OCA\Zammad\AppInfo\Application;
+use OCP\Util;
 
 class ZammadWidget implements IWidget {
 
@@ -40,7 +40,7 @@ class ZammadWidget implements IWidget {
 	private $url;
 
 	public function __construct(IL10N $l10n,
-								IURLGenerator $url) {
+		IURLGenerator $url) {
 		$this->l10n = $l10n;
 		$this->url = $url;
 	}
@@ -57,7 +57,7 @@ class ZammadWidget implements IWidget {
 	 */
 	public function getTitle(): string {
 		return $this->l10n->t('Zammad notifications');
-		}
+	}
 
 	/**
 	 * @inheritDoc

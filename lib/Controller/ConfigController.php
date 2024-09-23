@@ -12,17 +12,17 @@
 namespace OCA\Zammad\Controller;
 
 use DateTime;
+use OCA\Zammad\AppInfo\Application;
 use OCA\Zammad\Reference\ZammadReferenceProvider;
-use OCP\IURLGenerator;
+use OCA\Zammad\Service\ZammadAPIService;
+use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\RedirectResponse;
 use OCP\IConfig;
 use OCP\IL10N;
-use OCP\AppFramework\Http\RedirectResponse;
-use OCP\IRequest;
-use OCP\AppFramework\Http\DataResponse;
-use OCP\AppFramework\Controller;
 
-use OCA\Zammad\Service\ZammadAPIService;
-use OCA\Zammad\AppInfo\Application;
+use OCP\IRequest;
+use OCP\IURLGenerator;
 use OCP\PreConditionNotMetException;
 
 class ConfigController extends Controller {
@@ -34,13 +34,13 @@ class ConfigController extends Controller {
 	private ?string $userId;
 
 	public function __construct(string $appName,
-								IRequest $request,
-								IConfig $config,
-								IURLGenerator $urlGenerator,
-								IL10N $l,
-								ZammadAPIService $zammadAPIService,
-								ZammadReferenceProvider $zammadReferenceProvider,
-								?string $userId) {
+		IRequest $request,
+		IConfig $config,
+		IURLGenerator $urlGenerator,
+		IL10N $l,
+		ZammadAPIService $zammadAPIService,
+		ZammadReferenceProvider $zammadReferenceProvider,
+		?string $userId) {
 		parent::__construct($appName, $request);
 		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;
@@ -137,7 +137,7 @@ class ConfigController extends Controller {
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'refresh_token', $refreshToken);
 				if (isset($result['expires_in'])) {
 					$nowTs = (new Datetime())->getTimestamp();
-					$expiresAt = $nowTs + (int) $result['expires_in'];
+					$expiresAt = $nowTs + (int)$result['expires_in'];
 					$this->config->setUserValue($this->userId, Application::APP_ID, 'token_expires_at', $expiresAt);
 				}
 				// get user info

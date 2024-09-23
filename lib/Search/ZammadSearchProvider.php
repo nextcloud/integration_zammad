@@ -25,12 +25,12 @@ declare(strict_types=1);
 namespace OCA\Zammad\Search;
 
 use DateTime;
-use OCA\Zammad\Service\ZammadAPIService;
 use OCA\Zammad\AppInfo\Application;
+use OCA\Zammad\Service\ZammadAPIService;
 use OCP\App\IAppManager;
+use OCP\IConfig;
 use OCP\IDateTimeFormatter;
 use OCP\IL10N;
-use OCP\IConfig;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\Search\IProvider;
@@ -46,11 +46,11 @@ class ZammadSearchProvider implements IProvider {
 	private ZammadAPIService $service;
 
 	public function __construct(IAppManager $appManager,
-								IL10N $l10n,
-								IConfig $config,
-								IURLGenerator $urlGenerator,
-								IDateTimeFormatter $dateTimeFormatter,
-								ZammadAPIService $service) {
+		IL10N $l10n,
+		IConfig $config,
+		IURLGenerator $urlGenerator,
+		IDateTimeFormatter $dateTimeFormatter,
+		ZammadAPIService $service) {
 		$this->appManager = $appManager;
 		$this->l10n = $l10n;
 		$this->config = $config;
