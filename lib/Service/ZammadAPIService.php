@@ -560,7 +560,7 @@ class ZammadAPIService {
 			if (isset($result['expires_in'])) {
 				$nowTs = (new Datetime())->getTimestamp();
 				$expiresAt = $nowTs + (int)$result['expires_in'];
-				$this->config->setUserValue($userId, Application::APP_ID, 'token_expires_at', $expiresAt);
+				$this->config->setUserValue($userId, Application::APP_ID, 'token_expires_at', (string)$expiresAt);
 			}
 			return true;
 		} else {
@@ -568,7 +568,7 @@ class ZammadAPIService {
 			$this->logger->error(
 				'Token is not valid anymore. Impossible to refresh it. '
 					. $result['error'] . ' '
-					. $result['error_description'] ?? '[no error description]',
+					. ($result['error_description'] ?? '[no error description]'),
 				['app' => Application::APP_ID]
 			);
 			return false;
