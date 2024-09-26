@@ -29,28 +29,16 @@ use OCP\BackgroundJob\TimedJob;
 
 use Psr\Log\LoggerInterface;
 
-/**
- * Class CheckOpenTickets
- *
- * @package OCA\Zammad\BackgroundJob
- */
 class CheckOpenTickets extends TimedJob {
 
-	/** @var ZammadAPIService */
-	protected $zammadAPIService;
-
-	/** @var LoggerInterface */
-	protected $logger;
-
-	public function __construct(ITimeFactory $time,
-		ZammadAPIService $zammadAPIService,
-		LoggerInterface $logger) {
+	public function __construct(
+		ITimeFactory $time,
+		private ZammadAPIService $zammadAPIService,
+		private LoggerInterface $logger,
+	) {
 		parent::__construct($time);
 		// Every 15 minutes
 		$this->setInterval(60 * 15);
-
-		$this->zammadAPIService = $zammadAPIService;
-		$this->logger = $logger;
 	}
 
 	protected function run($argument): void {

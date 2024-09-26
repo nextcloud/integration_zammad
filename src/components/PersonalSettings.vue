@@ -104,8 +104,10 @@ import { NcButton, NcCheckboxRadioSwitch } from '@nextcloud/vue'
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
-import { delay } from '../utils.js'
 import { showSuccess, showError } from '@nextcloud/dialogs'
+import { confirmPassword } from '@nextcloud/password-confirmation'
+
+import { delay } from '../utils.js'
 
 export default {
 	name: 'PersonalSettings',
@@ -165,24 +167,32 @@ export default {
 		},
 		onCheckboxChanged(newValue, key) {
 			this.state[key] = newValue
-			this.saveOptions({ [key]: this.state[key] ? '1' : '0' })
+			this.saveOptions({ [key]: this.state[key] ? '1' : '0' }, false)
 		},
 		onInput() {
 			this.loading = true
 			delay(() => {
-				this.saveOptions({
+				const values = {
 					url: this.state.url,
-					token: this.state.token,
-					token_type: this.showOAuth ? 'oauth' : 'access',
-				})
+				}
+				if (this.state.token !== 'dummyToken') {
+					values.token = this.state.token
+					values.token_type = this.showOAuth ? 'oauth' : 'access'
+				}
+				this.saveOptions(values)
 			}, 2000)()
 		},
-		saveOptions(values) {
+		async saveOptions(values, sensitive = true) {
+			if (sensitive) {
+				await confirmPassword()
+			}
 			const req = {
 				values,
 			}
-			const url = generateUrl('/apps/integration_zammad/config')
-			axios.put(url, req)
+			const url = sensitive
+				? generateUrl('/apps/integration_zammad/sensitive-config')
+				: generateUrl('/apps/integration_zammad/config')
+			return axios.put(url, req)
 				.then((response) => {
 					showSuccess(t('integration_zammad', 'Zammad options saved'))
 					if (response.data.user_name !== undefined) {
@@ -193,11 +203,8 @@ export default {
 					}
 				})
 				.catch((error) => {
-					console.debug(error)
-					showError(
-						t('integration_zammad', 'Failed to save Zammad options')
-						+ ': ' + (error.response?.data?.error ?? error.response?.request?.responseText)
-					)
+					console.error(error)
+					showError(t('integration_zammad', 'Failed to save Zammad options'))
 				})
 				.then(() => {
 					this.loading = false
@@ -205,30 +212,19 @@ export default {
 		},
 		onOAuthClick() {
 			const oauthState = Math.random().toString(36).substring(3)
-			const requestUrl = this.state.url + '/oauth/authorize'
+			const oauthAuthorizeUrl = this.state.url + '/oauth/authorize'
 				+ '?client_id=' + encodeURIComponent(this.state.client_id)
 				+ '&redirect_uri=' + encodeURIComponent(this.redirect_uri)
 				+ '&response_type=code'
 				+ '&state=' + encodeURIComponent(oauthState)
 
-			const req = {
-				values: {
-					oauth_state: oauthState,
-					redirect_uri: this.redirect_uri,
-				},
+			const values = {
+				oauth_state: oauthState,
+				redirect_uri: this.redirect_uri,
 			}
-			const url = generateUrl('/apps/integration_zammad/config')
-			axios.put(url, req)
-				.then((response) => {
-					window.location.replace(requestUrl)
-				})
-				.catch((error) => {
-					showError(
-						t('integration_zammad', 'Failed to save Zammad OAuth state')
-						+ ': ' + error.response.request.responseText
-					)
-				})
+			this.saveOptions(values)
 				.then(() => {
+					window.location.replace(oauthAuthorizeUrl)
 				})
 		},
 	},

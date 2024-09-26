@@ -11,19 +11,10 @@ use OCP\Settings\ISettings;
 
 class Admin implements ISettings {
 
-	/**
-	 * @var IConfig
-	 */
-	private $config;
-	/**
-	 * @var IInitialState
-	 */
-	private $initialStateService;
-
-	public function __construct(IConfig $config,
-		IInitialState $initialStateService) {
-		$this->config = $config;
-		$this->initialStateService = $initialStateService;
+	public function __construct(
+		private IConfig $config,
+		private IInitialState $initialStateService,
+	) {
 	}
 
 	/**
@@ -31,7 +22,8 @@ class Admin implements ISettings {
 	 */
 	public function getForm(): TemplateResponse {
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
-		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
+		// don't expose the client secret to the user
+		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret') !== '' ? 'dummySecret' : '';
 		$oauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
 		$adminLinkPreviewEnabled = $this->config->getAppValue(Application::APP_ID, 'link_preview_enabled', '1') === '1';
 

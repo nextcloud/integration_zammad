@@ -8,16 +8,10 @@ use OCP\Settings\IIconSection;
 
 class AdminSection implements IIconSection {
 
-	/** @var IL10N */
-	private $l;
-
-	/** @var IURLGenerator */
-	private $urlGenerator;
-
-	public function __construct(IURLGenerator $urlGenerator,
-		IL10N $l) {
-		$this->l = $l;
-		$this->urlGenerator = $urlGenerator;
+	public function __construct(
+		private IURLGenerator $urlGenerator,
+		private IL10N $l,
+	) {
 	}
 
 	/**
