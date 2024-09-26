@@ -26,7 +26,7 @@ class Notifier implements INotifier {
 		private IFactory $factory,
 		private IUserManager $userManager,
 		private INotificationManager $notificationManager,
-		private IURLGenerator $urlGenerator
+		private IURLGenerator $urlGenerator,
 	) {
 	}
 

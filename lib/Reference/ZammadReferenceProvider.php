@@ -43,7 +43,7 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 		private IReferenceManager $referenceManager,
 		private IURLGenerator $urlGenerator,
 		private IL10N $l10n,
-		private ?string $userId
+		private ?string $userId,
 	) {
 	}
 

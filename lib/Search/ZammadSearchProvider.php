@@ -45,7 +45,7 @@ class ZammadSearchProvider implements IProvider {
 		private IConfig $config,
 		private IURLGenerator $urlGenerator,
 		private IDateTimeFormatter $dateTimeFormatter,
-		private ZammadAPIService $service
+		private ZammadAPIService $service,
 	) {
 	}
 

@@ -16,17 +16,17 @@ use OCA\Zammad\AppInfo\Application;
 use OCA\Zammad\Reference\ZammadReferenceProvider;
 use OCA\Zammad\Service\ZammadAPIService;
 use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http\DataResponse;
-use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Attribute\PasswordConfirmationRequired;
-use OCP\IURLGenerator;
+use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\RedirectResponse;
 use OCP\IConfig;
 use OCP\IL10N;
-
 use OCP\IRequest;
+
+use OCP\IURLGenerator;
 use OCP\PreConditionNotMetException;
 
 class ConfigController extends Controller {
@@ -39,7 +39,7 @@ class ConfigController extends Controller {
 		private IL10N $l,
 		private ZammadAPIService $zammadAPIService,
 		private ZammadReferenceProvider $zammadReferenceProvider,
-		private ?string $userId
+		private ?string $userId,
 	) {
 		parent::__construct($appName, $request);
 	}

@@ -34,7 +34,7 @@ class CheckOpenTickets extends TimedJob {
 	public function __construct(
 		ITimeFactory $time,
 		private ZammadAPIService $zammadAPIService,
-		private LoggerInterface $logger
+		private LoggerInterface $logger,
 	) {
 		parent::__construct($time);
 		// Every 15 minutes

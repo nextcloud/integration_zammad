@@ -13,7 +13,7 @@ class Admin implements ISettings {
 
 	public function __construct(
 		private IConfig $config,
-		private IInitialState $initialStateService
+		private IInitialState $initialStateService,
 	) {
 	}
 

@@ -38,14 +38,14 @@ class ZammadAPIService {
 	/**
 	 * Service to make requests to Zammad v3 (JSON) API
 	 */
-	public function __construct (
+	public function __construct(
 		private IUserManager $userManager,
 		private LoggerInterface $logger,
 		private IL10N $l10n,
 		private IConfig $config,
 		private INotificationManager $notificationManager,
 		ICacheFactory $cacheFactory,
-		IClientService $clientService
+		IClientService $clientService,
 	) {
 		$this->client = $clientService->newClient();
 		$this->cache = $cacheFactory->createDistributed(Application::APP_ID . '_global_info');
@@ -443,7 +443,7 @@ class ZammadAPIService {
 	 * @throws Exception
 	 */
 	public function request(
-		string $userId, string $endPoint, array $params = [], string $method = 'GET', bool $jsonResponse = true
+		string $userId, string $endPoint, array $params = [], string $method = 'GET', bool $jsonResponse = true,
 	): array {
 		$zammadUrl = $this->getZammadUrl($userId);
 		$this->checkTokenExpiration($userId);

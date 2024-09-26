@@ -10,7 +10,7 @@ class PersonalSection implements IIconSection {
 
 	public function __construct(
 		private IURLGenerator $urlGenerator,
-		private IL10N $l
+		private IL10N $l,
 	) {
 	}
 
