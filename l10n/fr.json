@@ -42,7 +42,6 @@
     "Zammad options saved" : "Options Zammad enregistrées",
     "Incorrect access token" : "Jeton d'accès incorrect",
     "Failed to save Zammad options" : "Échec de l'enregistrement des options de Zammad",
-    "Failed to save Zammad OAuth state" : "Échec de l'enregistrement de l'état OAuth pour Zammad",
     "No Zammad account connected" : "Aucun compte Zammad connecté",
     "Error connecting to Zammad" : "Erreur de connexion à Zammad",
     "No Zammad notifications!" : "Pas de notification Zammad !",

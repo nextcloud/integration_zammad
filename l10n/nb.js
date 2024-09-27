@@ -44,7 +44,6 @@ OC.L10N.register(
     "Zammad options saved" : "Alternativer for Zammad lagret",
     "Incorrect access token" : "Feil tilgangstoken",
     "Failed to save Zammad options" : "Lagring av alternativer for Zammad feilet",
-    "Failed to save Zammad OAuth state" : "Lagring av Zammad OAuth-tilstand feilet",
     "No Zammad account connected" : "Ingen Zammad-konto tilkoblet",
     "Error connecting to Zammad" : "Feil under tilkobling til Zammad",
     "No Zammad notifications!" : "Ingen Zammad-varslinger!",

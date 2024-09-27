@@ -39,7 +39,6 @@ OC.L10N.register(
     "Zammad options saved" : "Οι επιλογές του Zammad αποθηκεύτηκαν",
     "Incorrect access token" : "Λανθασμένο διακριτικό πρόσβασης",
     "Failed to save Zammad options" : "Αποτυχία αποθήκευσης επιλογών του Zammad",
-    "Failed to save Zammad OAuth state" : "Αποτυχία αποθήκευσης της κατάστασης του Zammad OAuth",
     "No Zammad account connected" : "Κανένας συνδεδεμένος λογαριασμός Zammad",
     "Error connecting to Zammad" : "Σφάλμα σύνδεσης στο Zammad",
     "No Zammad notifications!" : "Καμία ειδοποίηση Zammad!",

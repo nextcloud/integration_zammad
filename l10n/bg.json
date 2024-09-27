@@ -42,7 +42,6 @@
     "Zammad options saved" : "Опциите на Zammad са записани",
     "Incorrect access token" : "Неправилен токен за достъп",
     "Failed to save Zammad options" : "Неуспешно записване на опциите на Zammad",
-    "Failed to save Zammad OAuth state" : "Неуспешно записване на състоянието на Zammad OAuth",
     "No Zammad account connected" : "Няма свързан профил в Zammad",
     "Error connecting to Zammad" : "Грешка при свързването със Zammad",
     "No Zammad notifications!" : "Няма известия от Zammad!",

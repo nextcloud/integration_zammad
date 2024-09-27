@@ -27,7 +27,6 @@
     "OAuth access token could not be obtained:" : "No s'ha pogut obtenir el testimoni d'accés oAuth:",
     "Incorrect access token" : "Testimoni d'accés incorrecte",
     "Failed to save Zammad options" : "No s'han pogut desar les opcions de Zammad",
-    "Failed to save Zammad OAuth state" : "No s'ha pogut desar l'estat de Zammad OAuth",
     "No Zammad account connected" : "No s'ha connectat el compte de Zammad",
     "Error connecting to Zammad" : "S'ha produït un error en connectar a Zammad",
     "No Zammad notifications!" : "No hi ha notificacions de Zammad!",

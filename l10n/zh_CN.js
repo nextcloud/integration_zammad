@@ -34,7 +34,6 @@ OC.L10N.register(
     "OAuth access token could not be obtained:" : "无法获取 OAuth 访问令牌：",
     "Incorrect access token" : "访问令牌不正确",
     "Failed to save Zammad options" : "保存Zammad选项失败",
-    "Failed to save Zammad OAuth state" : "保存Zammad OAuth状态失败",
     "No Zammad account connected" : "未连接至 Zammad 账号",
     "No Zammad notifications!" : "无 Zammad 通知",
     "Failed to get Zammad notifications" : "获取Zammad通知失败",

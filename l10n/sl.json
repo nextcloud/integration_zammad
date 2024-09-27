@@ -36,7 +36,6 @@
     "Zammad options saved" : "Nastavitve Zammad so shranjene",
     "Incorrect access token" : " Neveljaven žetona za dostop",
     "Failed to save Zammad options" : "Shranjevanje nastavitev Zammad je spodletelo",
-    "Failed to save Zammad OAuth state" : "Shranjevanje stanja Zammad OAuth je spodletelo",
     "No Zammad account connected" : "Ni še povezanega računa Zammad",
     "Error connecting to Zammad" : "Napaka povezovanja z računom Zammad",
     "No Zammad notifications!" : "Ni obvestil Zammad!",

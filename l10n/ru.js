@@ -39,7 +39,6 @@ OC.L10N.register(
     "Zammad options saved" : "Настройки Zammad сохранены",
     "Incorrect access token" : "Неверный токен доступа",
     "Failed to save Zammad options" : "Не удалось сохранить параметры Zammad",
-    "Failed to save Zammad OAuth state" : "Не удалось сохранить состояние Zammad OAuth",
     "No Zammad account connected" : "Учетная запись Zammad не подключена",
     "Error connecting to Zammad" : "Ошибка подключения к Zammad",
     "No Zammad notifications!" : "Никаких уведомлений Zammad!",

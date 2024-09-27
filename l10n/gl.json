@@ -42,7 +42,6 @@
     "Zammad options saved" : "Gardáronse as opcións de Zammad",
     "Incorrect access token" : "Testemuño de acceso incorrecto",
     "Failed to save Zammad options" : "Produciuse un fallo ao gardar as opcións de Zammad.",
-    "Failed to save Zammad OAuth state" : "Produciuse un fallo ao gardar o estado do OAuth de Zammad",
     "No Zammad account connected" : "Non hai ningunha conta de Zammad conectada",
     "Error connecting to Zammad" : "Produciuse un erro ao conectar con Zammad",
     "No Zammad notifications!" : "Non hai notificacións de Zammad.",

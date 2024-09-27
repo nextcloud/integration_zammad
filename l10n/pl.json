@@ -41,7 +41,6 @@
     "Zammad options saved" : "Opcje Zammada zostały zapisane",
     "Incorrect access token" : "Nieprawidłowy token dostępu",
     "Failed to save Zammad options" : "Nie udało się zapisać opcji Zammada",
-    "Failed to save Zammad OAuth state" : "Nie udało się zapisać statusu OAuth Zammad",
     "No Zammad account connected" : "Brak połączonego konta Zammad",
     "Error connecting to Zammad" : "Błąd podczas łączenia z Zammadem",
     "No Zammad notifications!" : "Brak powiadomień Zammada!",
