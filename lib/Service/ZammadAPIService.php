@@ -450,7 +450,7 @@ class ZammadAPIService {
 		$zammadUrl = $this->getZammadUrl($userId);
 		$this->checkTokenExpiration($userId);
 		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token');
-		$accessToken = $this->crypto->decrypt($accessToken);
+		$accessToken = $accessToken === '' ? '' : $this->crypto->decrypt($accessToken);
 		$authType = $this->config->getUserValue($userId, Application::APP_ID, 'token_type');
 		try {
 			$url = $zammadUrl . '/api/v1/' . $endPoint;
@@ -537,11 +537,11 @@ class ZammadAPIService {
 
 	private function refreshToken(string $userId): bool {
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
-		$clientID = $this->crypto->decrypt($clientID);
+		$clientID = $clientID === '' ? '' : $this->crypto->decrypt($clientID);
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
-		$clientSecret = $this->crypto->decrypt($clientSecret);
+		$clientSecret = $clientSecret === '' ? '' : $this->crypto->decrypt($clientSecret);
 		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
-		$refreshToken = $this->crypto->decrypt($refreshToken);
+		$refreshToken = $refreshToken === '' ? '' : $this->crypto->decrypt($refreshToken);
 		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
 		if (!$refreshToken) {
 			$this->logger->error('No Zammad refresh token found', ['app' => Application::APP_ID]);
@@ -555,11 +555,11 @@ class ZammadAPIService {
 		], 'POST');
 		if (isset($result['access_token'])) {
 			$accessToken = $result['access_token'];
-			$encryptedAccessToken = $this->crypto->encrypt($accessToken);
+			$encryptedAccessToken = $accessToken === '' ? '' : $this->crypto->encrypt($accessToken);
 			$this->config->setUserValue($userId, Application::APP_ID, 'token', $encryptedAccessToken);
 			// TODO check if we need to store the refresh token here
 			// 			$refreshToken = $result['refresh_token'];
-			//			$encryptedRefreshToken = $this->crypto->encrypt($refreshToken);
+			//			$encryptedRefreshToken = $refreshToken === '' ? '' : $this->crypto->encrypt($refreshToken);
 			//			$this->config->setUserValue($userId, Application::APP_ID, 'refresh_token', $encryptedRefreshToken);
 			if (isset($result['expires_in'])) {
 				$nowTs = (new Datetime())->getTimestamp();

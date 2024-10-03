@@ -133,7 +133,7 @@ class ConfigController extends Controller {
 	#[PasswordConfirmationRequired]
 	public function setSensitiveAdminConfig(array $values): DataResponse {
 		foreach ($values as $key => $value) {
-			if (in_array($key, ['client_id', 'client_secret'], true)) {
+			if (in_array($key, ['client_id', 'client_secret'], true) && $value !== '') {
 				$encryptedValue = $this->crypto->encrypt($value);
 				$this->config->setAppValue(Application::APP_ID, $key, $encryptedValue);
 			} else {
@@ -156,9 +156,9 @@ class ConfigController extends Controller {
 	public function oauthRedirect(string $code = '', string $state = ''): RedirectResponse {
 		$configState = $this->config->getUserValue($this->userId, Application::APP_ID, 'oauth_state');
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
-		$clientID = $this->crypto->decrypt($clientID);
+		$clientID = $clientID === '' ? '' : $this->crypto->decrypt($clientID);
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
-		$clientSecret = $this->crypto->decrypt($clientSecret);
+		$clientSecret = $clientSecret === '' ? '' : $this->crypto->decrypt($clientSecret);
 
 		// anyway, reset state
 		$this->config->setUserValue($this->userId, Application::APP_ID, 'oauth_state', '');
@@ -177,11 +177,11 @@ class ConfigController extends Controller {
 			if (isset($result['access_token'])) {
 				$this->zammadReferenceProvider->invalidateUserCache($this->userId);
 				$accessToken = $result['access_token'];
-				$encryptedAccessToken = $this->crypto->encrypt($accessToken);
+				$encryptedAccessToken = $accessToken === '' ? '' : $this->crypto->encrypt($accessToken);
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'token', $encryptedAccessToken);
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'token_type', 'oauth');
 				$refreshToken = $result['refresh_token'];
-				$encryptedRefreshToken = $this->crypto->encrypt($refreshToken);
+				$encryptedRefreshToken = $refreshToken === '' ? '' : $this->crypto->encrypt($refreshToken);
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'refresh_token', $encryptedRefreshToken);
 				if (isset($result['expires_in'])) {
 					$nowTs = (new Datetime())->getTimestamp();

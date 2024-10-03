@@ -26,13 +26,13 @@ class Personal implements ISettings {
 	public function getForm(): TemplateResponse {
 		// for OAuth
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
-		$clientID = $this->crypto->decrypt($clientID);
+		$clientID = $clientID === '' ? '' : $this->crypto->decrypt($clientID);
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
-		$clientSecret = $this->crypto->decrypt($clientSecret);
+		$clientSecret = $clientSecret === '' ? '' : $this->crypto->decrypt($clientSecret);
 		$adminOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
 
 		$token = $this->config->getUserValue($this->userId, Application::APP_ID, 'token');
-		$token = $this->crypto->decrypt($token);
+		$token = $token === '' ? '' : $this->crypto->decrypt($token);
 		$userName = $this->config->getUserValue($this->userId, Application::APP_ID, 'user_name');
 		$url = $this->config->getUserValue($this->userId, Application::APP_ID, 'url') ?: $adminOauthUrl;
 		$searchEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'search_enabled', '0') === '1';
