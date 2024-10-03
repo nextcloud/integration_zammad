@@ -20,15 +20,10 @@
  */
 
 import { registerWidget } from '@nextcloud/vue/dist/Components/NcRichText.js'
-import { linkTo } from '@nextcloud/router'
-import { getRequestToken } from '@nextcloud/auth'
-
-__webpack_nonce__ = btoa(getRequestToken()) // eslint-disable-line
-__webpack_public_path__ = linkTo('integration_zammad', 'js/') // eslint-disable-line
 
 registerWidget('integration_zammad', async (el, { richObjectType, richObject, accessible }) => {
-	const { default: Vue } = await import(/* webpackChunkName: "reference-lazy" */'vue')
-	const { default: ReferenceZammadWidget } = await import(/* webpackChunkName: "reference-lazy" */'./views/ReferenceZammadWidget.vue')
+	const { default: Vue } = await import('vue')
+	const { default: ReferenceZammadWidget } = await import('./views/ReferenceZammadWidget.vue')
 	Vue.mixin({ methods: { t, n } })
 	const Widget = Vue.extend(ReferenceZammadWidget)
 	new Widget({

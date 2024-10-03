@@ -10,8 +10,8 @@
  */
 
 import Vue from 'vue'
-import './bootstrap.js'
 import PersonalSettings from './components/PersonalSettings.vue'
+Vue.mixin({ methods: { t, n } })
 
 const View = Vue.extend(PersonalSettings)
 new View().$mount('#zammad_prefs')

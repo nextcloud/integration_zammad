@@ -10,8 +10,8 @@
  */
 
 import Vue from 'vue'
-import './bootstrap.js'
 import AdminSettings from './components/AdminSettings.vue'
+Vue.mixin({ methods: { t, n } })
 
 const View = Vue.extend(AdminSettings)
 new View().$mount('#zammad_prefs')
