@@ -28,6 +28,7 @@ use OCP\IRequest;
 
 use OCP\IURLGenerator;
 use OCP\PreConditionNotMetException;
+use OCP\Security\ICrypto;
 
 class ConfigController extends Controller {
 
@@ -37,6 +38,7 @@ class ConfigController extends Controller {
 		private IConfig $config,
 		private IURLGenerator $urlGenerator,
 		private IL10N $l,
+		private ICrypto $crypto,
 		private ZammadAPIService $zammadAPIService,
 		private ZammadReferenceProvider $zammadReferenceProvider,
 		private ?string $userId,
@@ -74,7 +76,12 @@ class ConfigController extends Controller {
 	#[PasswordConfirmationRequired]
 	public function setSensitiveConfig(array $values): DataResponse {
 		foreach ($values as $key => $value) {
-			$this->config->setUserValue($this->userId, Application::APP_ID, $key, trim($value));
+			if ($key === 'token' && $value !== '') {
+				$encryptedValue = $this->crypto->encrypt(trim($value));
+				$this->config->setUserValue($this->userId, Application::APP_ID, $key, $encryptedValue);
+			} else {
+				$this->config->setUserValue($this->userId, Application::APP_ID, $key, trim($value));
+			}
 		}
 		$result = [];
 
@@ -126,7 +133,12 @@ class ConfigController extends Controller {
 	#[PasswordConfirmationRequired]
 	public function setSensitiveAdminConfig(array $values): DataResponse {
 		foreach ($values as $key => $value) {
-			$this->config->setAppValue(Application::APP_ID, $key, $value);
+			if (in_array($key, ['client_id', 'client_secret'], true)) {
+				$encryptedValue = $this->crypto->encrypt($value);
+				$this->config->setAppValue(Application::APP_ID, $key, $encryptedValue);
+			} else {
+				$this->config->setAppValue(Application::APP_ID, $key, $value);
+			}
 		}
 		return new DataResponse([]);
 	}
@@ -144,7 +156,9 @@ class ConfigController extends Controller {
 	public function oauthRedirect(string $code = '', string $state = ''): RedirectResponse {
 		$configState = $this->config->getUserValue($this->userId, Application::APP_ID, 'oauth_state');
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
+		$clientID = $this->crypto->decrypt($clientID);
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
+		$clientSecret = $this->crypto->decrypt($clientSecret);
 
 		// anyway, reset state
 		$this->config->setUserValue($this->userId, Application::APP_ID, 'oauth_state', '');
@@ -163,10 +177,12 @@ class ConfigController extends Controller {
 			if (isset($result['access_token'])) {
 				$this->zammadReferenceProvider->invalidateUserCache($this->userId);
 				$accessToken = $result['access_token'];
-				$this->config->setUserValue($this->userId, Application::APP_ID, 'token', $accessToken);
+				$encryptedAccessToken = $this->crypto->encrypt($accessToken);
+				$this->config->setUserValue($this->userId, Application::APP_ID, 'token', $encryptedAccessToken);
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'token_type', 'oauth');
 				$refreshToken = $result['refresh_token'];
-				$this->config->setUserValue($this->userId, Application::APP_ID, 'refresh_token', $refreshToken);
+				$encryptedRefreshToken = $this->crypto->encrypt($refreshToken);
+				$this->config->setUserValue($this->userId, Application::APP_ID, 'refresh_token', $encryptedRefreshToken);
 				if (isset($result['expires_in'])) {
 					$nowTs = (new Datetime())->getTimestamp();
 					$expiresAt = $nowTs + (int)$result['expires_in'];

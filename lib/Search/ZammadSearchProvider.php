@@ -95,10 +95,10 @@ class ZammadSearchProvider implements IProvider {
 
 		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
 		$zammadUrl = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
-		$accessToken = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'token');
+		$hasAccessToken = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'token') !== '';
 
 		$searchEnabled = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'search_enabled', '0') === '1';
-		if ($accessToken === '' || !$searchEnabled) {
+		if (!$hasAccessToken || !$searchEnabled) {
 			return SearchResult::paginated($this->getName(), [], 0);
 		}
 

@@ -7,6 +7,7 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\IConfig;
 
+use OCP\Security\ICrypto;
 use OCP\Settings\ISettings;
 
 class Personal implements ISettings {
@@ -14,6 +15,7 @@ class Personal implements ISettings {
 	public function __construct(
 		private IConfig $config,
 		private IInitialState $initialStateService,
+		private ICrypto $crypto,
 		private ?string $userId,
 	) {
 	}
@@ -24,25 +26,28 @@ class Personal implements ISettings {
 	public function getForm(): TemplateResponse {
 		// for OAuth
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
-		// don't expose the client secret to the user
-		$clientSecret = ($this->config->getAppValue(Application::APP_ID, 'client_secret') !== '');
-		$oauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		$clientID = $this->crypto->decrypt($clientID);
+		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
+		$clientSecret = $this->crypto->decrypt($clientSecret);
+		$adminOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
 
-		// don't expose the token to the user
-		$token = $this->config->getUserValue($this->userId, Application::APP_ID, 'token') !== '' ? 'dummyToken' : '';
+		$token = $this->config->getUserValue($this->userId, Application::APP_ID, 'token');
+		$token = $this->crypto->decrypt($token);
 		$userName = $this->config->getUserValue($this->userId, Application::APP_ID, 'user_name');
-		$url = $this->config->getUserValue($this->userId, Application::APP_ID, 'url') ?: $oauthUrl;
+		$url = $this->config->getUserValue($this->userId, Application::APP_ID, 'url') ?: $adminOauthUrl;
 		$searchEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'search_enabled', '0') === '1';
 		$notificationEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'notification_enabled', '0') === '1';
 		$navigationEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'navigation_enabled', '0') === '1';
 		$linkPreviewEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'link_preview_enabled', '1') === '1';
 
 		$userConfig = [
-			'token' => $token,
+			// don't expose the token to the user
+			'token' => $token === '' ? '' : 'dummyToken',
 			'url' => $url,
 			'client_id' => $clientID,
-			'client_secret' => $clientSecret,
-			'oauth_instance_url' => $oauthUrl,
+			// don't expose the client secret to the user
+			'client_secret' => $clientSecret !== '',
+			'oauth_instance_url' => $adminOauthUrl,
 			'user_name' => $userName,
 			'search_enabled' => $searchEnabled,
 			'notification_enabled' => $notificationEnabled,

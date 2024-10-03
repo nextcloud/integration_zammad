@@ -32,10 +32,7 @@ use OCP\Notification\IManager as INotificationManager;
 class Application extends App implements IBootstrap {
 
 	public const APP_ID = 'integration_zammad';
-	/**
-	 * @var mixed
-	 */
-	private $config;
+	private IConfig $config;
 
 	public function __construct(array $urlParams = []) {
 		parent::__construct(self::APP_ID, $urlParams);

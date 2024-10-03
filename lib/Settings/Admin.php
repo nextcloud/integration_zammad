@@ -7,6 +7,7 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\IConfig;
 
+use OCP\Security\ICrypto;
 use OCP\Settings\ISettings;
 
 class Admin implements ISettings {
@@ -14,6 +15,7 @@ class Admin implements ISettings {
 	public function __construct(
 		private IConfig $config,
 		private IInitialState $initialStateService,
+		private ICrypto $crypto,
 	) {
 	}
 
@@ -22,14 +24,17 @@ class Admin implements ISettings {
 	 */
 	public function getForm(): TemplateResponse {
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
-		// don't expose the client secret to the user
-		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret') !== '' ? 'dummySecret' : '';
+		$clientID = $this->crypto->decrypt($clientID);
+		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
+		$clientSecret = $this->crypto->decrypt($clientSecret);
+
 		$oauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
 		$adminLinkPreviewEnabled = $this->config->getAppValue(Application::APP_ID, 'link_preview_enabled', '1') === '1';
 
 		$adminConfig = [
 			'client_id' => $clientID,
-			'client_secret' => $clientSecret,
+			// don't expose the client secret to the user
+			'client_secret' => $clientSecret === '' ? '' : 'dummySecret',
 			'oauth_instance_url' => $oauthUrl,
 			'link_preview_enabled' => $adminLinkPreviewEnabled,
 		];
