@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 3.0.1 – 2024-10-15
+
+### Changed
+
+- Use password confirmation for sensitive perso/admin setting values
+- Encrypt client ID, client secret + user tokens and refresh tokens
+
+### Fixed
+
+- Use correct zammad URLs in the backend
+
 ## [2.1.0] - 2024-07-25
 
 ### New
