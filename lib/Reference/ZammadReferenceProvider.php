@@ -122,7 +122,8 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 			return false;
 		}
 
-		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url');
+		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
 
 		return $this->isMatching($referenceText, $zammadUrl);
 	}
@@ -131,8 +132,9 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 	 * @inheritDoc
 	 */
 	public function resolveReference(string $referenceText): ?IReference {
-		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url');
-		if ($zammadUrl !== null) {
+		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
+		if ($zammadUrl !== '') {
 			$parts = $this->getLinkParts($zammadUrl, $referenceText);
 			if ($parts !== null) {
 				[$ticketId, $end] = $parts;

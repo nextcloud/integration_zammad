@@ -52,10 +52,7 @@ class ZammadAPIController extends Controller {
 	 * @var string
 	 */
 	private $clientSecret;
-	/**
-	 * @var string
-	 */
-	private $zammadUrl;
+	private IConfig $config;
 
 	public function __construct(string $appName,
 								IRequest $request,
@@ -70,7 +67,7 @@ class ZammadAPIController extends Controller {
 		$this->refreshToken = $config->getUserValue($userId, Application::APP_ID, 'refresh_token');
 		$this->clientID = $config->getAppValue(Application::APP_ID, 'client_id');
 		$this->clientSecret = $config->getAppValue(Application::APP_ID, 'client_secret');
-		$this->zammadUrl = $config->getUserValue($userId, Application::APP_ID, 'url');
+		$this->config = $config;
 	}
 
 	/**
@@ -80,7 +77,9 @@ class ZammadAPIController extends Controller {
 	 * @return DataResponse
 	 */
 	public function getZammadUrl(): DataResponse {
-		return new DataResponse($this->zammadUrl);
+		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
+		return new DataResponse($zammadUrl);
 	}
 
 	/**
@@ -115,7 +114,9 @@ class ZammadAPIController extends Controller {
 	 * @throws PreConditionNotMetException
 	 */
 	public function getNotifications(?string $since = null): DataResponse {
-		if ($this->accessToken === '' || !preg_match('/^(https?:\/\/)?[^.]+\.[^.].*/', $this->zammadUrl)) {
+		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
+		if ($this->accessToken === '' || !preg_match('/^(https?:\/\/)?[^.]+\.[^.].*/', $zammadUrl)) {
 			return new DataResponse('', 400);
 		}
 		$result = $this->zammadAPIService->getNotifications($this->userId, $since, 7);
