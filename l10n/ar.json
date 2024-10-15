@@ -18,7 +18,7 @@
     "Make sure you set the \"Callback URL\" to" : "تأكد من تعيين \"عنوان URL للاتصال الراجع\" على",
     "Zammad instance address" : "عنوان خادوم Zammad",
     "Zammad address" : "عنوان Zammad ",
-    "Application ID" : "الرقم المُعرّف للتطبيق ",
+    "Application ID" : "الرقم المعرف للتطبيق ",
     "ID of your application" : "معرف التطبيق الخاص بك",
     "Application secret" : "كلمة سر التطبيق",
     "Client secret of your application" : "كلمة سر العميل لتطبيقك",
