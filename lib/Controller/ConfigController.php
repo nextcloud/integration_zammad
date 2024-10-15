@@ -118,10 +118,11 @@ class ConfigController extends Controller {
 		// anyway, reset state
 		$this->config->setUserValue($this->userId, Application::APP_ID, 'oauth_state', '');
 
+		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+
 		if ($clientID && $clientSecret && $configState !== '' && $configState === $state) {
 			$redirect_uri = $this->config->getUserValue($this->userId, Application::APP_ID, 'redirect_uri');
-			$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url');
-			$result = $this->zammadAPIService->requestOAuthAccessToken($zammadUrl, [
+			$result = $this->zammadAPIService->requestOAuthAccessToken($adminZammadOauthUrl, [
 				'client_id' => $clientID,
 				'client_secret' => $clientSecret,
 				'code' => $code,
@@ -162,7 +163,8 @@ class ConfigController extends Controller {
 	 * @throws PreConditionNotMetException
 	 */
 	private function storeUserInfo(): array {
-		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url');
+		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
 
 		if (!$zammadUrl || !preg_match('/^(https?:\/\/)?[^.]+\.[^.].*/', $zammadUrl)) {
 			return ['error' => 'Zammad URL is invalid'];

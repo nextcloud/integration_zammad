@@ -103,7 +103,8 @@ class ZammadSearchProvider implements IProvider {
 			? $this->urlGenerator->imagePath(Application::APP_ID, 'app.svg')
 			: $this->urlGenerator->imagePath(Application::APP_ID, 'app-dark.svg');
 
-		$zammadUrl = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'url');
+		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		$zammadUrl = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
 		$accessToken = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'token');
 
 		$searchEnabled = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'search_enabled', '0') === '1';
