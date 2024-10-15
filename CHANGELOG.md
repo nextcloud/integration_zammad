@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 2.2.0 – 2024-10-15
+
+### Fixed
+
+- Use correct zammad URLs in the backend
+
 ## [2.1.0] - 2024-07-25
 
 ### New
