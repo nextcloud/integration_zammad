@@ -27,7 +27,6 @@ OC.L10N.register(
     "Enable Zammad link previews" : "Enable Zammad link previews",
     "Zammad admin options saved" : "Zammad admin options saved",
     "Failed to save Zammad admin options" : "Failed to save Zammad admin options",
-    "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page.",
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions.",
     "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Access token",
@@ -44,14 +43,12 @@ OC.L10N.register(
     "Zammad options saved" : "Zammad options saved",
     "Incorrect access token" : "Incorrect access token",
     "Failed to save Zammad options" : "Failed to save Zammad options",
-    "Failed to save Zammad OAuth state" : "Failed to save Zammad OAuth state",
     "No Zammad account connected" : "No Zammad account connected",
     "Error connecting to Zammad" : "Error connecting to Zammad",
     "No Zammad notifications!" : "No Zammad notifications!",
     "Failed to get Zammad notifications" : "Failed to get Zammad notifications",
     "Zammad API error" : "Zammad API error",
     "Unknown error" : "خطای ناشناخته",
-    "Zammad connected accounts settings" : "Zammad connected accounts settings",
     "Ticket#{number}" : "Ticket#{number}",
     "by {creator}" : "by {creator}",
     "Comments" : "نظرات",
@@ -61,6 +58,7 @@ OC.L10N.register(
     "Subscription ends" : "Subscription ends",
     "created {relativeDate}" : "created {relativeDate}",
     "closed {relativeDate}" : "closed {relativeDate}",
-    "updated {relativeDate}" : "updated {relativeDate}"
+    "updated {relativeDate}" : "updated {relativeDate}",
+    "Failed to save Zammad OAuth state" : "Failed to save Zammad OAuth state"
 },
 "nplurals=2; plural=(n > 1);");

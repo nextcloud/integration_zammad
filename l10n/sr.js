@@ -44,7 +44,6 @@ OC.L10N.register(
     "Zammad options saved" : "Сачуване су Zammad опције",
     "Incorrect access token" : "Неисправан приступни жетон",
     "Failed to save Zammad options" : "Није успело чување Zammad опција",
-    "Failed to save Zammad OAuth state" : "Није успело чување Zammad OAuth стања",
     "No Zammad account connected" : "Није повезан ниједан Zammad налог",
     "Error connecting to Zammad" : "Грешка приликом повезивања са Zammad",
     "No Zammad notifications!" : "Нема Zammad обавештења!",
@@ -61,6 +60,7 @@ OC.L10N.register(
     "Subscription ends" : "Претплата се завршава",
     "created {relativeDate}" : "креирано је {relativeDate}",
     "closed {relativeDate}" : "затворено је {relativeDate}",
-    "updated {relativeDate}" : "ажурирано је {relativeDate}"
+    "updated {relativeDate}" : "ажурирано је {relativeDate}",
+    "Failed to save Zammad OAuth state" : "Није успело чување Zammad OAuth стања"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

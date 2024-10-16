@@ -37,12 +37,12 @@
     "Zammad options saved" : "Postavke Zammada su spremljene",
     "Incorrect access token" : "Pogrešan token za pristup",
     "Failed to save Zammad options" : "Spremanje postavki Zammada nije uspjelo",
-    "Failed to save Zammad OAuth state" : "Spremanje stanja Zammad OAuth nije uspjelo",
     "No Zammad account connected" : "Nema povezanih Zammad računa",
     "Error connecting to Zammad" : "Pogreška pri povezivanju sa Zammadom",
     "No Zammad notifications!" : "Nema Zammad obavijesti!",
     "Failed to get Zammad notifications" : "Dohvaćanje Zammad obavijesti nije uspjelo",
     "Unknown error" : "Nepoznata pogreška",
-    "Comments" : "Komentari"
+    "Comments" : "Komentari",
+    "Failed to save Zammad OAuth state" : "Spremanje stanja Zammad OAuth nije uspjelo"
 },"pluralForm" :"nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;"
 }

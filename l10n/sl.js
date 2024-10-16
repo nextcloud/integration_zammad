@@ -38,7 +38,6 @@ OC.L10N.register(
     "Zammad options saved" : "Nastavitve Zammad so shranjene",
     "Incorrect access token" : " Neveljaven žetona za dostop",
     "Failed to save Zammad options" : "Shranjevanje nastavitev Zammad je spodletelo",
-    "Failed to save Zammad OAuth state" : "Shranjevanje stanja Zammad OAuth je spodletelo",
     "No Zammad account connected" : "Ni še povezanega računa Zammad",
     "Error connecting to Zammad" : "Napaka povezovanja z računom Zammad",
     "No Zammad notifications!" : "Ni obvestil Zammad!",
@@ -49,6 +48,7 @@ OC.L10N.register(
     "Account manager" : "Upravljalnik računov",
     "created {relativeDate}" : "ustvarjeno {relativeDate}",
     "closed {relativeDate}" : "zaprto {relativeDate}",
-    "updated {relativeDate}" : "posodobljeno {relativeDate}"
+    "updated {relativeDate}" : "posodobljeno {relativeDate}",
+    "Failed to save Zammad OAuth state" : "Shranjevanje stanja Zammad OAuth je spodletelo"
 },
 "nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);");

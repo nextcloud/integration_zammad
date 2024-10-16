@@ -42,7 +42,6 @@
     "Zammad options saved" : "Options Zammad enregistrées",
     "Incorrect access token" : "Jeton d'accès incorrect",
     "Failed to save Zammad options" : "Échec de l'enregistrement des options de Zammad",
-    "Failed to save Zammad OAuth state" : "Échec de l'enregistrement de l'état OAuth pour Zammad",
     "No Zammad account connected" : "Aucun compte Zammad connecté",
     "Error connecting to Zammad" : "Erreur de connexion à Zammad",
     "No Zammad notifications!" : "Pas de notification Zammad !",
@@ -59,6 +58,7 @@
     "Subscription ends" : "Fin de l'abonnement",
     "created {relativeDate}" : "créé {relativeDate}",
     "closed {relativeDate}" : "fermé {relativeDate}",
-    "updated {relativeDate}" : "édité {relativeDate}"
+    "updated {relativeDate}" : "édité {relativeDate}",
+    "Failed to save Zammad OAuth state" : "Échec de l'enregistrement de l'état OAuth pour Zammad"
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

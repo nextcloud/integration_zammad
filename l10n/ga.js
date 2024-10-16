@@ -44,7 +44,6 @@ OC.L10N.register(
     "Zammad options saved" : "Sábháladh roghanna Zammad",
     "Incorrect access token" : "Comhartha rochtana mícheart",
     "Failed to save Zammad options" : "Theip ar shábháil roghanna Zammad",
-    "Failed to save Zammad OAuth state" : "Theip ar shábháil stát Zammad OAuth",
     "No Zammad account connected" : "Níl aon chuntas Zammad ceangailte",
     "Error connecting to Zammad" : "Earráid agus Zammad á nascadh",
     "No Zammad notifications!" : "Gan fógraí Zammad!",
@@ -61,6 +60,7 @@ OC.L10N.register(
     "Subscription ends" : "Críochnaíonn an síntiús",
     "created {relativeDate}" : "cruthaithe {relativeDate}",
     "closed {relativeDate}" : "dúnta {relativeDate}",
-    "updated {relativeDate}" : "nuashonraithe {relativeDate}"
+    "updated {relativeDate}" : "nuashonraithe {relativeDate}",
+    "Failed to save Zammad OAuth state" : "Theip ar shábháil stát Zammad OAuth"
 },
 "nplurals=5; plural=(n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4);");

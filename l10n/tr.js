@@ -44,7 +44,6 @@ OC.L10N.register(
     "Zammad options saved" : "Zammad ayarları kaydedildi",
     "Incorrect access token" : "Erişim kodu geçersiz",
     "Failed to save Zammad options" : "Zammad ayarları kaydedilemedi",
-    "Failed to save Zammad OAuth state" : "Zammad OAuth durumu kaydedilemedi",
     "No Zammad account connected" : "Bağlı bir Zammad hesabı yok",
     "Error connecting to Zammad" : "Zammad ile bağlantı kurulurken sorun çıktı",
     "No Zammad notifications!" : "Herhangi bir Zammad bildirimi yok!",
@@ -61,6 +60,7 @@ OC.L10N.register(
     "Subscription ends" : "Abonelik sonu",
     "created {relativeDate}" : "{relativeDate} oluşturuldu",
     "closed {relativeDate}" : "{relativeDate} kapatıldı",
-    "updated {relativeDate}" : "{relativeDate} güncellendi"
+    "updated {relativeDate}" : "{relativeDate} güncellendi",
+    "Failed to save Zammad OAuth state" : "Zammad OAuth durumu kaydedilemedi"
 },
 "nplurals=2; plural=(n > 1);");

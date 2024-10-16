@@ -39,7 +39,6 @@ OC.L10N.register(
     "Zammad options saved" : "Opzioni di Zammad salvate",
     "Incorrect access token" : "Token di accesso non corretto",
     "Failed to save Zammad options" : "Salvataggio delle opzioni di Zammad non riuscito",
-    "Failed to save Zammad OAuth state" : "Salvataggio dello stato OAuth di Zammad non riuscito",
     "No Zammad account connected" : "Nessun account Zammad connesso",
     "Error connecting to Zammad" : "Errore durante la connessione a Zammad",
     "No Zammad notifications!" : "Nessuna notifica Zammad!",
@@ -48,6 +47,7 @@ OC.L10N.register(
     "Ticket#{number}" : "Biglietto#{number}",
     "Comments" : "Commenti",
     "internal" : "interno",
-    "Click to expand comment" : "Fai clic per espandere il commento"
+    "Click to expand comment" : "Fai clic per espandere il commento",
+    "Failed to save Zammad OAuth state" : "Salvataggio dello stato OAuth di Zammad non riuscito"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

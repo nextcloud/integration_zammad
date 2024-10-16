@@ -44,7 +44,6 @@ OC.L10N.register(
     "Zammad options saved" : "A Zammad beállítások mentve",
     "Incorrect access token" : "Helytelen hozzáférési token",
     "Failed to save Zammad options" : "A Zammad beállítások mentése sikertelen",
-    "Failed to save Zammad OAuth state" : "Nem sikerült menteni a Zammad OAuth állapotot",
     "No Zammad account connected" : "Nincs Zammad-fiók csatlakoztatva",
     "Error connecting to Zammad" : "Hiba történt a Zammadhoz való csatlakozáskor",
     "No Zammad notifications!" : "Nincsenek Zammad-értesítések.",
@@ -61,6 +60,7 @@ OC.L10N.register(
     "Subscription ends" : "Az előfizetés vége:",
     "created {relativeDate}" : "létrehozva: {relativeDate}",
     "closed {relativeDate}" : "lezárva: {relativeDate}",
-    "updated {relativeDate}" : "frissítve: {relativeDate}"
+    "updated {relativeDate}" : "frissítve: {relativeDate}",
+    "Failed to save Zammad OAuth state" : "Nem sikerült menteni a Zammad OAuth állapotot"
 },
 "nplurals=2; plural=(n != 1);");

@@ -44,7 +44,6 @@ OC.L10N.register(
     "Zammad options saved" : "已儲存 Zammad 選項",
     "Incorrect access token" : "不正確的存取權杖",
     "Failed to save Zammad options" : "儲存 Zammad 選項失敗",
-    "Failed to save Zammad OAuth state" : "儲存 Zammad OAuth 狀態失敗",
     "No Zammad account connected" : "未連線至 Zammad 帳號",
     "Error connecting to Zammad" : "連線至 Zammad 時發生錯誤",
     "No Zammad notifications!" : "無 Zammad 通告！",
@@ -61,6 +60,7 @@ OC.L10N.register(
     "Subscription ends" : "訂閱結束日",
     "created {relativeDate}" : "於 {relativeDate} 天前創建",
     "closed {relativeDate}" : "有效期至 {relativeDate}",
-    "updated {relativeDate}" : "於 {relativeDate} 更新"
+    "updated {relativeDate}" : "於 {relativeDate} 更新",
+    "Failed to save Zammad OAuth state" : "儲存 Zammad OAuth 狀態失敗"
 },
 "nplurals=1; plural=0;");

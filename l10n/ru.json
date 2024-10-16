@@ -37,13 +37,15 @@
     "Zammad options saved" : "Настройки Zammad сохранены",
     "Incorrect access token" : "Неверный токен доступа",
     "Failed to save Zammad options" : "Не удалось сохранить параметры Zammad",
-    "Failed to save Zammad OAuth state" : "Не удалось сохранить состояние Zammad OAuth",
     "No Zammad account connected" : "Учетная запись Zammad не подключена",
     "Error connecting to Zammad" : "Ошибка подключения к Zammad",
     "No Zammad notifications!" : "Никаких уведомлений Zammad!",
     "Failed to get Zammad notifications" : "Не удалось получить уведомления Zammad",
     "Unknown error" : "Неизвестная ошибка",
+    "Zammad connected accounts settings" : "Настройки подключенных учетных записей Zammad",
     "Comments" : "Комментарии",
-    "Click to expand comment" : "Нажмите, чтобы развернуть комментарии"
+    "Click to expand comment" : "Нажмите, чтобы развернуть комментарии",
+    "Account manager" : "Менеджер аккаунта",
+    "Failed to save Zammad OAuth state" : "Не удалось сохранить состояние Zammad OAuth"
 },"pluralForm" :"nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
 }

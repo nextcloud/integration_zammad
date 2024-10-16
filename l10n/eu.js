@@ -43,7 +43,6 @@ OC.L10N.register(
     "Zammad options saved" : "Zammad aukerak gorde dira",
     "Incorrect access token" : "Sarbide token okerra",
     "Failed to save Zammad options" : "Ezin izan dira gorde Zammad aukerak",
-    "Failed to save Zammad OAuth state" : "Ezin izan da gorde Zammad OAuth egoera",
     "No Zammad account connected" : "Ez dago Zammad konturik konektatuta",
     "Error connecting to Zammad" : "Errorea Zammad-era konektatzean",
     "No Zammad notifications!" : "Zammad jakinarazpenik ez!",
@@ -60,6 +59,7 @@ OC.L10N.register(
     "Subscription ends" : "Harpidetza bukatzen da",
     "created {relativeDate}" : "sortua {relativeDate}",
     "closed {relativeDate}" : "ixte-data {relativeDate}",
-    "updated {relativeDate}" : "eguneratze-data {relativeDate}"
+    "updated {relativeDate}" : "eguneratze-data {relativeDate}",
+    "Failed to save Zammad OAuth state" : "Ezin izan da gorde Zammad OAuth egoera"
 },
 "nplurals=2; plural=(n != 1);");

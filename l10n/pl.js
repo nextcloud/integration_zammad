@@ -43,7 +43,6 @@ OC.L10N.register(
     "Zammad options saved" : "Opcje Zammada zostały zapisane",
     "Incorrect access token" : "Nieprawidłowy token dostępu",
     "Failed to save Zammad options" : "Nie udało się zapisać opcji Zammada",
-    "Failed to save Zammad OAuth state" : "Nie udało się zapisać statusu OAuth Zammad",
     "No Zammad account connected" : "Brak połączonego konta Zammad",
     "Error connecting to Zammad" : "Błąd podczas łączenia z Zammadem",
     "No Zammad notifications!" : "Brak powiadomień Zammada!",
@@ -60,6 +59,7 @@ OC.L10N.register(
     "Subscription ends" : "Kończy się subskrypcja",
     "created {relativeDate}" : "utworzone {relativeDate}",
     "closed {relativeDate}" : "zamknięte {relativeDate}",
-    "updated {relativeDate}" : "zaktualizowane {relativeDate}"
+    "updated {relativeDate}" : "zaktualizowane {relativeDate}",
+    "Failed to save Zammad OAuth state" : "Nie udało się zapisać statusu OAuth Zammad"
 },
 "nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

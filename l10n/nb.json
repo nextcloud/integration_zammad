@@ -42,7 +42,6 @@
     "Zammad options saved" : "Alternativer for Zammad lagret",
     "Incorrect access token" : "Feil tilgangstoken",
     "Failed to save Zammad options" : "Lagring av alternativer for Zammad feilet",
-    "Failed to save Zammad OAuth state" : "Lagring av Zammad OAuth-tilstand feilet",
     "No Zammad account connected" : "Ingen Zammad-konto tilkoblet",
     "Error connecting to Zammad" : "Feil under tilkobling til Zammad",
     "No Zammad notifications!" : "Ingen Zammad-varslinger!",
@@ -59,6 +58,7 @@
     "Subscription ends" : "Abonnement avsluttes",
     "created {relativeDate}" : "opprettet {relativeDate}",
     "closed {relativeDate}" : "lukket {relativeDate}",
-    "updated {relativeDate}" : "oppdatert {relativeDate}"
+    "updated {relativeDate}" : "oppdatert {relativeDate}",
+    "Failed to save Zammad OAuth state" : "Lagring av Zammad OAuth-tilstand feilet"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

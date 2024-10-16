@@ -44,7 +44,6 @@ OC.L10N.register(
     "Zammad options saved" : "Předvolby pro Zammad uloženy",
     "Incorrect access token" : "Nesprávný přístupový token",
     "Failed to save Zammad options" : "Nepodařilo se uložit předvolby pro Zammad",
-    "Failed to save Zammad OAuth state" : "Nepodařilo se uložit stav Zammad OAuth",
     "No Zammad account connected" : "Nepřipojen žádný Zammad účet",
     "Error connecting to Zammad" : "Chyba při připojování se k Zammad",
     "No Zammad notifications!" : "Žádná upozornění ze Zammad!",

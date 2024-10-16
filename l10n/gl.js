@@ -44,7 +44,6 @@ OC.L10N.register(
     "Zammad options saved" : "Gardáronse as opcións de Zammad",
     "Incorrect access token" : "Testemuño de acceso incorrecto",
     "Failed to save Zammad options" : "Produciuse un fallo ao gardar as opcións de Zammad.",
-    "Failed to save Zammad OAuth state" : "Produciuse un fallo ao gardar o estado do OAuth de Zammad",
     "No Zammad account connected" : "Non hai ningunha conta de Zammad conectada",
     "Error connecting to Zammad" : "Produciuse un erro ao conectar con Zammad",
     "No Zammad notifications!" : "Non hai notificacións de Zammad.",
@@ -61,6 +60,7 @@ OC.L10N.register(
     "Subscription ends" : "Finaliza a subscrición",
     "created {relativeDate}" : "creado o {relativeDate}",
     "closed {relativeDate}" : "pechado o {relativeDate}",
-    "updated {relativeDate}" : "actualizado o  {relativeDate}"
+    "updated {relativeDate}" : "actualizado o  {relativeDate}",
+    "Failed to save Zammad OAuth state" : "Produciuse un fallo ao gardar o estado do OAuth de Zammad"
 },
 "nplurals=2; plural=(n != 1);");
