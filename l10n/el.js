@@ -45,6 +45,7 @@ OC.L10N.register(
     "Failed to get Zammad notifications" : "Αποτυχία λήψης ειδοποιήσεων του Zammad",
     "Unknown error" : "Άγνωστο σφάλμα",
     "Comments" : "Σχόλια",
-    "Click to expand comment" : "Κλικ για επέκταση σχολίου"
+    "Click to expand comment" : "Κλικ για επέκταση σχολίου",
+    "Failed to save Zammad OAuth state" : "Αποτυχία αποθήκευσης της κατάστασης του Zammad OAuth"
 },
 "nplurals=2; plural=(n != 1);");

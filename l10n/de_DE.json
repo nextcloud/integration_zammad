@@ -58,6 +58,7 @@
     "Subscription ends" : "Abonnement endet",
     "created {relativeDate}" : "erstellt {relativeDate}",
     "closed {relativeDate}" : "Geschlossen {relativeDate}",
-    "updated {relativeDate}" : "Aktualisiert {relativeDate}"
+    "updated {relativeDate}" : "Aktualisiert {relativeDate}",
+    "Failed to save Zammad OAuth state" : "Fehler beim Speichern des Zammad OAuth-Status"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

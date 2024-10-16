@@ -56,6 +56,7 @@ OC.L10N.register(
     "Subscription ends" : "Predplatné vypršalo",
     "created {relativeDate}" : "vytvorené {relativeDate}",
     "closed {relativeDate}" : "zatvorené {relativeDate}",
-    "updated {relativeDate}" : "upravené {relativeDate}"
+    "updated {relativeDate}" : "upravené {relativeDate}",
+    "Failed to save Zammad OAuth state" : "Nepodarilo sa uložiť stav Zammad OAuth"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");
