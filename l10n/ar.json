@@ -8,7 +8,7 @@
     "closed %1$s" : "قُفِلَت %1$s",
     "updated %1$s" : "حُدِّثَت %1$s",
     "Bad HTTP method" : "دالة HTTP  غير صحيحة",
-    "Bad credentials" : "حيثيّات الدخول credentials غير صحيحة",
+    "Bad credentials" : "بيانات تسجيل الدخول غير صحيحة",
     "OAuth access token refused" : "أمارة token وصول مرفوضة",
     "Connected accounts" : "حسابات مترابطة",
     "Zammad integration" : "مُكاملة Zammad",
@@ -58,6 +58,7 @@
     "Subscription ends" : "الاشتراك ينتهي",
     "created {relativeDate}" : "أنشأ {relativeDate}",
     "closed {relativeDate}" : "أغلق {relativeDate}",
-    "updated {relativeDate}" : "حَدَّثَ {relativeDate}"
+    "updated {relativeDate}" : "حَدَّثَ {relativeDate}",
+    "Failed to save Zammad OAuth state" : "فشل في حفظ حالة Zammad OAuth"
 },"pluralForm" :"nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;"
 }
