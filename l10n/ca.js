@@ -35,6 +35,7 @@ OC.L10N.register(
     "Unknown error" : "Error desconegut",
     "Comments" : "Comentaris",
     "Click to expand comment" : "Feu clic per ampliar el comentari",
-    "Account manager" : "Gestor de comptes"
+    "Account manager" : "Gestor de comptes",
+    "Failed to save Zammad OAuth state" : "No s'ha pogut desar l'estat de Zammad OAuth"
 },
 "nplurals=2; plural=(n != 1);");
