@@ -99,7 +99,7 @@ class ZammadAPIController extends Controller {
 			return;
 		}
 		$contentProvider = \OCP\Server::get('OCA\Zammad\ContextChat\ContentProvider');
-		foreach($notifications as $notification) {
+		foreach ($notifications as $notification) {
 			$contentProvider->importTicket($notification['o_id']);
 		}
 	}

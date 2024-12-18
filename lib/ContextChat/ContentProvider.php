@@ -30,7 +30,7 @@ class ContentProvider implements IContentProvider {
 			return;
 		}
 		$event->registerContentProvider(Application::APP_ID, self::ID, self::class);
-}
+	}
 
 	/**
 	 * The ID of the provider
@@ -91,7 +91,7 @@ class ContentProvider implements IContentProvider {
 	}
 
 	public function getContentOfTicket($id): string {
-		return array_reduce($this->zammadAPIService->getArticlesByTicket($this->userId, (int)$id), fn($agg, array $article) => $agg . $article['from'] . ":\n\n" . $article['body'] . "\n\n", '');
+		return array_reduce($this->zammadAPIService->getArticlesByTicket($this->userId, (int)$id), fn ($agg, array $article) => $agg . $article['from'] . ":\n\n" . $article['body'] . "\n\n", '');
 	}
 
 }
