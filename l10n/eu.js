@@ -59,7 +59,6 @@ OC.L10N.register(
     "Subscription ends" : "Harpidetza bukatzen da",
     "created {relativeDate}" : "sortua {relativeDate}",
     "closed {relativeDate}" : "ixte-data {relativeDate}",
-    "updated {relativeDate}" : "eguneratze-data {relativeDate}",
-    "Failed to save Zammad OAuth state" : "Ezin izan da gorde Zammad OAuth egoera"
+    "updated {relativeDate}" : "eguneratze-data {relativeDate}"
 },
 "nplurals=2; plural=(n != 1);");

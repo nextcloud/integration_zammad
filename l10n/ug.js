@@ -59,7 +59,6 @@ OC.L10N.register(
     "Subscription ends" : "مۇشتەرىلىك ئاخىرلاشتى",
     "created {relativeDate}" : "created {relativeDate}",
     "closed {relativeDate}" : "closed {relativeDate}",
-    "updated {relativeDate}" : "يېڭىلاندى {relativeDate}",
-    "Failed to save Zammad OAuth state" : "Zammad OAuth ھالىتىنى قۇتۇلدۇرالمىدى"
+    "updated {relativeDate}" : "يېڭىلاندى {relativeDate}"
 },
 "nplurals=2; plural=(n != 1);");

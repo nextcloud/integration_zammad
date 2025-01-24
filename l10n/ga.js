@@ -60,7 +60,6 @@ OC.L10N.register(
     "Subscription ends" : "Críochnaíonn an síntiús",
     "created {relativeDate}" : "cruthaithe {relativeDate}",
     "closed {relativeDate}" : "dúnta {relativeDate}",
-    "updated {relativeDate}" : "nuashonraithe {relativeDate}",
-    "Failed to save Zammad OAuth state" : "Theip ar shábháil stát Zammad OAuth"
+    "updated {relativeDate}" : "nuashonraithe {relativeDate}"
 },
 "nplurals=5; plural=(n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4);");

@@ -42,7 +42,6 @@ OC.L10N.register(
     "Comments" : "评论",
     "internal" : "内部",
     "Click to expand comment" : "点击展开评论",
-    "Account manager" : "账号管理器",
-    "Failed to save Zammad OAuth state" : "保存Zammad OAuth状态失败"
+    "Account manager" : "账号管理器"
 },
 "nplurals=1; plural=0;");

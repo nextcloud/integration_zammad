@@ -44,7 +44,6 @@ OC.L10N.register(
     "No Zammad notifications!" : "Nema Zammad obavijesti!",
     "Failed to get Zammad notifications" : "Dohvaćanje Zammad obavijesti nije uspjelo",
     "Unknown error" : "Nepoznata pogreška",
-    "Comments" : "Komentari",
-    "Failed to save Zammad OAuth state" : "Spremanje stanja Zammad OAuth nije uspjelo"
+    "Comments" : "Komentari"
 },
 "nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;");

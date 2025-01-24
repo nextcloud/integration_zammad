@@ -47,7 +47,6 @@ OC.L10N.register(
     "by {creator}" : "door {creator}",
     "Comments" : "Reacties",
     "Click to expand comment" : "Klik om de reactie uit te vouwen",
-    "Account manager" : "Accoutbeheerder",
-    "Failed to save Zammad OAuth state" : "Kon Zammad OAuth-status niet bewaren"
+    "Account manager" : "Accoutbeheerder"
 },
 "nplurals=2; plural=(n != 1);");

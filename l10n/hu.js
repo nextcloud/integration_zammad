@@ -60,7 +60,6 @@ OC.L10N.register(
     "Subscription ends" : "Az előfizetés vége:",
     "created {relativeDate}" : "létrehozva: {relativeDate}",
     "closed {relativeDate}" : "lezárva: {relativeDate}",
-    "updated {relativeDate}" : "frissítve: {relativeDate}",
-    "Failed to save Zammad OAuth state" : "Nem sikerült menteni a Zammad OAuth állapotot"
+    "updated {relativeDate}" : "frissítve: {relativeDate}"
 },
 "nplurals=2; plural=(n != 1);");

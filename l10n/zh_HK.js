@@ -60,7 +60,6 @@ OC.L10N.register(
     "Subscription ends" : "訂閱結束日",
     "created {relativeDate}" : "於 {relativeDate} 天前創建",
     "closed {relativeDate}" : "有效期至 {relativeDate}",
-    "updated {relativeDate}" : "於 {relativeDate} 更新",
-    "Failed to save Zammad OAuth state" : "儲存 Zammad OAuth 狀態失敗"
+    "updated {relativeDate}" : "於 {relativeDate} 更新"
 },
 "nplurals=1; plural=0;");

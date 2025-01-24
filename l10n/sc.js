@@ -44,7 +44,6 @@ OC.L10N.register(
     "No Zammad notifications!" : "Peruna notìfica de Zammad!",
     "Failed to get Zammad notifications" : "No at fatu a retzire is notìficas de Zammad",
     "Unknown error" : "Errore disconnotu",
-    "Comments" : "Cummentos",
-    "Failed to save Zammad OAuth state" : "No at fatu a sarvare s'istadu OAuth de Zammad"
+    "Comments" : "Cummentos"
 },
 "nplurals=2; plural=(n != 1);");

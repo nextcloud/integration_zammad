@@ -60,7 +60,6 @@ OC.L10N.register(
     "Subscription ends" : "Abonnement endet",
     "created {relativeDate}" : "erstellt {relativeDate}",
     "closed {relativeDate}" : "geschlossen {relativeDate}",
-    "updated {relativeDate}" : "aktualisiert {relativeDate}",
-    "Failed to save Zammad OAuth state" : "Fehler beim Speichern des Zammad OAuth-Status"
+    "updated {relativeDate}" : "aktualisiert {relativeDate}"
 },
 "nplurals=2; plural=(n != 1);");
