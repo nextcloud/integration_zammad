@@ -28,6 +28,7 @@ OC.L10N.register(
     "by {creator}" : "tehnyt {creator}",
     "Comments" : "Kommentit",
     "Click to expand comment" : "Napsauta laajentaaksesi kommentin",
+    "Account manager" : "Asiakkuuspäällikkö",
     "created {relativeDate}" : "luotu {relativeDate}",
     "closed {relativeDate}" : "suljettu {relativeDate}",
     "updated {relativeDate}" : "päivitetty {relativeDate}"
