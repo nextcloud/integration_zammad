@@ -34,6 +34,8 @@ class Application extends App implements IBootstrap {
 	public const APP_ID = 'integration_zammad';
 	private IConfig $config;
 
+	public static $contextChatEnabled = false;
+
 	public function __construct(array $urlParams = []) {
 		parent::__construct(self::APP_ID, $urlParams);
 
@@ -50,6 +52,10 @@ class Application extends App implements IBootstrap {
 
 		$context->registerReferenceProvider(ZammadReferenceProvider::class);
 		$context->registerEventListener(RenderReferenceEvent::class, ZammadReferenceListener::class);
+		if (class_exists('\OCA\ContextChat\Public\IContentProvider')) {
+			self::$contextChatEnabled = true;
+			$context->registerEventListener(\OCA\ContextChat\Event\ContentProviderRegisterEvent::class, \OCA\Zammad\ContextChat\ContentProvider::class);
+		}
 	}
 
 	public function boot(IBootContext $context): void {
