@@ -1,7 +1,7 @@
 OC.L10N.register(
     "integration_zammad",
     {
-    "Bad HTTP method" : "Dårlig HTTP-metode",
+    "Bad HTTP method" : "Dårlig HTTP metode",
     "Bad credentials" : "Forkerte legitimationsoplysninger",
     "Connected accounts" : "Forbundne konti",
     "Access token" : "Adgangstoken",
