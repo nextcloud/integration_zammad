@@ -6,6 +6,7 @@ OC.L10N.register(
     "Connected accounts" : "Forbundne konti",
     "Access token" : "Adgangstoken",
     "Connected as {user}" : "Forbundet som {user}",
+    "Enable navigation link" : "Enable navigation link",
     "Unknown error" : "Ukendt fejl",
     "by {creator}" : "af {creator}",
     "Comments" : "Kommentarer",

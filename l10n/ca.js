@@ -33,6 +33,7 @@ OC.L10N.register(
     "Error connecting to Zammad" : "S'ha produït un error en connectar a Zammad",
     "No Zammad notifications!" : "No hi ha notificacions de Zammad!",
     "Unknown error" : "Error desconegut",
+    "by {creator}" : "per {creator}",
     "Comments" : "Comentaris",
     "Click to expand comment" : "Feu clic per ampliar el comentari",
     "Account manager" : "Gestor de comptes"
