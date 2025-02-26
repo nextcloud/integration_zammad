@@ -14,7 +14,7 @@
     "Zammad integration" : "Zammad-Einbindung",
     "Integration of Zammad user support/ticketing solution" : "Integration der Zammad User Support/Ticketing-Lösung",
     "Zammad integration provides a dashboard widget displaying your important notifications,\n\ta search provider for tickets and notifications for new open tickets." : "Die Zammad-Einbindung bietet Ihnen eine Übersicht, welche Ihre wichtigen Benachrichtigungen anzeigt, \n \tsowie eine Suche für Tickets und Benachrichtigungen über neue Tickets.",
-    "If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below." : "Wenn Sie Ihren Nextcloud-Benutzern erlauben möchten, sich mit OAuth bei einer Zammad-Instanz zu authentifizieren, erstellen Sie eine Anwendung in Ihren Zammad-Administratoreinstellungen und tragen Sie die Anwendungs-ID (AppId) und das Geheimnis unten ein.",
+    "If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below." : "Wenn Sie Ihren Nextcloud-Benutzern erlauben möchten, sich mit OAuth bei einer Zammad-Instanz zu authentifizieren, erstellen Sie eine Anwendung in Ihren Zammad-Administrationseinstellungen und tragen Sie die Anwendungs-ID (AppId) und das Geheimnis unten ein.",
     "Make sure you set the \"Callback URL\" to" : "Stellen Sie sicher, dass Sie die \"Rückruf-URL\" wie folgt setzen",
     "Zammad instance address" : "Adresse der Zammad-Instanz",
     "Zammad address" : "Zammad Adresse",
