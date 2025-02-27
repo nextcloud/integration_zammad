@@ -5,9 +5,9 @@ OC.L10N.register(
     "Bad credentials" : "Gölluð auðkenni",
     "OAuth access token refused" : "OAuth-aðgangsteikni hafnað",
     "Connected accounts" : "Tengdir aðgangar",
+    "Incorrect access token" : "Rangt aðgangsteikn",
     "Connected as {user}" : "Tengt sem {user}",
     "Enable navigation link" : "Virkja flakktengil",
-    "Incorrect access token" : "Rangt aðgangsteikn",
     "Unknown error" : "Óþekkt villa",
     "Comments" : "Athugasemdir",
     "Click to expand comment" : "Smelltu til að fella út athugasemd"

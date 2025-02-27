@@ -15,18 +15,18 @@
     "Integration of Zammad user support/ticketing solution" : "整合 Zammad 使用者支援/工單解決方案",
     "Application ID" : "應用程式 ID",
     "Application secret" : "應用程式密碼",
+    "OAuth access token could not be obtained:" : "無法取得 OAuth 存取權杖：",
+    "Incorrect access token" : "不正確的存取權杖",
     "Access token" : "存取權杖",
     "Connected as {user}" : "以 {user} 身份連線",
     "Enable navigation link" : "啟用導覽連結",
-    "OAuth access token could not be obtained:" : "無法取得 OAuth 存取權杖：",
-    "Incorrect access token" : "不正確的存取權杖",
-    "Unknown error" : "未知的錯誤",
-    "by {creator}" : "由 {creator} 建立",
-    "Comments" : "留言",
-    "Click to expand comment" : "點擊展開留言",
     "Account manager" : "帳號管理程式",
     "created {relativeDate}" : "建立於 {relativeDate}",
     "closed {relativeDate}" : "關閉於 {relativeDate}",
-    "updated {relativeDate}" : "更新於 {relativeDate}"
+    "updated {relativeDate}" : "更新於 {relativeDate}",
+    "Unknown error" : "未知的錯誤",
+    "by {creator}" : "由 {creator} 建立",
+    "Comments" : "留言",
+    "Click to expand comment" : "點擊展開留言"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

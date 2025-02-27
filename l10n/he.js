@@ -7,8 +7,8 @@ OC.L10N.register(
     "Bad credentials" : "פרטי גישה שגויים",
     "OAuth access token refused" : "אסימון הגישה ב־OAuth סורב",
     "Connected accounts" : "חשבונות מקושרים",
-    "Enable navigation link" : "הפעלת קישור ניווט",
     "Incorrect access token" : "אסימון הגישה שגוי",
+    "Enable navigation link" : "הפעלת קישור ניווט",
     "Unknown error" : "שגיאה בלתי ידועה",
     "Comments" : "תגובות"
 },

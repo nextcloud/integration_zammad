@@ -6,9 +6,9 @@ OC.L10N.register(
     "Bad credentials" : "Thông tin đăng nhập không hợp lệ.",
     "Connected accounts" : "Đã kết nối tài khoản",
     "Connected as {user}" : "Kết nối bởi {user}",
+    "Account manager" : "Quản lý tài khoản",
     "Unknown error" : "Lỗi không xác định",
     "Comments" : "Các bình luận",
-    "Click to expand comment" : "Nhấp để mở rộng bình luận",
-    "Account manager" : "Quản lý tài khoản"
+    "Click to expand comment" : "Nhấp để mở rộng bình luận"
 },
 "nplurals=1; plural=0;");

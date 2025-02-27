@@ -5,9 +5,9 @@
     "Access token" : "Adgangstoken",
     "Connected as {user}" : "Forbundet som {user}",
     "Enable navigation link" : "Aktiver navigationslink",
+    "Account manager" : "Konto bestyrer",
     "Unknown error" : "Ukendt fejl",
     "by {creator}" : "af {creator}",
-    "Comments" : "Kommentarer",
-    "Account manager" : "Konto bestyrer"
+    "Comments" : "Kommentarer"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
