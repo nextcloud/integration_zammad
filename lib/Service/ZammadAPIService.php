@@ -436,6 +436,16 @@ class ZammadAPIService {
 	}
 
 	/**
+	 * @param string|null $userId
+	 * @param int $ticketId
+	 * @return array
+	 * @throws Exception
+	 */
+	public function getArticlesByTicket(?string $userId, int $ticketId): array {
+		return $this->request($userId, 'ticket_articles/by_ticket/' . $ticketId);
+	}
+
+	/**
 	 * @param string $userId
 	 * @param string $endPoint
 	 * @param array $params

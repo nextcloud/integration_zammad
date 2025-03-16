@@ -85,12 +85,23 @@ class ZammadAPIController extends Controller {
 			return new DataResponse('', Http::STATUS_BAD_REQUEST);
 		}
 		$result = $this->zammadAPIService->getNotifications($this->userId, $since, 7);
+		$this->importTicketsToContextChat($result);
 		if (!isset($result['error'])) {
 			$response = new DataResponse($result);
 		} else {
 			$response = new DataResponse($result, Http::STATUS_UNAUTHORIZED);
 		}
 		return $response;
+	}
+
+	private function importTicketsToContextChat(array $notifications): void {
+		if (!Application::$contextChatEnabled) {
+			return;
+		}
+		$contentProvider = \OCP\Server::get('OCA\Zammad\ContextChat\ContentProvider');
+		foreach ($notifications as $notification) {
+			$contentProvider->importTicket($notification['o_id']);
+		}
 	}
 
 }
