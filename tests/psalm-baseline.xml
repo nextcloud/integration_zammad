@@ -1,3 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.26.1@d747f6500b38ac4f7dfc5edbcae6e4b637d7add0">
+<files psalm-version="6.8.2@720ed6b578ac24f9543c65c3d4cecea0ff348ccd">
+  <file src="lib/AppInfo/Application.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function boot(IBootContext $context): void {]]></code>
+      <code><![CDATA[public function register(IRegistrationContext $context): void {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/BackgroundJob/CheckOpenTickets.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[protected function run($argument): void {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/Dashboard/ZammadWidget.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getIconClass(): string {]]></code>
+      <code><![CDATA[public function getId(): string {]]></code>
+      <code><![CDATA[public function getOrder(): int {]]></code>
+      <code><![CDATA[public function getTitle(): string {]]></code>
+      <code><![CDATA[public function getUrl(): ?string {]]></code>
+      <code><![CDATA[public function load(): void {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/Listener/ZammadReferenceListener.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function handle(Event $event): void {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/Migration/Version030000Date20241003141518.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function postSchemaChange(IOutput $output, Closure $schemaClosure, array $options) {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/Notification/Notifier.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getID(): string {]]></code>
+      <code><![CDATA[public function getName(): string {]]></code>
+      <code><![CDATA[public function prepare(INotification $notification, string $languageCode): INotification {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/Reference/ZammadReferenceProvider.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getCacheKey(string $referenceId): ?string {]]></code>
+      <code><![CDATA[public function getCachePrefix(string $referenceId): string {]]></code>
+      <code><![CDATA[public function getIconUrl(): string {]]></code>
+      <code><![CDATA[public function getId(): string {]]></code>
+      <code><![CDATA[public function getOrder(): int {]]></code>
+      <code><![CDATA[public function getSupportedSearchProviderIds(): array {]]></code>
+      <code><![CDATA[public function getTitle(): string {]]></code>
+      <code><![CDATA[public function matchReference(string $referenceText): bool {]]></code>
+      <code><![CDATA[public function resolveReference(string $referenceText): ?IReference {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/Search/ZammadSearchProvider.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getId(): string {]]></code>
+      <code><![CDATA[public function getName(): string {]]></code>
+      <code><![CDATA[public function getOrder(string $route, array $routeParameters): int {]]></code>
+      <code><![CDATA[public function search(IUser $user, ISearchQuery $query): SearchResult {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/Service/ZammadAPIService.php">
+    <InvalidOperand>
+      <code><![CDATA[$commentId]]></code>
+      <code><![CDATA[$key]]></code>
+      <code><![CDATA[$ticketId]]></code>
+      <code><![CDATA[$zammadOrgId]]></code>
+      <code><![CDATA[$zammadUserId]]></code>
+      <code><![CDATA[($offset / $limit) + 1]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="lib/Settings/Admin.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getForm(): TemplateResponse {]]></code>
+      <code><![CDATA[public function getPriority(): int {]]></code>
+      <code><![CDATA[public function getSection(): string {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/Settings/AdminSection.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getID(): string {]]></code>
+      <code><![CDATA[public function getIcon(): string {]]></code>
+      <code><![CDATA[public function getName(): string {]]></code>
+      <code><![CDATA[public function getPriority(): int {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/Settings/Personal.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getForm(): TemplateResponse {]]></code>
+      <code><![CDATA[public function getPriority(): int {]]></code>
+      <code><![CDATA[public function getSection(): string {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/Settings/PersonalSection.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getID(): string {]]></code>
+      <code><![CDATA[public function getIcon(): string {]]></code>
+      <code><![CDATA[public function getName(): string {]]></code>
+      <code><![CDATA[public function getPriority(): int {]]></code>
+    </MissingOverrideAttribute>
+  </file>
 </files>
