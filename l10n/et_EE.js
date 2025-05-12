@@ -5,6 +5,7 @@ OC.L10N.register(
     "Bad credentials" : "Vale kasutajanimi, salasõna või tunnusluba",
     "Connected accounts" : "Ühendatud kasutajakontod",
     "Connected as {user}" : "Ühendatud kui {user}",
+    "Account manager" : "Kliendihaldur",
     "Unknown error" : "Tundmatu viga",
     "by {creator}" : "kasutajalt {creator}",
     "Comments" : "Kommentaarid"
