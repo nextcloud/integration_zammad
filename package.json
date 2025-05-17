@@ -37,7 +37,7 @@
 		"npm": "10.x"
 	},
 	"dependencies": {
-		"@nextcloud/auth": "^2.0.0",
+		"@nextcloud/auth": "^2.5.1",
 		"@nextcloud/axios": "^2.1.0",
 		"@nextcloud/dialogs": "^6.0.0",
 		"@nextcloud/initial-state": "^2.0.0",
