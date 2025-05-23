@@ -1,9 +1,17 @@
 { "translations": {
+    "closed %1$s" : "suletud %1$s",
+    "updated %1$s" : "uuendatud %1$s",
     "Bad HTTP method" : "Vigane HTTP-meetod",
     "Bad credentials" : "Vale kasutajanimi, salasõna või tunnusluba",
     "Connected accounts" : "Ühendatud kasutajakontod",
+    "Application ID" : "Rakenduse tunnus",
+    "Application secret" : "Rakenduse saladus",
+    "Access token" : "Tunnusluba",
     "Connected as {user}" : "Ühendatud kui {user}",
     "Account manager" : "Kliendihaldur",
+    "created {relativeDate}" : "loodud {relativeDate}",
+    "closed {relativeDate}" : "suletud {relativeDate}",
+    "updated {relativeDate}" : "uuendatud {relativeDate}",
     "Unknown error" : "Tundmatu viga",
     "by {creator}" : "kasutajalt {creator}",
     "Comments" : "Kommentaarid"
