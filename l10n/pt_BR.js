@@ -9,7 +9,7 @@ OC.L10N.register(
     "Zammad tickets" : "Tickets Zammad",
     "closed %1$s" : "fechado %1$s",
     "updated %1$s" : "atualizado %1$s",
-    "Bad HTTP method" : "Método HTTP ruim",
+    "Bad HTTP method" : "Método HTTP incorreto",
     "Bad credentials" : "Credenciais erradas",
     "OAuth access token refused" : "Token de acesso OAuth recusado",
     "Connected accounts" : "Contas conectadas",
