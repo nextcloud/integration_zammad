@@ -1,6 +1,7 @@
 OC.L10N.register(
     "integration_zammad",
     {
+    "Error during OAuth exchanges" : "Viga OAuth andmevahetusel",
     "closed %1$s" : "suletud %1$s",
     "updated %1$s" : "uuendatud %1$s",
     "Bad HTTP method" : "Vigane HTTP-meetod",
