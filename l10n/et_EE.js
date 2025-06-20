@@ -1,6 +1,7 @@
 OC.L10N.register(
     "integration_zammad",
     {
+    "Error getting OAuth access token." : "Viga OAuthi tunnusloa laadimisel.",
     "Error during OAuth exchanges" : "Viga OAuth andmevahetusel",
     "closed %1$s" : "suletud %1$s",
     "updated %1$s" : "uuendatud %1$s",
@@ -8,7 +9,9 @@ OC.L10N.register(
     "Bad credentials" : "Vale kasutajanimi, salasõna või tunnusluba",
     "Connected accounts" : "Ühendatud kasutajakontod",
     "Application ID" : "Rakenduse tunnus",
+    "ID of your application" : "Sinu rakenduse tunnus",
     "Application secret" : "Rakenduse saladus",
+    "OAuth access token could not be obtained:" : "Päringu vastusest ei õnnestunud OAuthi tunnusluba tuvastada:",
     "Access token" : "Tunnusluba",
     "Connected as {user}" : "Ühendatud kui {user}",
     "Account manager" : "Kliendihaldur",
