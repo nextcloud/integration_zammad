@@ -1,6 +1,7 @@
 OC.L10N.register(
     "integration_zammad",
     {
+    "Error getting OAuth access token." : "Error getting OAuth access token.",
     "Error during OAuth exchanges" : "Hitilafu wakati wa kubadilishana OAuth",
     "Bad HTTP method" : "Njia mbaya ya HTTP ",
     "Bad credentials" : "Sifa mbaya",
