@@ -13,6 +13,7 @@ OC.L10N.register(
     "ID of your application" : "Sinu rakenduse tunnus",
     "Application secret" : "Rakenduse saladus",
     "OAuth access token could not be obtained:" : "Päringu vastusest ei õnnestunud OAuthi tunnusluba tuvastada:",
+    "Incorrect access token" : "Vigane tunnusluba ligipääsuks",
     "Access token" : "Tunnusluba",
     "Connected as {user}" : "Ühendatud kui {user}",
     "Enable navigation link" : "Lisa menüülink",
