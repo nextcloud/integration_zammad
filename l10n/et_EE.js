@@ -23,6 +23,7 @@ OC.L10N.register(
     "updated {relativeDate}" : "uuendatud {relativeDate}",
     "Unknown error" : "Tundmatu viga",
     "by {creator}" : "kasutajalt {creator}",
-    "Comments" : "Kommentaarid"
+    "Comments" : "Kommentaarid",
+    "Click to expand comment" : "Klõpsi kogu kommentaari vaatamiseks"
 },
 "nplurals=2; plural=(n != 1);");
