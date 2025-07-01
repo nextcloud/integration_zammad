@@ -96,10 +96,11 @@ class ZammadAPIService {
 						$this->config->setUserValue($userId, Application::APP_ID, 'last_open_check', $lastNotificationCheck);
 						$nbOpen = 0;
 						foreach ($notifications as $n) {
-							//							$user_id = $n['user_id'];
+							if (!isset($n['state_id'], $n['owner_id'])) {
+								continue;
+							}
 							$state_id = $n['state_id'];
 							$owner_id = $n['owner_id'];
-							// if ($state_id === 1) {
 							if ($owner_id === $my_user_id && $state_id === 1) {
 								$nbOpen++;
 							}
