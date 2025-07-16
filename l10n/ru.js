@@ -46,6 +46,7 @@ OC.L10N.register(
     "Account manager" : "Менеджер аккаунта",
     "Unknown error" : "Неизвестная ошибка",
     "Zammad connected accounts settings" : "Настройки подключенных учетных записей Zammad",
+    "by {creator}" : "от {creator}",
     "Comments" : "Комментарии",
     "Click to expand comment" : "Нажмите, чтобы развернуть комментарии"
 },
