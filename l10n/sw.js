@@ -10,6 +10,7 @@ OC.L10N.register(
     "Connected as {user}" : "Imeunganishwa kama {user}",
     "Enable navigation link" : "Enable navigation link",
     "Unknown error" : "Hitilafu isiyojulikana",
+    "by {creator}" : "kwa {creator}",
     "Comments" : "Maoni",
     "Click to expand comment" : "Bonyeza kupanua maoni"
 },
