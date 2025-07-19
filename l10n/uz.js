@@ -3,6 +3,7 @@ OC.L10N.register(
     {
     "Bad HTTP method" : "Yomon HTTP usuli",
     "Bad credentials" : "Akkaunt ma'lumotlari xato",
+    "Connected accounts" : "Ulangan akkauntlar",
     "Unknown error" : "Unknown error",
     "Comments" : "Comments"
 },
