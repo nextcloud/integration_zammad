@@ -5,6 +5,7 @@
     "Bad credentials" : "Sifa mbaya",
     "OAuth access token refused" : "Ufikiaji wa token za OAuth umekataliwa",
     "Connected accounts" : "Akaunti zilizounganishwa",
+    "OAuth access token could not be obtained:" : "OAuth access token could not be obtained:",
     "Access token" : "Access token",
     "Connected as {user}" : "Imeunganishwa kama {user}",
     "Enable navigation link" : "Enable navigation link",
