@@ -7,6 +7,8 @@ OC.L10N.register(
     "Bad credentials" : "Sifa mbaya",
     "OAuth access token refused" : "Ufikiaji wa token za OAuth umekataliwa",
     "Connected accounts" : "Akaunti zilizounganishwa",
+    "Application ID" : "Application ID",
+    "Application secret" : "Application secret",
     "OAuth access token could not be obtained:" : "OAuth access token could not be obtained:",
     "Access token" : "Access token",
     "Connected as {user}" : "Imeunganishwa kama {user}",
