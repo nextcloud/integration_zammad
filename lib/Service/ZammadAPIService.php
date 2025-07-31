@@ -80,9 +80,8 @@ class ZammadAPIService {
 		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token');
 		$notificationEnabled = ($this->config->getUserValue($userId, Application::APP_ID, 'notification_enabled', '0') === '1');
 		if ($accessToken && $notificationEnabled) {
-			$token = $this->config->getUserValue($userId, Application::APP_ID, 'token');
 			$zammadUrl = $this->getZammadUrl($userId);
-			if ($token && $zammadUrl) {
+			if ($zammadUrl) {
 				$lastNotificationCheck = $this->config->getUserValue($userId, Application::APP_ID, 'last_open_check');
 				$lastNotificationCheck = $lastNotificationCheck === '' ? null : $lastNotificationCheck;
 				// get the zammad user ID
@@ -112,6 +111,9 @@ class ZammadAPIService {
 							]);
 						}
 					}
+				} elseif (isset($me['error-code']) && $me['error-code'] === Http::STATUS_UNAUTHORIZED) {
+					// Auth token seems to no longer be valid, wipe it and don't retry
+					$this->config->deleteUserValue($userId, Application::APP_ID, 'token');
 				}
 			}
 		}
@@ -495,25 +497,22 @@ class ZammadAPIService {
 				return ['error' => $this->l10n->t('Bad HTTP method')];
 			}
 			$body = $response->getBody();
-			$respCode = $response->getStatusCode();
 
-			if ($respCode >= 400) {
-				return ['error' => $this->l10n->t('Bad credentials')];
-			} else {
-				if ($jsonResponse) {
-					return json_decode($body, true);
-				} else {
-					return [
-						'body' => $body,
-						'headers' => $response->getHeaders(),
-					];
-				}
+			if ($jsonResponse) {
+				return json_decode($body, true);
 			}
+
+			return [
+				'body' => $body,
+				'headers' => $response->getHeaders(),
+			];
 		} catch (ServerException|ClientException $e) {
-			$this->logger->warning('Zammad API error : ' . $e->getMessage(), ['app' => Application::APP_ID]);
+			$this->logger->warning('Zammad API error: ' . $e->getMessage(), ['app' => Application::APP_ID]);
 			$response = $e->getResponse();
 			$statusCode = $response->getStatusCode();
-			if ($statusCode === Http::STATUS_FORBIDDEN) {
+			if ($statusCode === Http::STATUS_UNAUTHORIZED) {
+				return ['error' => $this->l10n->t('Bad credentials'), 'error-code' => $statusCode];
+			} elseif ($statusCode === Http::STATUS_FORBIDDEN) {
 				return ['error' => 'Forbidden'];
 			} elseif ($statusCode === Http::STATUS_NOT_FOUND) {
 				return ['error' => 'Not found'];
