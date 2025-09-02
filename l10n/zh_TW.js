@@ -21,6 +21,7 @@ OC.L10N.register(
     "Incorrect access token" : "不正確的存取權杖",
     "Access token" : "存取權杖",
     "Connected as {user}" : "以 {user} 身份連線",
+    "Enable unified search for tickets" : "啟用工單的統一搜尋",
     "Enable navigation link" : "啟用導覽連結",
     "Account manager" : "帳號管理程式",
     "created {relativeDate}" : "建立於 {relativeDate}",
