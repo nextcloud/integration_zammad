@@ -44,6 +44,7 @@ OC.L10N.register(
     "No Zammad notifications!" : "Καμία ειδοποίηση Zammad!",
     "Failed to get Zammad notifications" : "Αποτυχία λήψης ειδοποιήσεων του Zammad",
     "Unknown error" : "Άγνωστο σφάλμα",
+    "by {creator}" : "από {creator}",
     "Comments" : "Σχόλια",
     "Click to expand comment" : "Κλικ για επέκταση σχολίου"
 },
