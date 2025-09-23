@@ -1,0 +1,13 @@
+{ "translations": {
+    "Error getting OAuth access token." : "Памылка атрымання токена доступу OAuth.",
+    "OAuth access token refused" : "Токен доступу OAuth адхілены",
+    "OAuth access token could not be obtained:" : "Немагчыма атрымаць токен доступу OAuth:",
+    "Incorrect access token" : "Няправільны токен доступу",
+    "To create an access token yourself, go to the \"Token Access\" section of your Zammad profile page." : "Каб самастойна стварыць токен доступу, перайдзіце ў раздзел \"Доступ праз токен\" на старонцы вашага профілю Zammad.",
+    "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Стварыце «Асабісты токен доступу» і дайце яму дазволы \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" і \"USER_PREFERENCES -> NOTIFICATIONS\".",
+    "Access token" : "Токен доступу",
+    "Zammad access token" : "Токен доступу Zammad",
+    "Unknown error" : "Невядомая памылка",
+    "Comments" : "Каментарыі"
+},"pluralForm" :"nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
+}
