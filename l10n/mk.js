@@ -10,6 +10,7 @@ OC.L10N.register(
     "Connected as {user}" : "Поврзан како {user}",
     "Enable navigation link" : "Овозможи линк за навигација",
     "Unknown error" : "Непозната грешка",
-    "Comments" : "Коментари"
+    "Comments" : "Коментари",
+    "Click to expand comment" : "Кликнни за проширување на коментарот"
 },
 "nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;");
