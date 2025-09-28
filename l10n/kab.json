@@ -1,0 +1,7 @@
+{ "translations": {
+    "Connected as {user}" : "D uqqin am {user}",
+    "Unknown error" : "Erreur inconnue",
+    "by {creator}" : "sɣur {creator}",
+    "Comments" : "Commentaires"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}
