@@ -9,6 +9,7 @@ OC.L10N.register(
     "Create a \"Personal Access Token\" and give it \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" and \"USER_PREFERENCES -> NOTIFICATIONS\" permissions." : "Стварыце «Асабісты токен доступу» і дайце яму дазволы \"TICKET -> AGENT\", \"ADMIN -> OBJECT\" і \"USER_PREFERENCES -> NOTIFICATIONS\".",
     "Access token" : "Токен доступу",
     "Zammad access token" : "Токен доступу Zammad",
+    "Enable unified search for tickets" : "Уключыць уніфікаваны пошук білетаў",
     "Unknown error" : "Невядомая памылка",
     "Comments" : "Каментарыі"
 },
