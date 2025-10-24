@@ -19,7 +19,7 @@
     "If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below." : "Wenn du deinen Nextcloud-Benutzern erlauben möchtest, sich mit OAuth bei einer Zammad-Instanz zu authentifizieren, erstelle eine Anwendung in deinen Zammad-Administrationseinstellungen und trage die Anwendungs-ID (AppId) und das Geheimnis unten ein.",
     "Make sure you set the \"Callback URL\" to" : "Stelle sicher, dass du die \"Rückruf-URL\" wie folgt setzt",
     "Zammad instance address" : "Adresse der Zammad-Instanz",
-    "Zammad address" : "Zammad Adresse",
+    "Zammad address" : "Zammad-Adresse",
     "Application ID" : "Anwendungs-ID",
     "ID of your application" : "ID deiner Anwendung",
     "Application secret" : "Anwendungsgeheimnis",
