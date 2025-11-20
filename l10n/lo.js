@@ -3,6 +3,7 @@ OC.L10N.register(
     {
     "Unknown error" : "ຜິດພາດທີ່ບໍ່ຮູ້ຈັກ",
     "by {creator}" : "ໂດຍ {creator}",
-    "Comments" : "ຄໍາເຫັນ"
+    "Comments" : "ຄໍາເຫັນ",
+    "Click to expand comment" : "Click to expand comment"
 },
 "nplurals=1; plural=0;");
