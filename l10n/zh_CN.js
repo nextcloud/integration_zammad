@@ -39,6 +39,7 @@ OC.L10N.register(
     "Failed to get Zammad notifications" : "获取Zammad通知失败",
     "Account manager" : "账号管理器",
     "Unknown error" : "未知错误",
+    "Ticket#{number}" : "工单#{number}",
     "by {creator}" : "由{creator}创建",
     "Comments" : "评论",
     "internal" : "内部",
