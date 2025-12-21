@@ -3,6 +3,7 @@
     "Error getting OAuth access token." : "OAuth زىيارەت بەلگىسىگە ئېرىشىشتە خاتالىق.",
     "Error during OAuth exchanges" : "OAuth ئالماشتۇرۇش جەريانىدا خاتالىق",
     "Zammad notifications" : "Zammad ئۇقتۇرۇشى",
+    "_You have %n open ticket in Zammad._::_You have %n open tickets in Zammad._" : ["Zammad دا %n ئوچۇق بىلەت بار.","Zammad دا %n ئوچۇق بىلەت بار."],
     "Zammad tickets" : "Zammad بېلەتلىرى",
     "closed %1$s" : "%1 $ s نى تاقىدى",
     "updated %1$s" : "%1 $ s يېڭىلاندى",
