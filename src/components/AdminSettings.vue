@@ -4,70 +4,71 @@
 			<ZammadIcon class="icon" />
 			{{ t('integration_zammad', 'Zammad integration') }}
 		</h2>
-		<p class="settings-hint">
-			{{ t('integration_zammad', 'If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below.') }}
-		</p>
-		<p class="settings-hint">
-			<InformationOutlineIcon :size="20" class="icon" />
-			{{ t('integration_zammad', 'Make sure you set the "Callback URL" to') }}
-		</p>
-		<strong>{{ redirect_uri }}</strong>
-		<br><br>
 		<div id="zammad-content">
-			<div class="line">
-				<label for="zammad-oauth-instance">
-					<EarthIcon :size="20" class="icon" />
-					{{ t('integration_zammad', 'Zammad instance address') }}
-				</label>
-				<input id="zammad-oauth-instance"
-					v-model="state.oauth_instance_url"
-					type="text"
-					:placeholder="t('integration_zammad', 'Zammad address')"
-					@input="onInput">
-			</div>
-			<div class="line">
-				<label for="zammad-client-id">
-					<KeyIcon :size="20" class="icon" />
-					{{ t('integration_zammad', 'Application ID') }}
-				</label>
-				<input id="zammad-client-id"
-					v-model="state.client_id"
-					type="password"
-					:readonly="readonly"
-					:placeholder="t('integration_zammad', 'ID of your application')"
-					@focus="readonly = false"
-					@input="onInput">
-			</div>
-			<div class="line">
-				<label for="zammad-client-secret">
-					<KeyIcon :size="20" class="icon" />
-					{{ t('integration_zammad', 'Application secret') }}
-				</label>
-				<input id="zammad-client-secret"
-					v-model="state.client_secret"
-					type="password"
-					:readonly="readonly"
-					:placeholder="t('integration_zammad', 'Client secret of your application')"
-					@focus="readonly = false"
-					@input="onInput">
-			</div>
-			<NcCheckboxRadioSwitch
+			<NcNoteCard type="info">
+				{{ t('integration_zammad', 'If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below.') }}
+				<br>
+				{{ t('integration_zammad', 'Make sure you set the "Callback URL" to') }}
+				<br>
+				<strong>{{ redirect_uri }}</strong>
+			</NcNoteCard>
+			<NcTextField
+				v-model="state.oauth_instance_url"
+				:label="t('integration_zammad', 'Zammad instance address')"
+				:placeholder="t('integration_zammad', 'Zammad address')"
+				:show-trailing-button="!!state.oauth_instance_url"
+				@trailing-button-click="state.oauth_instance_url = ''; onInput()"
+				@update:model-value="onInput">
+				<template #icon>
+					<EarthIcon :size="20" />
+				</template>
+			</NcTextField>
+			<NcTextField
+				v-model="state.client_id"
+				type="password"
+				:label="t('integration_zammad', 'Application ID')"
+				:placeholder="t('integration_zammad', 'ID of your application')"
+				:readonly="readonly"
+				:show-trailing-button="!!state.client_id"
+				@trailing-button-click="state.client_id = ''; onInput()"
+				@focus="readonly = false"
+				@update:model-value="onInput">
+				<template #icon>
+					<KeyOutlineIcon :size="20" />
+				</template>
+			</NcTextField>
+			<NcTextField
+				v-model="state.client_secret"
+				type="password"
+				:label="t('integration_zammad', 'Application secret')"
+				:placeholder="t('integration_zammad', 'Client secret of your application')"
+				:readonly="readonly"
+				:show-trailing-button="!!state.client_secret"
+				@trailing-button-click="state.client_secret = ''; onInput()"
+				@focus="readonly = false"
+				@update:model-value="onInput">
+				<template #icon>
+					<KeyOutlineIcon :size="20" />
+				</template>
+			</NcTextField>
+			<NcFormBoxSwitch
 				:model-value="state.link_preview_enabled"
 				@update:model-value="onCheckboxChanged($event, 'link_preview_enabled')">
 				{{ t('integration_zammad', 'Enable Zammad link previews') }}
-			</NcCheckboxRadioSwitch>
+			</NcFormBoxSwitch>
 		</div>
 	</div>
 </template>
 
 <script>
-import InformationOutlineIcon from 'vue-material-design-icons/InformationOutline.vue'
-import KeyIcon from 'vue-material-design-icons/Key.vue'
+import KeyOutlineIcon from 'vue-material-design-icons/KeyOutline.vue'
 import EarthIcon from 'vue-material-design-icons/Earth.vue'
 
 import ZammadIcon from './icons/ZammadIcon.vue'
 
-import NcCheckboxRadioSwitch from '@nextcloud/vue/components/NcCheckboxRadioSwitch'
+import NcFormBoxSwitch from '@nextcloud/vue/components/NcFormBoxSwitch'
+import NcNoteCard from '@nextcloud/vue/components/NcNoteCard'
+import NcTextField from '@nextcloud/vue/components/NcTextField'
 
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
@@ -81,10 +82,11 @@ export default {
 	name: 'AdminSettings',
 
 	components: {
-		NcCheckboxRadioSwitch,
+		NcFormBoxSwitch,
+		NcNoteCard,
+		NcTextField,
 		ZammadIcon,
-		InformationOutlineIcon,
-		KeyIcon,
+		KeyOutlineIcon,
 		EarthIcon,
 	},
 
@@ -147,33 +149,18 @@ export default {
 
 <style scoped lang="scss">
 #zammad_prefs {
+	h2 {
+		display: flex;
+		justify-content: start;
+		align-items: center;
+		gap: 8px;
+	}
 	#zammad-content{
 		margin-left: 40px;
-	}
-
-	h2,
-	.line,
-	.settings-hint {
 		display: flex;
-		align-items: center;
-		.icon {
-			margin-right: 4px;
-		}
-	}
-
-	h2 .icon {
-		margin-right: 8px;
-	}
-
-	.line {
-		> label {
-			width: 300px;
-			display: flex;
-			align-items: center;
-		}
-		> input {
-			width: 300px;
-		}
+		flex-direction: column;
+		gap: 4px;
+		max-width: 800px;
 	}
 }
 </style>

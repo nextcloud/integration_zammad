@@ -4,37 +4,37 @@
 			<ZammadIcon class="icon" />
 			{{ t('integration_zammad', 'Zammad integration') }}
 		</h2>
-		<p v-if="!showOAuth && !connected" class="settings-hint">
-			{{ t('integration_zammad', 'To create an access token yourself, go to the "Token Access" section of your Zammad profile page.') }}
-		</p>
-		<p v-if="!showOAuth && !connected" class="settings-hint">
-			{{ t('integration_zammad', 'Create a "Personal Access Token" and give it "TICKET -> AGENT", "ADMIN -> OBJECT" and "USER_PREFERENCES -> NOTIFICATIONS" permissions.') }}
-		</p>
 		<div id="zammad-content">
-			<div class="line">
-				<label for="zammad-url">
-					<EarthIcon :size="20" class="icon" />
-					{{ t('integration_zammad', 'Zammad instance address') }}
-				</label>
-				<input id="zammad-url"
-					v-model="state.url"
-					type="text"
-					:disabled="connected === true"
-					:placeholder="t('integration_zammad', 'https://my.zammad.org')"
-					@input="onInput">
-			</div>
-			<div v-show="!showOAuth" class="line">
-				<label for="zammad-token">
-					<KeyIcon :size="20" class="icon" />
-					{{ t('integration_zammad', 'Access token') }}
-				</label>
-				<input id="zammad-token"
-					v-model="state.token"
-					type="password"
-					:disabled="connected === true"
-					:placeholder="t('integration_zammad', 'Zammad access token')"
-					@input="onInput">
-			</div>
+			<NcNoteCard v-if="!showOAuth && !connected" type="info">
+				{{ t('integration_zammad', 'To create an access token yourself, go to the "Token Access" section of your Zammad profile page.') }}
+				<br>
+				{{ t('integration_zammad', 'Create a "Personal Access Token" and give it "TICKET -> AGENT", "ADMIN -> OBJECT" and "USER_PREFERENCES -> NOTIFICATIONS" permissions.') }}
+			</NcNoteCard>
+			<NcTextField
+				v-model="state.url"
+				:label="t('integration_zammad', 'Zammad instance address')"
+				placeholder="https://my.zammad.org"
+				:disabled="connected === true"
+				:show-trailing-button="!!state.url"
+				@trailing-button-click="state.url = ''; onInput()"
+				@update:model-value="onInput">
+				<template #icon>
+					<EarthIcon :size="20" />
+				</template>
+			</NcTextField>
+			<NcTextField v-show="!showOAuth"
+				v-model="state.token"
+				type="password"
+				:label="t('integration_zammad', 'Access token')"
+				:placeholder="t('integration_zammad', 'Zammad access token')"
+				:disabled="connected === true"
+				:show-trailing-button="!!state.token"
+				@trailing-button-click="state.token = ''; onInput()"
+				@update:model-value="onInput">
+				<template #icon>
+					<KeyOutlineIcon :size="20" />
+				</template>
+			</NcTextField>
 			<NcButton v-if="showOAuth && !connected"
 				id="zammad-oauth"
 				:disabled="loading === true"
@@ -58,33 +58,31 @@
 					{{ t('integration_zammad', 'Disconnect from Zammad') }}
 				</NcButton>
 			</div>
-			<div v-if="connected" id="zammad-search-block">
-				<br>
-				<p v-if="state.search_enabled" class="settings-hint">
-					<InformationOutlineIcon :size="20" class="icon" />
-					{{ t('integration_zammad', 'Warning, everything you type in the search bar will be sent to your Zammad instance.') }}
-				</p>
-				<NcCheckboxRadioSwitch
+			<NcFormBox>
+				<NcFormBoxSwitch v-if="connected"
 					:model-value="state.search_enabled"
 					@update:model-value="onCheckboxChanged($event, 'search_enabled')">
 					{{ t('integration_zammad', 'Enable unified search for tickets') }}
-				</NcCheckboxRadioSwitch>
-				<NcCheckboxRadioSwitch
+				</NcFormBoxSwitch>
+				<NcFormBoxSwitch v-if="connected"
 					:model-value="state.notification_enabled"
 					@update:model-value="onCheckboxChanged($event, 'notification_enabled')">
 					{{ t('integration_zammad', 'Enable notifications for open tickets') }}
-				</NcCheckboxRadioSwitch>
-			</div>
-			<NcCheckboxRadioSwitch
-				:model-value="state.navigation_enabled"
-				@update:model-value="onCheckboxChanged($event, 'navigation_enabled')">
-				{{ t('integration_zammad', 'Enable navigation link') }}
-			</NcCheckboxRadioSwitch>
-			<NcCheckboxRadioSwitch
-				:model-value="state.link_preview_enabled"
-				@update:model-value="onCheckboxChanged($event, 'link_preview_enabled')">
-				{{ t('integration_zammad', 'Enable Zammad link previews') }}
-			</NcCheckboxRadioSwitch>
+				</NcFormBoxSwitch>
+				<NcFormBoxSwitch
+					:model-value="state.navigation_enabled"
+					@update:model-value="onCheckboxChanged($event, 'navigation_enabled')">
+					{{ t('integration_zammad', 'Enable navigation link') }}
+				</NcFormBoxSwitch>
+				<NcFormBoxSwitch
+					:model-value="state.link_preview_enabled"
+					@update:model-value="onCheckboxChanged($event, 'link_preview_enabled')">
+					{{ t('integration_zammad', 'Enable Zammad link previews') }}
+				</NcFormBoxSwitch>
+			</NcFormBox>
+			<NcNoteCard v-if="connected && state.search_enabled" type="warning">
+				{{ t('integration_zammad', 'Warning, everything you type in the search bar will be sent to your Zammad instance.') }}
+			</NcNoteCard>
 		</div>
 	</div>
 </template>
@@ -92,15 +90,17 @@
 <script>
 import LoginVariantIcon from 'vue-material-design-icons/LoginVariant.vue'
 import EarthIcon from 'vue-material-design-icons/Earth.vue'
-import KeyIcon from 'vue-material-design-icons/Key.vue'
+import KeyOutlineIcon from 'vue-material-design-icons/KeyOutline.vue'
 import CloseIcon from 'vue-material-design-icons/Close.vue'
 import CheckIcon from 'vue-material-design-icons/Check.vue'
-import InformationOutlineIcon from 'vue-material-design-icons/InformationOutline.vue'
 
 import ZammadIcon from './icons/ZammadIcon.vue'
 
-import NcCheckboxRadioSwitch from '@nextcloud/vue/components/NcCheckboxRadioSwitch'
+import NcFormBox from '@nextcloud/vue/components/NcFormBox'
+import NcFormBoxSwitch from '@nextcloud/vue/components/NcFormBoxSwitch'
 import NcButton from '@nextcloud/vue/components/NcButton'
+import NcNoteCard from '@nextcloud/vue/components/NcNoteCard'
+import NcTextField from '@nextcloud/vue/components/NcTextField'
 
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
@@ -114,15 +114,17 @@ export default {
 	name: 'PersonalSettings',
 
 	components: {
-		NcCheckboxRadioSwitch,
+		NcFormBox,
+		NcFormBoxSwitch,
 		NcButton,
+		NcNoteCard,
+		NcTextField,
 		ZammadIcon,
 		EarthIcon,
-		KeyIcon,
+		KeyOutlineIcon,
 		LoginVariantIcon,
 		CloseIcon,
 		CheckIcon,
-		InformationOutlineIcon,
 	},
 
 	props: [],
@@ -234,31 +236,29 @@ export default {
 
 <style scoped lang="scss">
 #zammad_prefs {
-	#zammad-content {
-		margin-left: 40px;
-	}
-	h2,
-	.line,
-	.settings-hint {
+	h2 {
 		display: flex;
 		align-items: center;
-		.icon {
-			margin-right: 4px;
-		}
+		gap: 8px;
+		justify-content: start;
 	}
 
-	h2 .icon {
-		margin-right: 8px;
-	}
+	#zammad-content {
+		margin-left: 40px;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		max-width: 800px;
 
-	.line {
-		> label {
-			width: 300px;
+		.line {
 			display: flex;
 			align-items: center;
-		}
-		> input {
-			width: 250px;
+			gap: 4px;
+			label {
+				display: flex;
+				align-items: center;
+				gap: 4px;
+			}
 		}
 	}
 }
