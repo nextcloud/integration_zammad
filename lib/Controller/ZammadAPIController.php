@@ -81,9 +81,9 @@ class ZammadAPIController extends Controller {
 	#[NoAdminRequired]
 	public function getNotifications(?string $since = null): DataResponse {
 		$hasAccessToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'token') !== '';
-		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url');
+		$zammadUrl = $this->zammadAPIService->getZammadUrl($this->userId);
 		if (!$hasAccessToken || !preg_match('/^(https?:\/\/)?[^.]+\.[^.].*/', $zammadUrl)) {
-			return new DataResponse('', Http::STATUS_BAD_REQUEST);
+			return new DataResponse('connection_impossible', Http::STATUS_BAD_REQUEST);
 		}
 		$result = $this->zammadAPIService->getNotifications($this->userId, $since, 7);
 		if (!isset($result['error'])) {
