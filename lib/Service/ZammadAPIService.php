@@ -21,6 +21,7 @@ use OCA\Zammad\AppInfo\Application;
 use OCP\AppFramework\Http;
 use OCP\Http\Client\IClient;
 use OCP\Http\Client\IClientService;
+use OCP\IAppConfig;
 use OCP\ICache;
 use OCP\ICacheFactory;
 use OCP\IConfig;
@@ -45,6 +46,7 @@ class ZammadAPIService {
 		private LoggerInterface $logger,
 		private IL10N $l10n,
 		private IConfig $config,
+		private IAppConfig $appConfig,
 		private INotificationManager $notificationManager,
 		private ICrypto $crypto,
 		ICacheFactory $cacheFactory,
@@ -55,7 +57,7 @@ class ZammadAPIService {
 	}
 
 	public function getZammadUrl(string $userId): string {
-		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		$adminZammadOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url', lazy: true);
 		return $this->config->getUserValue($userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
 	}
 
@@ -537,13 +539,11 @@ class ZammadAPIService {
 	}
 
 	private function refreshToken(string $userId): bool {
-		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
-		$clientID = $clientID === '' ? '' : $this->crypto->decrypt($clientID);
-		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
-		$clientSecret = $clientSecret === '' ? '' : $this->crypto->decrypt($clientSecret);
+		$clientID = $this->appConfig->getValueString(Application::APP_ID, 'client_id', lazy: true);
+		$clientSecret = $this->appConfig->getValueString(Application::APP_ID, 'client_secret', lazy: true);
 		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
 		$refreshToken = $refreshToken === '' ? '' : $this->crypto->decrypt($refreshToken);
-		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		$adminZammadOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url', lazy: true);
 		if (!$refreshToken) {
 			$this->logger->error('No Zammad refresh token found', ['app' => Application::APP_ID]);
 			return false;

@@ -5,17 +5,15 @@ namespace OCA\Zammad\Settings;
 use OCA\Zammad\AppInfo\Application;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
-use OCP\IConfig;
+use OCP\IAppConfig;
 
-use OCP\Security\ICrypto;
 use OCP\Settings\ISettings;
 
 class Admin implements ISettings {
 
 	public function __construct(
-		private IConfig $config,
+		private IAppConfig $appConfig,
 		private IInitialState $initialStateService,
-		private ICrypto $crypto,
 	) {
 	}
 
@@ -23,13 +21,11 @@ class Admin implements ISettings {
 	 * @return TemplateResponse
 	 */
 	public function getForm(): TemplateResponse {
-		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
-		$clientID = $clientID === '' ? '' : $this->crypto->decrypt($clientID);
-		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
-		$clientSecret = $clientSecret === '' ? '' : $this->crypto->decrypt($clientSecret);
+		$clientID = $this->appConfig->getValueString(Application::APP_ID, 'client_id', lazy: true);
+		$clientSecret = $this->appConfig->getValueString(Application::APP_ID, 'client_secret', lazy: true);
 
-		$oauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
-		$adminLinkPreviewEnabled = $this->config->getAppValue(Application::APP_ID, 'link_preview_enabled', '1') === '1';
+		$oauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url', lazy: true);
+		$adminLinkPreviewEnabled = $this->appConfig->getValueString(Application::APP_ID, 'link_preview_enabled', '1', lazy: true) === '1';
 
 		$adminConfig = [
 			'client_id' => $clientID,
