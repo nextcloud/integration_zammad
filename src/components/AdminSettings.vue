@@ -52,8 +52,8 @@
 					@input="onInput">
 			</div>
 			<NcCheckboxRadioSwitch
-				:checked="state.link_preview_enabled"
-				@update:checked="onCheckboxChanged($event, 'link_preview_enabled')">
+				:model-value="state.link_preview_enabled"
+				@update:model-value="onCheckboxChanged($event, 'link_preview_enabled')">
 				{{ t('integration_zammad', 'Enable Zammad link previews') }}
 			</NcCheckboxRadioSwitch>
 		</div>
@@ -67,7 +67,7 @@ import EarthIcon from 'vue-material-design-icons/Earth.vue'
 
 import ZammadIcon from './icons/ZammadIcon.vue'
 
-import { NcCheckboxRadioSwitch } from '@nextcloud/vue'
+import NcCheckboxRadioSwitch from '@nextcloud/vue/components/NcCheckboxRadioSwitch'
 
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'

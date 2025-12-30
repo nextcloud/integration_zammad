@@ -19,18 +19,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { registerWidget } from '@nextcloud/vue/dist/Components/NcRichText.js'
+import { registerWidget } from '@nextcloud/vue/components/NcRichText'
 
 registerWidget('integration_zammad', async (el, { richObjectType, richObject, accessible }) => {
-	const { default: Vue } = await import('vue')
+	const { createApp } = await import('vue')
 	const { default: ReferenceZammadWidget } = await import('./views/ReferenceZammadWidget.vue')
-	Vue.mixin({ methods: { t, n } })
-	const Widget = Vue.extend(ReferenceZammadWidget)
-	new Widget({
-		propsData: {
+
+	const app = createApp(
+		ReferenceZammadWidget,
+		{
 			richObjectType,
 			richObject,
 			accessible,
 		},
-	}).$mount(el)
+	)
+	app.mixin({ methods: { t, n } })
+	const { default: VueSecureHTML } = await import('vue-html-secure')
+	app.use(VueSecureHTML)
+	app.provide('$safeHTML', VueSecureHTML.safeHTML)
+	app.mount(el)
 })

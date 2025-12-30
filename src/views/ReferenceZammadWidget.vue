@@ -57,7 +57,7 @@
 				</div>
 				<div class="sub-text">
 					<component :is="iconComponent"
-						v-tooltip.top="{ content: stateTooltip }"
+						:title="stateTooltip"
 						:size="16"
 						class="icon"
 						:fill-color="iconColor" />
@@ -68,21 +68,22 @@
 						[{{ richObject.severity }}]
 					</span>
 					<a
-						v-tooltip.top="{ content: authorTooltip }"
+						:title="authorTooltip"
 						:href="authorUrl"
 						target="_blank"
 						class="author-link">
 						{{ t('integration_zammad', 'by {creator}', { creator: authorName }) }}
 					</a>
+					<!-- TODO use NcTooltip and $safeHTML instead of the title -->
 					<a v-if="richObject.zammad_ticket_author_organization"
-						v-tooltip.top="{ html: true, content: $safeHTML(authorOrgTooltip) }"
+						:title="authorOrgTooltip"
 						:href="authorOrgUrl"
 						target="_blank"
 						class="author-link">
 						[{{ authorOrgName }}]
 					</a>
 					<span
-						v-tooltip.top="{ content: createdAtFormatted }"
+						:title="createdAtFormatted"
 						class="date-with-tooltip">
 						{{ createdAtText }}
 					</span>
@@ -105,19 +106,19 @@
 					<span>
 						{{ ticketStateNames[richObject.state_id] }}
 					</span>
-					<div v-tooltip.top="{ content: t('integration_zammad', 'Comments') }"
+					<div :title="t('integration_zammad', 'Comments')"
 						class="comments-count">
 						<CommentIcon :size="16" class="icon" />
 						{{ richObject.article_count }}
 					</div>
 				</div>
 				<div v-if="richObject.close_at"
-					v-tooltip.top="{ content: closedAtFormatted }"
+					:title="closedAtFormatted"
 					class="closed-at date-with-tooltip">
 					&nbsp;· {{ closedAtText }}
 				</div>
 				<div v-else-if="richObject.updated_at"
-					v-tooltip.top="{ content: updatedAtFormatted }"
+					:title="updatedAtFormatted"
 					class="updated-at date-with-tooltip">
 					&nbsp;· {{ updatedAtText }}
 				</div>
@@ -139,15 +140,16 @@
 				<span class="comment--author--bubble">
 					<div class="comment--author--bubble--header">
 						<a
-							v-tooltip.top="{ content: commentAuthorTooltip }"
+							:title="commentAuthorTooltip"
 							:href="commentAuthorUrl"
 							target="_blank"
 							class="author-link">
 							<strong class="comment-author-display-name">{{ commentAuthorName }}</strong>
 						</a>
 						&nbsp;
+						<!-- TODO use NcTooltip and $safeHTML instead of the title -->
 						<a v-if="richObject.zammad_comment_author_organization"
-							v-tooltip.top="{ html: true, content: commentAuthorOrgTooltip }"
+							:title="commentAuthorOrgTooltip"
 							:href="commentAuthorOrgUrl"
 							target="_blank"
 							class="author-link">
@@ -155,7 +157,7 @@
 						</a>
 						&nbsp;·&nbsp;
 						<span
-							v-tooltip.top="{ content: commentCreatedAtTooltip }"
+							:title="commentCreatedAtTooltip"
 							class="date-with-tooltip">
 							{{ commentCreatedAtText }}
 						</span>
@@ -164,8 +166,10 @@
 							{{ t('integration_zammad', 'internal') }}
 						</div>
 					</div>
-					<div v-tooltip.top="{ html: true, content: shortComment ? t('integration_zammad', 'Click to expand comment') : undefined }"
+					<!-- TODO use NcTooltip and $safeHTML instead of the title -->
+					<div
 						v-html-safe="richObject.zammad_comment.body"
+						:title="shortComment ? t('integration_zammad', 'Click to expand comment') : undefined"
 						:class="{
 							'comment--author--bubble--content': true,
 							'short-comment': shortComment,
@@ -186,13 +190,7 @@ import CommentIcon from '../components/icons/CommentIcon.vue'
 import { generateUrl } from '@nextcloud/router'
 import moment from '@nextcloud/moment'
 
-import { Tooltip, NcAvatar } from '@nextcloud/vue'
-import VueSecureHTML from 'vue-html-secure'
-import Vue from 'vue'
-
-Vue.use(VueSecureHTML)
-Vue.prototype.$safeHTML = VueSecureHTML.safeHTML
-Vue.directive('tooltip', Tooltip)
+import NcAvatar from '@nextcloud/vue/components/NcAvatar'
 
 export default {
 	name: 'ReferenceZammadWidget',
@@ -203,6 +201,8 @@ export default {
 		NcAvatar,
 		OpenInNewIcon,
 	},
+
+	inject: ['$safeHTML'],
 
 	props: {
 		richObjectType: {
@@ -526,13 +526,13 @@ export default {
 		margin-right: 0;
 	}
 
-	::v-deep .author-link,
+	:deep(.author-link),
 	.slug-link {
 		color: inherit !important;
 	}
 
 	.date-with-tooltip,
-	::v-deep .author-link,
+	:deep(.author-link),
 	.author-link:hover .comment-author-display-name,
 	.slug-link,
 	.ticket-link {

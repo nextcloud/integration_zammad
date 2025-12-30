@@ -65,24 +65,24 @@
 					{{ t('integration_zammad', 'Warning, everything you type in the search bar will be sent to your Zammad instance.') }}
 				</p>
 				<NcCheckboxRadioSwitch
-					:checked="state.search_enabled"
-					@update:checked="onCheckboxChanged($event, 'search_enabled')">
+					:model-value="state.search_enabled"
+					@update:model-value="onCheckboxChanged($event, 'search_enabled')">
 					{{ t('integration_zammad', 'Enable unified search for tickets') }}
 				</NcCheckboxRadioSwitch>
 				<NcCheckboxRadioSwitch
-					:checked="state.notification_enabled"
-					@update:checked="onCheckboxChanged($event, 'notification_enabled')">
+					:model-value="state.notification_enabled"
+					@update:model-value="onCheckboxChanged($event, 'notification_enabled')">
 					{{ t('integration_zammad', 'Enable notifications for open tickets') }}
 				</NcCheckboxRadioSwitch>
 			</div>
 			<NcCheckboxRadioSwitch
-				:checked="state.navigation_enabled"
-				@update:checked="onCheckboxChanged($event, 'navigation_enabled')">
+				:model-value="state.navigation_enabled"
+				@update:model-value="onCheckboxChanged($event, 'navigation_enabled')">
 				{{ t('integration_zammad', 'Enable navigation link') }}
 			</NcCheckboxRadioSwitch>
 			<NcCheckboxRadioSwitch
-				:checked="state.link_preview_enabled"
-				@update:checked="onCheckboxChanged($event, 'link_preview_enabled')">
+				:model-value="state.link_preview_enabled"
+				@update:model-value="onCheckboxChanged($event, 'link_preview_enabled')">
 				{{ t('integration_zammad', 'Enable Zammad link previews') }}
 			</NcCheckboxRadioSwitch>
 		</div>
@@ -99,7 +99,8 @@ import InformationOutlineIcon from 'vue-material-design-icons/InformationOutline
 
 import ZammadIcon from './icons/ZammadIcon.vue'
 
-import { NcButton, NcCheckboxRadioSwitch } from '@nextcloud/vue'
+import NcCheckboxRadioSwitch from '@nextcloud/vue/components/NcCheckboxRadioSwitch'
+import NcButton from '@nextcloud/vue/components/NcButton'
 
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
