@@ -74,14 +74,27 @@
 						class="author-link">
 						{{ t('integration_zammad', 'by {creator}', { creator: authorName }) }}
 					</a>
-					<!-- TODO use NcTooltip and $safeHTML instead of the title -->
-					<a v-if="richObject.zammad_ticket_author_organization"
-						:title="authorOrgTooltip"
-						:href="authorOrgUrl"
-						target="_blank"
-						class="author-link">
-						[{{ authorOrgName }}]
-					</a>
+					<NcPopover v-if="richObject.zammad_ticket_author_organization"
+						placement="top"
+						:triggers="['hover']">
+						<template #trigger>
+							<a :href="authorOrgUrl"
+								target="_blank"
+								class="author-link">
+								[{{ authorOrgName }}]
+							</a>
+						</template>
+						<template #default>
+							<strong>
+								{{ t('integration_zammad', 'Account manager') }}
+							</strong>
+							{{ richObject.zammad_ticket_author_organization.account_manager }}
+							<br>
+							<strong v-if="richObject.zammad_ticket_author_organization.subscription_end">
+								{{ t('integration_zammad', 'Subscription ends: {date}', { date: formattedSubscriptionEnd }) }}
+							</strong>
+						</template>
+					</NcPopover>
 					<span
 						:title="createdAtFormatted"
 						class="date-with-tooltip">
@@ -147,14 +160,27 @@
 							<strong class="comment-author-display-name">{{ commentAuthorName }}</strong>
 						</a>
 						&nbsp;
-						<!-- TODO use NcTooltip and $safeHTML instead of the title -->
-						<a v-if="richObject.zammad_comment_author_organization"
-							:title="commentAuthorOrgTooltip"
-							:href="commentAuthorOrgUrl"
-							target="_blank"
-							class="author-link">
-							[{{ commentAuthorOrgName }}]
-						</a>
+						<NcPopover v-if="richObject.zammad_comment_author_organization"
+							placement="top"
+							:triggers="['hover']">
+							<template #trigger>
+								<a :href="commentAuthorOrgUrl"
+									target="_blank"
+									class="author-link">
+									[{{ commentAuthorOrgName }}]
+								</a>
+							</template>
+							<template #default>
+								<strong>
+									{{ t('integration_zammad', 'Account manager') }}
+								</strong>
+								{{ richObject.zammad_comment_author_organization.account_manager }}
+								<br>
+								<strong v-if="richObject.zammad_comment_author_organization.subscription_end">
+									{{ t('integration_zammad', 'Subscription ends: {date}', { date: formattedCommentAuthorSubscriptionEnds }) }}
+								</strong>
+							</template>
+						</NcPopover>
 						&nbsp;·&nbsp;
 						<span
 							:title="commentCreatedAtTooltip"
@@ -166,7 +192,6 @@
 							{{ t('integration_zammad', 'internal') }}
 						</div>
 					</div>
-					<!-- TODO use NcTooltip and $safeHTML instead of the title -->
 					<div
 						v-html-safe="richObject.zammad_comment.body"
 						:title="shortComment ? t('integration_zammad', 'Click to expand comment') : undefined"
@@ -191,6 +216,7 @@ import { generateUrl } from '@nextcloud/router'
 import moment from '@nextcloud/moment'
 
 import NcAvatar from '@nextcloud/vue/components/NcAvatar'
+import NcPopover from '@nextcloud/vue/components/NcPopover'
 
 export default {
 	name: 'ReferenceZammadWidget',
@@ -199,10 +225,11 @@ export default {
 		ZammadIcon,
 		CommentIcon,
 		NcAvatar,
+		NcPopover,
 		OpenInNewIcon,
 	},
 
-	inject: ['$safeHTML'],
+	// inject: ['$safeHTML'],
 
 	props: {
 		richObjectType: {
@@ -254,13 +281,8 @@ export default {
 		authorOrgName() {
 			return this.richObject.zammad_ticket_author_organization.name
 		},
-		authorOrgTooltip() {
-			return '<strong>' + t('integration_zammad', 'Account manager')
-				+ ':</strong> ' + this.richObject.zammad_ticket_author_organization.account_manager
-				+ (this.richObject.zammad_ticket_author_organization.subscription_end
-					? '<br><strong>' + t('integration_zammad', 'Subscription ends') + ':</strong> '
-						+ moment(this.richObject.zammad_ticket_author_organization.subscription_end).format('LL')
-					: '')
+		formattedSubscriptionEnd() {
+			return moment(this.richObject.zammad_ticket_author_organization.subscription_end).format('LL')
 		},
 		ticketStateNames() {
 			const stateNamesById = {}
@@ -323,13 +345,8 @@ export default {
 		commentAuthorOrgName() {
 			return this.richObject.zammad_comment_author_organization.name
 		},
-		commentAuthorOrgTooltip() {
-			return '<strong>' + t('integration_zammad', 'Account manager')
-				+ ':</strong> ' + this.richObject.zammad_comment_author_organization.account_manager
-				+ (this.richObject.zammad_comment_author_organization.subscription_end
-					? '<br><strong>' + t('integration_zammad', 'Subscription ends') + ':</strong> '
-					+ moment(this.richObject.zammad_comment_author_organization.subscription_end).format('LL')
-					: '')
+		formattedCommentAuthorSubscriptionEnds() {
+			return moment(this.richObject.zammad_comment_author_organization.subscription_end).format('LL')
 		},
 	},
 

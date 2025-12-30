@@ -36,6 +36,6 @@ registerWidget('integration_zammad', async (el, { richObjectType, richObject, ac
 	app.mixin({ methods: { t, n } })
 	const { default: VueSecureHTML } = await import('vue-html-secure')
 	app.use(VueSecureHTML)
-	app.provide('$safeHTML', VueSecureHTML.safeHTML)
+	// app.provide('$safeHTML', VueSecureHTML.safeHTML)
 	app.mount(el)
 })
