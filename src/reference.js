@@ -38,4 +38,4 @@ registerWidget('integration_zammad', async (el, { richObjectType, richObject, ac
 	app.use(VueSecureHTML)
 	// app.provide('$safeHTML', VueSecureHTML.safeHTML)
 	app.mount(el)
-})
+}, () => {}, { hasInteractiveView: false })
