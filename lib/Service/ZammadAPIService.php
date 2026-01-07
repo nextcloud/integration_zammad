@@ -54,7 +54,7 @@ class ZammadAPIService {
 		$this->cache = $cacheFactory->createDistributed(Application::APP_ID . '_global_info');
 	}
 
-	private function getZammadUrl(string $userId): string {
+	public function getZammadUrl(string $userId): string {
 		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
 		return $this->config->getUserValue($userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
 	}
