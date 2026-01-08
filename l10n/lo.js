@@ -19,12 +19,12 @@ OC.L10N.register(
     "Enable unified search for tickets" : "ເປີດໃຊ້ການຄົ້ນຫາແບບລວມສູນສຳລັບທິກເກັດ",
     "Enable notifications for open tickets" : "ເປີດໃຊ້ການແຈ້ງເຕືອນສຳລັບທິກເກັດທີ່ເປີດຢູ່",
     "Enable navigation link" : "ເປີດໃຊ້ລິ້ງນຳທາງ",
-    "Account manager" : "ຜູ້ຈັດການບັນຊີ",
     "created {relativeDate}" : "ສ້າງເມື່ອ {relativeDate}",
     "closed {relativeDate}" : "ປິດເມື່ອ {relativeDate}",
     "updated {relativeDate}" : "ອັບເດດເມື່ອ {relativeDate}",
     "Unknown error" : "ຜິດພາດທີ່ບໍ່ຮູ້ຈັກ",
     "by {creator}" : "ໂດຍ {creator}",
+    "Account manager" : "ຜູ້ຈັດການບັນຊີ",
     "Comments" : "ຄໍາເຫັນ",
     "Click to expand comment" : "Click to expand comment"
 },

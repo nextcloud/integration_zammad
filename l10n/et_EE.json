@@ -15,12 +15,12 @@
     "Access token" : "Tunnusluba",
     "Connected as {user}" : "Ühendatud kui {user}",
     "Enable navigation link" : "Lisa menüülink",
-    "Account manager" : "Kliendihaldur",
     "created {relativeDate}" : "loodud {relativeDate}",
     "closed {relativeDate}" : "suletud {relativeDate}",
     "updated {relativeDate}" : "uuendatud {relativeDate}",
     "Unknown error" : "Tundmatu viga",
     "by {creator}" : "kasutajalt {creator}",
+    "Account manager" : "Kliendihaldur",
     "Comments" : "Kommentaarid",
     "Click to expand comment" : "Klõpsi kogu kommentaari vaatamiseks"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"

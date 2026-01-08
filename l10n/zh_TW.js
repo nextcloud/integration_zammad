@@ -23,12 +23,12 @@ OC.L10N.register(
     "Connected as {user}" : "以 {user} 身份連線",
     "Enable unified search for tickets" : "啟用工單的統一搜尋",
     "Enable navigation link" : "啟用導覽連結",
-    "Account manager" : "帳號管理程式",
     "created {relativeDate}" : "建立於 {relativeDate}",
     "closed {relativeDate}" : "關閉於 {relativeDate}",
     "updated {relativeDate}" : "更新於 {relativeDate}",
     "Unknown error" : "未知的錯誤",
     "by {creator}" : "由 {creator} 建立",
+    "Account manager" : "帳號管理程式",
     "Comments" : "留言",
     "Click to expand comment" : "點擊展開留言"
 },

@@ -20,7 +20,6 @@ OC.L10N.register(
     "OAuth access token could not be obtained:" : "No s'ha pogut obtenir el testimoni d'accés oAuth:",
     "Incorrect access token" : "Testimoni d'accés incorrecte",
     "Failed to save Zammad options" : "No s'han pogut desar les opcions de Zammad",
-    "https://my.zammad.org" : "https://my.zammad.org",
     "Access token" : "Testimoni d'aplicació",
     "Zammad access token" : "Testimoni d'accés de Zammad",
     "Connect to Zammad" : "Connectar-se a Zammad",
@@ -32,9 +31,9 @@ OC.L10N.register(
     "No Zammad account connected" : "No s'ha connectat el compte de Zammad",
     "Error connecting to Zammad" : "S'ha produït un error en connectar a Zammad",
     "No Zammad notifications!" : "No hi ha notificacions de Zammad!",
-    "Account manager" : "Gestor de comptes",
     "Unknown error" : "Error desconegut",
     "by {creator}" : "per {creator}",
+    "Account manager" : "Gestor de comptes",
     "Comments" : "Comentaris",
     "Click to expand comment" : "Feu clic per ampliar el comentari"
 },
