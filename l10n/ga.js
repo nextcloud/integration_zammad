@@ -56,6 +56,7 @@ OC.L10N.register(
     "Ticket#{number}" : "Ticéad#{number}",
     "by {creator}" : "le {cruthaitheoir}",
     "Account manager" : "Bainisteoir cúntais",
+    "Subscription ends: {date}" : "Críochnaíonn an síntiús: {date}",
     "Comments" : "Tuairimí",
     "internal" : "inmheánach",
     "Click to expand comment" : "Cliceáil chun trácht a leathnú"

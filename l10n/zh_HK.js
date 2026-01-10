@@ -56,6 +56,7 @@ OC.L10N.register(
     "Ticket#{number}" : "票號#{number}",
     "by {creator}" : "由 {creator} 創作",
     "Account manager" : "帳戶經理",
+    "Subscription ends: {date}" : "訂閱結束日：{date}",
     "Comments" : "備註",
     "internal" : "內部",
     "Click to expand comment" : "點擊展開評論"
