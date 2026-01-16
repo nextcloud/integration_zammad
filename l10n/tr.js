@@ -56,6 +56,7 @@ OC.L10N.register(
     "Ticket#{number}" : "Destek kaydı no {number}",
     "by {creator}" : "{creator} tarafından oluşturuldu",
     "Account manager" : "Hesap yönetimi",
+    "Subscription ends: {date}" : "Abonelik sonu: {date}",
     "Comments" : "Yorumlar",
     "internal" : "iç",
     "Click to expand comment" : "Yorumu genişletmek için tıklayın"
