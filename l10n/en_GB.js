@@ -56,6 +56,7 @@ OC.L10N.register(
     "Ticket#{number}" : "Ticket#{number}",
     "by {creator}" : "by {creator}",
     "Account manager" : "Account manager",
+    "Subscription ends: {date}" : "Subscription ends: {date}",
     "Comments" : "Comments",
     "internal" : "internal",
     "Click to expand comment" : "Click to expand comment"
