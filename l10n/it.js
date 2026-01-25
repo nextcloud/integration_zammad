@@ -44,6 +44,7 @@ OC.L10N.register(
     "Failed to get Zammad notifications" : "Impossibile ricevere le notifiche di Zammad",
     "Unknown error" : "Errore sconosciuto",
     "Ticket#{number}" : "Biglietto#{number}",
+    "by {creator}" : "da {creator}",
     "Comments" : "Commenti",
     "internal" : "interno",
     "Click to expand comment" : "Fai clic per espandere il commento"
