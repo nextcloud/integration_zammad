@@ -33,11 +33,12 @@ use OCP\IDateTimeFormatter;
 use OCP\IL10N;
 use OCP\IURLGenerator;
 use OCP\IUser;
+use OCP\Search\IExternalProvider;
 use OCP\Search\IProvider;
 use OCP\Search\ISearchQuery;
 use OCP\Search\SearchResult;
 
-class ZammadSearchProvider implements IProvider {
+class ZammadSearchProvider implements IProvider, IExternalProvider {
 
 	public function __construct(
 		private IAppManager $appManager,
@@ -47,6 +48,10 @@ class ZammadSearchProvider implements IProvider {
 		private IDateTimeFormatter $dateTimeFormatter,
 		private ZammadAPIService $service,
 	) {
+	}
+
+	public function isExternalProvider(): bool {
+		return true;
 	}
 
 	/**
