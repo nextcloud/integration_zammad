@@ -24,7 +24,7 @@ class Admin implements ISettings {
 		$clientID = $this->appConfig->getValueString(Application::APP_ID, 'client_id', lazy: true);
 		$clientSecret = $this->appConfig->getValueString(Application::APP_ID, 'client_secret', lazy: true);
 
-		$oauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url', lazy: true);
+		$oauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url');
 		$adminLinkPreviewEnabled = $this->appConfig->getValueString(Application::APP_ID, 'link_preview_enabled', '1', lazy: true) === '1';
 
 		$adminConfig = [

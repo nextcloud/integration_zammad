@@ -19,12 +19,12 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\ServerException;
 use OCA\Zammad\AppInfo\Application;
 use OCP\AppFramework\Http;
+use OCP\Config\IUserConfig;
 use OCP\Http\Client\IClient;
 use OCP\Http\Client\IClientService;
 use OCP\IAppConfig;
 use OCP\ICache;
 use OCP\ICacheFactory;
-use OCP\IConfig;
 use OCP\IL10N;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -45,7 +45,7 @@ class ZammadAPIService {
 		private IUserManager $userManager,
 		private LoggerInterface $logger,
 		private IL10N $l10n,
-		private IConfig $config,
+		private IUserConfig $userConfig,
 		private IAppConfig $appConfig,
 		private INotificationManager $notificationManager,
 		private ICrypto $crypto,
@@ -57,8 +57,8 @@ class ZammadAPIService {
 	}
 
 	public function getZammadUrl(string $userId): string {
-		$adminZammadOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url', lazy: true);
-		return $this->config->getUserValue($userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
+		$adminZammadOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url');
+		return $this->userConfig->getValueString($userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
 	}
 
 	/**
@@ -79,12 +79,12 @@ class ZammadAPIService {
 	 * @throws PreConditionNotMetException
 	 */
 	private function checkOpenTicketsForUser(string $userId): void {
-		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token');
-		$notificationEnabled = ($this->config->getUserValue($userId, Application::APP_ID, 'notification_enabled', '0') === '1');
+		$accessToken = $this->userConfig->getValueString($userId, Application::APP_ID, 'token', lazy: true);
+		$notificationEnabled = ($this->userConfig->getValueString($userId, Application::APP_ID, 'notification_enabled', '0', lazy: true) === '1');
 		if ($accessToken && $notificationEnabled) {
 			$zammadUrl = $this->getZammadUrl($userId);
 			if ($zammadUrl) {
-				$lastNotificationCheck = $this->config->getUserValue($userId, Application::APP_ID, 'last_open_check');
+				$lastNotificationCheck = $this->userConfig->getValueString($userId, Application::APP_ID, 'last_open_check', lazy: true);
 				$lastNotificationCheck = $lastNotificationCheck === '' ? null : $lastNotificationCheck;
 				// get the zammad user ID
 				$me = $this->request($userId, 'users/me');
@@ -94,7 +94,7 @@ class ZammadAPIService {
 					$notifications = $this->getNotifications($userId, $lastNotificationCheck);
 					if (!isset($notifications['error']) && count($notifications) > 0) {
 						$lastNotificationCheck = $notifications[0]['updated_at'];
-						$this->config->setUserValue($userId, Application::APP_ID, 'last_open_check', $lastNotificationCheck);
+						$this->userConfig->setValueString($userId, Application::APP_ID, 'last_open_check', $lastNotificationCheck, lazy: true);
 						$nbOpen = 0;
 						foreach ($notifications as $n) {
 							if (!isset($n['state_id'], $n['owner_id'])) {
@@ -115,7 +115,7 @@ class ZammadAPIService {
 					}
 				} elseif (isset($me['error-code']) && $me['error-code'] === Http::STATUS_UNAUTHORIZED) {
 					// Auth token seems to no longer be valid, wipe it and don't retry
-					$this->config->deleteUserValue($userId, Application::APP_ID, 'token');
+					$this->userConfig->deleteUserConfig($userId, Application::APP_ID, 'token');
 				}
 			}
 		}
@@ -455,9 +455,9 @@ class ZammadAPIService {
 	): array {
 		$zammadUrl = $this->getZammadUrl($userId);
 		$this->checkTokenExpiration($userId);
-		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token');
+		$accessToken = $this->userConfig->getValueString($userId, Application::APP_ID, 'token', lazy: true);
 		$accessToken = $accessToken === '' ? '' : $this->crypto->decrypt($accessToken);
-		$authType = $this->config->getUserValue($userId, Application::APP_ID, 'token_type');
+		$authType = $this->userConfig->getValueString($userId, Application::APP_ID, 'token_type', lazy: true);
 		try {
 			$url = $zammadUrl . '/api/v1/' . $endPoint;
 			$authHeader = ($authType === 'access') ? 'Token token=' : 'Bearer ';
@@ -526,8 +526,8 @@ class ZammadAPIService {
 	}
 
 	private function checkTokenExpiration(string $userId): void {
-		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
-		$expireAt = $this->config->getUserValue($userId, Application::APP_ID, 'token_expires_at');
+		$refreshToken = $this->userConfig->getValueString($userId, Application::APP_ID, 'refresh_token', lazy: true);
+		$expireAt = $this->userConfig->getValueString($userId, Application::APP_ID, 'token_expires_at', lazy: true);
 		if ($refreshToken !== '' && $expireAt !== '') {
 			$nowTs = (new Datetime())->getTimestamp();
 			$expireAt = (int)$expireAt;
@@ -541,9 +541,8 @@ class ZammadAPIService {
 	private function refreshToken(string $userId): bool {
 		$clientID = $this->appConfig->getValueString(Application::APP_ID, 'client_id', lazy: true);
 		$clientSecret = $this->appConfig->getValueString(Application::APP_ID, 'client_secret', lazy: true);
-		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
-		$refreshToken = $refreshToken === '' ? '' : $this->crypto->decrypt($refreshToken);
-		$adminZammadOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url', lazy: true);
+		$refreshToken = $this->userConfig->getValueString($userId, Application::APP_ID, 'refresh_token', lazy: true);
+		$adminZammadOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url');
 		if (!$refreshToken) {
 			$this->logger->error('No Zammad refresh token found', ['app' => Application::APP_ID]);
 			return false;
@@ -556,16 +555,15 @@ class ZammadAPIService {
 		], 'POST');
 		if (isset($result['access_token'])) {
 			$accessToken = $result['access_token'];
-			$encryptedAccessToken = $accessToken === '' ? '' : $this->crypto->encrypt($accessToken);
-			$this->config->setUserValue($userId, Application::APP_ID, 'token', $encryptedAccessToken);
+			$this->userConfig->setValueString($userId, Application::APP_ID, 'token', $accessToken, lazy: true, flags: IUserConfig::FLAG_SENSITIVE);
 			// TODO check if we need to store the refresh token here
 			// 			$refreshToken = $result['refresh_token'];
 			//			$encryptedRefreshToken = $refreshToken === '' ? '' : $this->crypto->encrypt($refreshToken);
-			//			$this->config->setUserValue($userId, Application::APP_ID, 'refresh_token', $encryptedRefreshToken);
+			//			$this->($userId, Application::APP_ID, 'refresh_token', $encryptedRefreshToken);
 			if (isset($result['expires_in'])) {
 				$nowTs = (new Datetime())->getTimestamp();
 				$expiresAt = $nowTs + (int)$result['expires_in'];
-				$this->config->setUserValue($userId, Application::APP_ID, 'token_expires_at', (string)$expiresAt);
+				$this->userConfig->setValueString($userId, Application::APP_ID, 'token_expires_at', (string)$expiresAt, lazy: true);
 			}
 			return true;
 		} else {
