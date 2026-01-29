@@ -22,7 +22,6 @@ use OCP\AppFramework\Http\DataDisplayResponse;
 use OCP\AppFramework\Http\DataResponse;
 
 use OCP\Config\IUserConfig;
-use OCP\IConfig;
 use OCP\IRequest;
 use OCP\PreConditionNotMetException;
 

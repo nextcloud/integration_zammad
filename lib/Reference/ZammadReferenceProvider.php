@@ -33,7 +33,6 @@ use OCP\Collaboration\Reference\ISearchableReferenceProvider;
 use OCP\Collaboration\Reference\Reference;
 use OCP\Config\IUserConfig;
 use OCP\IAppConfig;
-use OCP\IConfig;
 use OCP\IL10N;
 use OCP\IURLGenerator;
 use OCP\PreConditionNotMetException;

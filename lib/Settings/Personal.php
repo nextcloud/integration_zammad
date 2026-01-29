@@ -7,7 +7,6 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\Config\IUserConfig;
 use OCP\IAppConfig;
-use OCP\IConfig;
 
 use OCP\Security\ICrypto;
 use OCP\Settings\ISettings;

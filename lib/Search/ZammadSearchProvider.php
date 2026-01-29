@@ -30,7 +30,6 @@ use OCA\Zammad\Service\ZammadAPIService;
 use OCP\App\IAppManager;
 use OCP\Config\IUserConfig;
 use OCP\IAppConfig;
-use OCP\IConfig;
 use OCP\IDateTimeFormatter;
 use OCP\IL10N;
 use OCP\IURLGenerator;

@@ -31,7 +31,7 @@ class Version040000Date20260129225956 extends SimpleMigrationStep {
 	 * @param array $options
 	 */
 	public function postSchemaChange(IOutput $output, Closure $schemaClosure, array $options) {
-		foreach($this->userConfig->getUserIds(Application::APP_ID) as $userId) {
+		foreach ($this->userConfig->getUserIds(Application::APP_ID) as $userId) {
 			// store user config as lazy and sensitive
 			foreach (['token', 'refresh_token'] as $key) {
 				if ($this->userConfig->hasKey($userId, Application::APP_ID, $key)) {

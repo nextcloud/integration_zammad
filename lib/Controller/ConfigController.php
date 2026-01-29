@@ -25,7 +25,6 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\Config\IUserConfig;
 use OCP\IAppConfig;
-use OCP\IConfig;
 use OCP\IL10N;
 use OCP\IRequest;
 

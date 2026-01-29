@@ -25,7 +25,6 @@ use OCP\Http\Client\IClientService;
 use OCP\IAppConfig;
 use OCP\ICache;
 use OCP\ICacheFactory;
-use OCP\IConfig;
 use OCP\IL10N;
 use OCP\IUser;
 use OCP\IUserManager;
