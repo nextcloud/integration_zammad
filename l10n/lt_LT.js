@@ -18,7 +18,6 @@ OC.L10N.register(
     "Successfully connected to Zammad!" : "Sėkmingai prisijungta prie „Zammad“!",
     "Zammad options saved" : "„Zammad“ parinktys įrašytos",
     "Failed to save Zammad options" : "Nepavyko įrašyti „Zammad“ parinkčių",
-    "https://my.zammad.org" : "https://my.zammad.org",
     "Connect to Zammad" : "Prisijungti prie „Zammad“",
     "Connected as {user}" : "Prisijungta kaip {user}",
     "Disconnect from Zammad" : "Atsijungti nuo „Zammad“",

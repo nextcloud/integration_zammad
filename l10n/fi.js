@@ -24,12 +24,12 @@ OC.L10N.register(
     "No Zammad account connected" : "Zammad-tiliä ei ole yhdistetty",
     "Error connecting to Zammad" : "Virhe yhdistäessä Zammadiin",
     "No Zammad notifications!" : "Ei Zammad-ilmoituksia!",
-    "Account manager" : "Asiakkuuspäällikkö",
     "created {relativeDate}" : "luotu {relativeDate}",
     "closed {relativeDate}" : "suljettu {relativeDate}",
     "updated {relativeDate}" : "päivitetty {relativeDate}",
     "Unknown error" : "Tuntematon virhe",
     "by {creator}" : "tehnyt {creator}",
+    "Account manager" : "Asiakkuuspäällikkö",
     "Comments" : "Kommentit",
     "Click to expand comment" : "Napsauta laajentaaksesi kommentin"
 },

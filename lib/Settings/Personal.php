@@ -5,6 +5,7 @@ namespace OCA\Zammad\Settings;
 use OCA\Zammad\AppInfo\Application;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
+use OCP\IAppConfig;
 use OCP\IConfig;
 
 use OCP\Security\ICrypto;
@@ -14,6 +15,7 @@ class Personal implements ISettings {
 
 	public function __construct(
 		private IConfig $config,
+		private IAppConfig $appConfig,
 		private IInitialState $initialStateService,
 		private ICrypto $crypto,
 		private ?string $userId,
@@ -25,11 +27,9 @@ class Personal implements ISettings {
 	 */
 	public function getForm(): TemplateResponse {
 		// for OAuth
-		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
-		$clientID = $clientID === '' ? '' : $this->crypto->decrypt($clientID);
-		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
-		$clientSecret = $clientSecret === '' ? '' : $this->crypto->decrypt($clientSecret);
-		$adminOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		$clientID = $this->appConfig->getValueString(Application::APP_ID, 'client_id', lazy: true);
+		$clientSecret = $this->appConfig->getValueString(Application::APP_ID, 'client_secret', lazy: true);
+		$adminOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url', lazy: true);
 
 		$token = $this->config->getUserValue($this->userId, Application::APP_ID, 'token');
 		$token = $token === '' ? '' : $this->crypto->decrypt($token);

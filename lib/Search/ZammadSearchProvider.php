@@ -28,6 +28,7 @@ use DateTime;
 use OCA\Zammad\AppInfo\Application;
 use OCA\Zammad\Service\ZammadAPIService;
 use OCP\App\IAppManager;
+use OCP\IAppConfig;
 use OCP\IConfig;
 use OCP\IDateTimeFormatter;
 use OCP\IL10N;
@@ -44,6 +45,7 @@ class ZammadSearchProvider implements IProvider, IExternalProvider {
 		private IAppManager $appManager,
 		private IL10N $l10n,
 		private IConfig $config,
+		private IAppConfig $appConfig,
 		private IURLGenerator $urlGenerator,
 		private IDateTimeFormatter $dateTimeFormatter,
 		private ZammadAPIService $service,
@@ -98,7 +100,7 @@ class ZammadSearchProvider implements IProvider, IExternalProvider {
 			? $this->urlGenerator->imagePath(Application::APP_ID, 'app.svg')
 			: $this->urlGenerator->imagePath(Application::APP_ID, 'app-dark.svg');
 
-		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		$adminZammadOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url', lazy: true);
 		$zammadUrl = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
 		$hasAccessToken = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'token') !== '';
 

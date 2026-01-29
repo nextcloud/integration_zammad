@@ -31,6 +31,7 @@ use OCP\Collaboration\Reference\IReference;
 use OCP\Collaboration\Reference\IReferenceManager;
 use OCP\Collaboration\Reference\ISearchableReferenceProvider;
 use OCP\Collaboration\Reference\Reference;
+use OCP\IAppConfig;
 use OCP\IConfig;
 use OCP\IL10N;
 use OCP\IURLGenerator;
@@ -41,6 +42,7 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 	public function __construct(
 		private ZammadAPIService $zammadAPIService,
 		private IConfig $config,
+		private IAppConfig $appConfig,
 		private IReferenceManager $referenceManager,
 		private IURLGenerator $urlGenerator,
 		private IL10N $l10n,
@@ -108,12 +110,12 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 				return false;
 			}
 		}
-		$adminLinkPreviewEnabled = $this->config->getAppValue(Application::APP_ID, 'link_preview_enabled', '1') === '1';
+		$adminLinkPreviewEnabled = $this->appConfig->getValueString(Application::APP_ID, 'link_preview_enabled', '1', lazy: true) === '1';
 		if (!$adminLinkPreviewEnabled) {
 			return false;
 		}
 
-		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		$adminZammadOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url', lazy: true);
 		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
 
 		return $this->isMatching($referenceText, $zammadUrl);
@@ -123,7 +125,7 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 	 * @inheritDoc
 	 */
 	public function resolveReference(string $referenceText): ?IReference {
-		$adminZammadOauthUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		$adminZammadOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url', lazy: true);
 		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
 		if ($zammadUrl !== '') {
 			$parts = $this->getLinkParts($zammadUrl, $referenceText);

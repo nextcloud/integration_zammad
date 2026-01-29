@@ -12,8 +12,8 @@ OC.L10N.register(
     "Access token" : "접근 토큰",
     "Connected as {user}" : "[user]로 연결됨",
     "No Zammad account connected" : "연결된 Zammad 계정이 없음",
-    "Account manager" : "계정 관리자",
     "Unknown error" : "알 수 없는 오류",
+    "Account manager" : "계정 관리자",
     "Comments" : "댓글",
     "Click to expand comment" : "댓글을 더 보려면 클릭하세요."
 },

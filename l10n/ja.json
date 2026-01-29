@@ -15,8 +15,8 @@
     "Enable navigation link" : "ナビゲーションリンクを有効化",
     "No Zammad account connected" : "接続済みZammadアカウントがありません",
     "No Zammad notifications!" : "Zammad通知がありません！",
-    "Account manager" : "アカウント管理者",
     "Unknown error" : "不明なエラー",
+    "Account manager" : "アカウント管理者",
     "Comments" : "コメント",
     "Click to expand comment" : "コメントを展開するにはクリックしてください"
 },"pluralForm" :"nplurals=1; plural=0;"

@@ -9,9 +9,9 @@
  * @copyright Julien Veyssier 2020
  */
 
-import Vue from 'vue'
+import { createApp } from 'vue'
 import AdminSettings from './components/AdminSettings.vue'
-Vue.mixin({ methods: { t, n } })
 
-const View = Vue.extend(AdminSettings)
-new View().$mount('#zammad_prefs')
+const app = createApp(AdminSettings)
+app.mixin({ methods: { t, n } })
+app.mount('#zammad_prefs')
