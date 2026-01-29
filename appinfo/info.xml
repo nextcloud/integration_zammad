@@ -5,7 +5,7 @@
 	<summary>Integration of Zammad user support/ticketing solution</summary>
 	<description><![CDATA[Zammad integration provides a dashboard widget displaying your important notifications,
 	a search provider for tickets and notifications for new open tickets.]]></description>
-	<version>3.2.0</version>
+	<version>4.0.0-dev.0</version>
 	<licence>agpl</licence>
 	<author>Julien Veyssier</author>
 	<namespace>Zammad</namespace>
@@ -18,7 +18,7 @@
 	<bugs>https://github.com/nextcloud/integration_zammad/issues</bugs>
 	<screenshot>https://github.com/nextcloud/integration_zammad/raw/main/img/screenshot1.jpg</screenshot>
 	<dependencies>
-		<nextcloud min-version="30" max-version="33"/>
+		<nextcloud min-version="32" max-version="33"/>
 	</dependencies>
 	<background-jobs>
 		<job>OCA\Zammad\BackgroundJob\CheckOpenTickets</job>
