@@ -31,6 +31,7 @@ use OCP\Collaboration\Reference\IReference;
 use OCP\Collaboration\Reference\IReferenceManager;
 use OCP\Collaboration\Reference\ISearchableReferenceProvider;
 use OCP\Collaboration\Reference\Reference;
+use OCP\Config\IUserConfig;
 use OCP\IAppConfig;
 use OCP\IConfig;
 use OCP\IL10N;
@@ -41,7 +42,7 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 
 	public function __construct(
 		private ZammadAPIService $zammadAPIService,
-		private IConfig $config,
+		private IUserConfig $userConfig,
 		private IAppConfig $appConfig,
 		private IReferenceManager $referenceManager,
 		private IURLGenerator $urlGenerator,
@@ -86,7 +87,7 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 	public function getSupportedSearchProviderIds(): array {
 		if ($this->userId !== null) {
 			$ids = [];
-			$searchEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'search_enabled', '0') === '1';
+			$searchEnabled = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'search_enabled', '0', lazy: true) === '1';
 			if ($searchEnabled) {
 				$ids[] = 'zammad-search';
 			}
@@ -105,7 +106,7 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 	 */
 	public function matchReference(string $referenceText): bool {
 		if ($this->userId !== null) {
-			$linkPreviewEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'link_preview_enabled', '1') === '1';
+			$linkPreviewEnabled = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'link_preview_enabled', '1', lazy: true) === '1';
 			if (!$linkPreviewEnabled) {
 				return false;
 			}
@@ -115,8 +116,8 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 			return false;
 		}
 
-		$adminZammadOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url', lazy: true);
-		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
+		$adminZammadOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url');
+		$zammadUrl = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
 
 		return $this->isMatching($referenceText, $zammadUrl);
 	}
@@ -125,8 +126,8 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 	 * @inheritDoc
 	 */
 	public function resolveReference(string $referenceText): ?IReference {
-		$adminZammadOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url', lazy: true);
-		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
+		$adminZammadOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url');
+		$zammadUrl = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
 		if ($zammadUrl !== '') {
 			$parts = $this->getLinkParts($zammadUrl, $referenceText);
 			if ($parts !== null) {
