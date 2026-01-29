@@ -116,7 +116,7 @@ class ZammadAPIService {
 					}
 				} elseif (isset($me['error-code']) && $me['error-code'] === Http::STATUS_UNAUTHORIZED) {
 					// Auth token seems to no longer be valid, wipe it and don't retry
-					$this->config->deleteUserValue($userId, Application::APP_ID, 'token');
+					$this->userConfig->deleteUserConfig($userId, Application::APP_ID, 'token');
 				}
 			}
 		}
