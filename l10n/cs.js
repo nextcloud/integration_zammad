@@ -56,6 +56,7 @@ OC.L10N.register(
     "Ticket#{number}" : "Požadavek č. {number}",
     "by {creator}" : "od {creator}",
     "Account manager" : "Správa účtů",
+    "Subscription ends: {date}" : "Předplatné končí: {date}",
     "Comments" : "Komentáře",
     "internal" : "interní",
     "Click to expand comment" : "Komentář rozbalíte kliknutím"
