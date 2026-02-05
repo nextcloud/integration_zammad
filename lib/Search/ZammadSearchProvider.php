@@ -28,8 +28,8 @@ use DateTime;
 use OCA\Zammad\AppInfo\Application;
 use OCA\Zammad\Service\ZammadAPIService;
 use OCP\App\IAppManager;
+use OCP\Config\IUserConfig;
 use OCP\IAppConfig;
-use OCP\IConfig;
 use OCP\IDateTimeFormatter;
 use OCP\IL10N;
 use OCP\IURLGenerator;
@@ -44,7 +44,7 @@ class ZammadSearchProvider implements IProvider, IExternalProvider {
 	public function __construct(
 		private IAppManager $appManager,
 		private IL10N $l10n,
-		private IConfig $config,
+		private IUserConfig $userConfig,
 		private IAppConfig $appConfig,
 		private IURLGenerator $urlGenerator,
 		private IDateTimeFormatter $dateTimeFormatter,
@@ -95,16 +95,16 @@ class ZammadSearchProvider implements IProvider, IExternalProvider {
 		$offset = $query->getCursor();
 		$offset = $offset ? intval($offset) : 0;
 
-		$theme = $this->config->getUserValue($user->getUID(), 'accessibility', 'theme');
+		$theme = $this->userConfig->getValueString($user->getUID(), 'accessibility', 'theme');
 		$thumbnailUrl = ($theme === 'dark')
 			? $this->urlGenerator->imagePath(Application::APP_ID, 'app.svg')
 			: $this->urlGenerator->imagePath(Application::APP_ID, 'app-dark.svg');
 
-		$adminZammadOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url', lazy: true);
-		$zammadUrl = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
-		$hasAccessToken = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'token') !== '';
+		$adminZammadOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url');
+		$zammadUrl = $this->userConfig->getValueString($user->getUID(), Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
+		$hasAccessToken = $this->userConfig->getValueString($user->getUID(), Application::APP_ID, 'token', lazy: true) !== '';
 
-		$searchEnabled = $this->config->getUserValue($user->getUID(), Application::APP_ID, 'search_enabled', '0') === '1';
+		$searchEnabled = $this->userConfig->getValueString($user->getUID(), Application::APP_ID, 'search_enabled', '0', lazy: true) === '1';
 		if (!$hasAccessToken || !$searchEnabled) {
 			return SearchResult::paginated($this->getName(), [], 0);
 		}

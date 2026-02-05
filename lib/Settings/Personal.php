@@ -5,8 +5,8 @@ namespace OCA\Zammad\Settings;
 use OCA\Zammad\AppInfo\Application;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
+use OCP\Config\IUserConfig;
 use OCP\IAppConfig;
-use OCP\IConfig;
 
 use OCP\Security\ICrypto;
 use OCP\Settings\ISettings;
@@ -14,7 +14,7 @@ use OCP\Settings\ISettings;
 class Personal implements ISettings {
 
 	public function __construct(
-		private IConfig $config,
+		private IUserConfig $userConfig,
 		private IAppConfig $appConfig,
 		private IInitialState $initialStateService,
 		private ICrypto $crypto,
@@ -29,16 +29,15 @@ class Personal implements ISettings {
 		// for OAuth
 		$clientID = $this->appConfig->getValueString(Application::APP_ID, 'client_id', lazy: true);
 		$clientSecret = $this->appConfig->getValueString(Application::APP_ID, 'client_secret', lazy: true);
-		$adminOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url', lazy: true);
+		$adminOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url');
 
-		$token = $this->config->getUserValue($this->userId, Application::APP_ID, 'token');
-		$token = $token === '' ? '' : $this->crypto->decrypt($token);
-		$userName = $this->config->getUserValue($this->userId, Application::APP_ID, 'user_name');
-		$url = $this->config->getUserValue($this->userId, Application::APP_ID, 'url') ?: $adminOauthUrl;
-		$searchEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'search_enabled', '0') === '1';
-		$notificationEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'notification_enabled', '0') === '1';
-		$navigationEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'navigation_enabled', '0') === '1';
-		$linkPreviewEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'link_preview_enabled', '1') === '1';
+		$token = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'token', lazy: true);
+		$userName = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'user_name', lazy: true);
+		$url = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'url') ?: $adminOauthUrl;
+		$searchEnabled = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'search_enabled', '0', lazy: true) === '1';
+		$notificationEnabled = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'notification_enabled', '0', lazy: true) === '1';
+		$navigationEnabled = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'navigation_enabled', '0') === '1';
+		$linkPreviewEnabled = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'link_preview_enabled', '1', lazy: true) === '1';
 
 		$userConfig = [
 			// don't expose the token to the user

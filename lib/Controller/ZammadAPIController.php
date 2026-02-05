@@ -21,7 +21,7 @@ use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\DataDisplayResponse;
 use OCP\AppFramework\Http\DataResponse;
 
-use OCP\IConfig;
+use OCP\Config\IUserConfig;
 use OCP\IRequest;
 use OCP\PreConditionNotMetException;
 
@@ -30,7 +30,7 @@ class ZammadAPIController extends Controller {
 	public function __construct(
 		string $appName,
 		IRequest $request,
-		private IConfig $config,
+		private IUserConfig $userConfig,
 		private ZammadAPIService $zammadAPIService,
 		private ?string $userId,
 	) {
@@ -44,7 +44,7 @@ class ZammadAPIController extends Controller {
 	 */
 	#[NoAdminRequired]
 	public function getZammadUrl(): DataResponse {
-		$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url');
+		$zammadUrl = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'url');
 		return new DataResponse($zammadUrl);
 	}
 
@@ -80,7 +80,7 @@ class ZammadAPIController extends Controller {
 	 */
 	#[NoAdminRequired]
 	public function getNotifications(?string $since = null): DataResponse {
-		$hasAccessToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'token') !== '';
+		$hasAccessToken = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'token', lazy: true) !== '';
 		$zammadUrl = $this->zammadAPIService->getZammadUrl($this->userId);
 		if (!$hasAccessToken || !preg_match('/^(https?:\/\/)?[^.]+\.[^.].*/', $zammadUrl)) {
 			return new DataResponse('connection_impossible', Http::STATUS_BAD_REQUEST);

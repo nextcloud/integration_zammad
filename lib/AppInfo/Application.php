@@ -22,7 +22,7 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\Collaboration\Reference\RenderReferenceEvent;
-use OCP\IConfig;
+use OCP\Config\IUserConfig;
 use OCP\IL10N;
 use OCP\INavigationManager;
 
@@ -33,13 +33,13 @@ use OCP\Notification\IManager as INotificationManager;
 class Application extends App implements IBootstrap {
 
 	public const APP_ID = 'integration_zammad';
-	private IConfig $config;
+	private IUserConfig $userConfig;
 
 	public function __construct(array $urlParams = []) {
 		parent::__construct(self::APP_ID, $urlParams);
 
 		$container = $this->getContainer();
-		$this->config = $container->get(IConfig::class);
+		$this->userConfig = $container->get(IUserConfig::class);
 
 		$manager = $container->get(INotificationManager::class);
 		$manager->registerNotifierService(Notifier::class);
@@ -63,8 +63,8 @@ class Application extends App implements IBootstrap {
 			$userId = $user->getUID();
 			$container = $this->getContainer();
 
-			if ($this->config->getUserValue($userId, self::APP_ID, 'navigation_enabled', '0') === '1') {
-				$zammadUrl = $this->config->getUserValue($userId, self::APP_ID, 'url', '');
+			if ($this->userConfig->getValueString($userId, self::APP_ID, 'navigation_enabled', '0') === '1') {
+				$zammadUrl = $this->userConfig->getValueString($userId, self::APP_ID, 'url', '');
 				if ($zammadUrl !== '') {
 					$container->get(INavigationManager::class)->add(function () use ($container, $zammadUrl) {
 						$urlGenerator = $container->get(IURLGenerator::class);
