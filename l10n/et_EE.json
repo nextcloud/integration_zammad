@@ -13,7 +13,7 @@
     "Connected accounts" : "Ühendatud kasutajakontod",
     "Zammad integration" : "Lõiming Zammadi serveriga",
     "Integration of Zammad user support/ticketing solution" : "Zammadi kasutajatoe ja probleemihalduse süsteemi lõiming",
-    "Zammad integration provides a dashboard widget displaying your important notifications,\n\ta search provider for tickets and notifications for new open tickets." : "Zammad lõiming võimaldab kasutada juhtpaneeli vidinaid, mis kuvavad olulisi teavitusi, ühendatud otsingut probleemide otsimiseks ja teavitusi sulle lahendamiseks antud probleemide täienduste kohta.",
+    "Zammad integration provides a dashboard widget displaying your important notifications,\n\ta search provider for tickets and notifications for new open tickets." : "Zammadi lõiming võimaldab kasutada juhtpaneeli vidinaid, mis kuvavad olulisi teavitusi, ühendatud otsingut probleemide otsimiseks ja teavitusi sulle lahendamiseks antud probleemide täienduste kohta.",
     "Zammad admin options saved" : "Zammad haldusseadistused on salvestatud",
     "Failed to save Zammad admin options" : "Zammadi haldusseadistuste salvestamine ei õnnestunud",
     "If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below." : "Et selle Nextcloudi serveri kasutajad võiks Zammadi serveris autentimiseks kasutada OAuthi, loo oma Zammadi haldusseadistustes rakendus ja sisesta palun siin tunnus (AppId) ja kliendisaladus.",
