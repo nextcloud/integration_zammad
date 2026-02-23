@@ -324,6 +324,7 @@ class ZammadAPIService {
 			//'limit' => $limit,
 			'per_page' => $perPage,
 			'page' => $page,
+			'full' => 'true',// required for Zammad 6.5+ compatibility
 		];
 		$searchResult = $this->request($userId, 'tickets/search', $params);
 
