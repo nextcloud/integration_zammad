@@ -56,6 +56,7 @@ OC.L10N.register(
     "Ticket#{number}" : "Jegy#{number}",
     "by {creator}" : "létrehozta: {creator}l",
     "Account manager" : "Fiókkezelő",
+    "Subscription ends: {date}" : "Az előfizetés vége: {date}",
     "Comments" : "Hozzászólások",
     "internal" : "belső",
     "Click to expand comment" : "Kattintson a megjegyzés kibontásához"
