@@ -6,6 +6,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-04-08
+
+### Breaking changes
+* chore: Drop support for nc < 32
+
+### New 
+
+* Add support for nc 34
+
+### Fixed
+
+* fix: make admin config values lazy, make client id and secret sensitive
+* fix(l10n): Update translations from Transifex 
+* fix(ZammadAPIService): Add support for Zammad 6.5+
+* fix(ZammadSearchProvider): Mark as external search provider
+* fix: correctly get the zammad URL when checking if we can get the notifications
+* fix: bring back org tooltips in reference widget using NcPopover
+* fix: get rid of the 'show interactive view' button in the reference widget
+* chore: Mark IUserConfig entries as lazy
+* chore: modernize settings
+* chore: migrate to vue3 and nextcloud/vue 9
+* Update dependencies
+
 ## [3.1.0] - 2025-11-12
 
 ### New
