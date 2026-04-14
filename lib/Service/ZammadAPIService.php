@@ -457,7 +457,6 @@ class ZammadAPIService {
 		$zammadUrl = $this->getZammadUrl($userId);
 		$this->checkTokenExpiration($userId);
 		$accessToken = $this->userConfig->getValueString($userId, Application::APP_ID, 'token', lazy: true);
-		$accessToken = $accessToken === '' ? '' : $this->crypto->decrypt($accessToken);
 		$authType = $this->userConfig->getValueString($userId, Application::APP_ID, 'token_type', lazy: true);
 		try {
 			$url = $zammadUrl . '/api/v1/' . $endPoint;

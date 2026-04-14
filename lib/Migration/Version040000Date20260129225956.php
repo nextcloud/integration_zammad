@@ -34,15 +34,26 @@ class Version040000Date20260129225956 extends SimpleMigrationStep {
 		foreach ($this->userConfig->getUserIds(Application::APP_ID) as $userId) {
 			// store user config as lazy and sensitive
 			foreach (['token', 'refresh_token'] as $key) {
-				if ($this->userConfig->hasKey($userId, Application::APP_ID, $key)) {
-					$value = $this->userConfig->getValueString($userId, Application::APP_ID, $key);
-					$decryptedValue = $this->crypto->decrypt($value);
-					$this->userConfig->setValueString($userId, Application::APP_ID, $key, $decryptedValue, lazy: true, flags: IUserConfig::FLAG_SENSITIVE);
+				if (!$this->userConfig->hasKey($userId, Application::APP_ID, $key)) {
+					continue;
 				}
+				if ($this->userConfig->isSensitive($userId, Application::APP_ID, $key)) {
+					continue;
+				}
+				$value = $this->userConfig->getValueString($userId, Application::APP_ID, $key);
+				if ($value !== '') {
+					$decryptedValue = $this->crypto->decrypt($value);
+				} else {
+					$decryptedValue = '';
+				}
+				$this->userConfig->setValueString($userId, Application::APP_ID, $key, $decryptedValue, lazy: true, flags: IUserConfig::FLAG_SENSITIVE);
 			}
 			// store user config as lazy (except 'navigation_enabled' and 'url')
 			foreach (['token_type', 'token_expires_at', 'oauth_state', 'redirect_uri', 'search_enabled', 'link_preview_enabled', 'notification_enabled', 'user_id', 'user_name', 'last_open_check'] as $key) {
 				if ($this->userConfig->hasKey($userId, Application::APP_ID, $key)) {
+					if ($this->userConfig->isLazy($userId, Application::APP_ID, $key)) {
+						continue;
+					}
 					$value = $this->userConfig->getValueString($userId, Application::APP_ID, $key);
 					$this->userConfig->setValueString($userId, Application::APP_ID, $key, $value, lazy: true);
 				}
