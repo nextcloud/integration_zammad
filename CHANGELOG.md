@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [4.0.1] - 2026-04-14
+
+### Fixed
+
+* fix(ZammadAPIService): Don't manually decrypt sensitive config value
+* fix(Migration): Make sure migration runs through
+* fix(l10n): Update translations from Transifex
+
 ## [4.0.0] - 2026-04-08
 
 ### Breaking changes
