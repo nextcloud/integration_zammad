@@ -44,7 +44,7 @@ class ZammadAPIController extends Controller {
 	 */
 	#[NoAdminRequired]
 	public function getZammadUrl(): DataResponse {
-		$zammadUrl = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'url');
+		$zammadUrl = $this->zammadAPIService->getZammadUrl($this->userId);
 		return new DataResponse($zammadUrl);
 	}
 
