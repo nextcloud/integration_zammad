@@ -27,6 +27,7 @@ OC.L10N.register(
     "Failed to get Zammad notifications" : "Nepavyko gauti „Zammad“ pranešimų",
     "Unknown error" : "Nežinoma klaida",
     "by {creator}" : "autorius {creator}",
+    "Account manager" : "Klientų vadybininkas",
     "Comments" : "Komentarai",
     "Click to expand comment" : "Spustelėkite norėdami išskleisti komentarą"
 },
