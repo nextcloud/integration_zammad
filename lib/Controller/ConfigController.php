@@ -62,7 +62,7 @@ class ConfigController extends Controller {
 			if (in_array($key, ['token', 'token_type', 'url', 'oauth_state', 'redirect_uri'], true)) {
 				return new DataResponse([], Http::STATUS_BAD_REQUEST);
 			}
-			$lazy = $key !== 'url';
+			$lazy = $key !== 'navigation_enabled';
 			$this->userConfig->setValueString($this->userId, Application::APP_ID, $key, trim($value), lazy: $lazy);
 		}
 
