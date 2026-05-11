@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [4.0.2] - 2026-04-14
+
+### Fixed
+
+* fix(ConfigController): Set navigation_enabled,url config keys as non-lazy
+* Fix: Fix getZammadUrl to use zammadAPIService
+* fix(l10n): Update translations from Transifex
+
 ## [4.0.1] - 2026-04-14
 
 ### Fixed
