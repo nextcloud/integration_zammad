@@ -83,7 +83,8 @@ class ConfigController extends Controller {
 			if ($key === 'token' && $value !== '') {
 				$this->userConfig->setValueString($this->userId, Application::APP_ID, $key, $value, lazy: true, flags: IUserConfig::FLAG_SENSITIVE);
 			} else {
-				$this->userConfig->setValueString($this->userId, Application::APP_ID, $key, trim($value), lazy: true);
+				$lazy = $key !== 'url';
+				$this->userConfig->setValueString($this->userId, Application::APP_ID, $key, trim($value), lazy: $lazy);
 			}
 		}
 		$result = [];
