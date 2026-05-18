@@ -52,7 +52,7 @@ OC.L10N.register(
     "updated {relativeDate}" : "{relativeDate} güncellendi",
     "Zammad API error" : "Zammad API sorunu",
     "Unknown error" : "Bilinmeyen sorun",
-    "Zammad connected accounts settings" : "Zammad bağlantılı hesapların ayarları",
+    "Zammad connected accounts settings" : "Zammad bağlı hesaplar ayarları",
     "Ticket#{number}" : "Destek kaydı no {number}",
     "by {creator}" : "{creator} tarafından oluşturuldu",
     "Account manager" : "Hesap yönetimi",
