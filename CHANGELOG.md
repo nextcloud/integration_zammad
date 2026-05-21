@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [4.0.3] - 2026-05-21
+
+### Fixed
+
+* fix: introduce UnknownActivityException instead of InvalidArgumentException in Notifier
+
 ## [4.0.2] - 2026-04-14
 
 ### Fixed
