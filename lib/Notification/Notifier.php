@@ -13,13 +13,13 @@
 namespace OCA\Zammad\Notification;
 
 use OCA\Zammad\AppInfo\Application;
-use OCP\Activity\Exceptions\UnknownActivityException;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
 use OCP\Notification\IManager as INotificationManager;
 use OCP\Notification\INotification;
 use OCP\Notification\INotifier;
+use OCP\Notification\UnknownNotificationException;
 
 class Notifier implements INotifier {
 
@@ -54,13 +54,13 @@ class Notifier implements INotifier {
 	 * @param INotification $notification
 	 * @param string $languageCode The code of the language that should be used to prepare the notification
 	 * @return INotification
-	 * @throws UnknownActivityException When the notification was not prepared by a notifier
+	 * @throws UnknownNotificationException When the notification was not prepared by a notifier
 	 * @since 9.0.0
 	 */
 	public function prepare(INotification $notification, string $languageCode): INotification {
 		if ($notification->getApp() !== 'integration_zammad') {
 			// Not my app => throw
-			throw new UnknownActivityException();
+			throw new UnknownNotificationException();
 		}
 
 		$l = $this->factory->get('integration_zammad', $languageCode);
@@ -88,7 +88,7 @@ class Notifier implements INotifier {
 
 			default:
 				// Unknown subject => Unknown notification => throw
-				throw new UnknownActivityException();
+				throw new UnknownNotificationException();
 		}
 	}
 }
