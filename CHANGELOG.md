@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [4.0.4] - 2026-05-26
+
+### Fixed
+
+* fix: Fix notifications integration
+
 ## [4.0.3] - 2026-05-21
 
 ### Fixed
