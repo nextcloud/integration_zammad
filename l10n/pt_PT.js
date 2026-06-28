@@ -1,11 +1,20 @@
 OC.L10N.register(
     "integration_zammad",
     {
+    "Error getting OAuth access token." : "Erro ao obter o token de acesso OAuth.",
     "Error during OAuth exchanges" : "Erro durante trocas com o OAuth",
+    "updated %1$s" : "atualizado %1$s",
     "Bad HTTP method" : "Método HTTP incorreto",
     "Bad credentials" : "Credenciais inválidas",
+    "OAuth access token refused" : "Token de acesso OAuth recusado",
+    "Connected accounts" : "Contas conectadas",
+    "Zammad integration provides a dashboard widget displaying your important notifications,\n\ta search provider for tickets and notifications for new open tickets." : "A integração Zammad fornece um widget de painel exibindo suas notificações importantes,\n\tum provedor de pesquisa de tickets e notificações de novos tickets abertos.",
+    "Zammad options saved" : "Opções do Zammad salvas",
+    "No Zammad account connected" : "Nenhuma conta do Zammad conectada",
+    "updated {relativeDate}" : "atualizado {relativeDate}",
     "Unknown error" : "Erro desconhecido",
     "by {creator}" : "por {creator}",
+    "Account manager" : "Gerente de contas",
     "Comments" : "Comentários"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
