@@ -18,7 +18,7 @@ OC.L10N.register(
     "Zammad integration provides a dashboard widget displaying your important notifications,\n\ta search provider for tickets and notifications for new open tickets." : "Інтеграція Zammad надає віджет на панелі інструментів, що відображає важливі повідомлення,\nпошукову систему для квитків та повідомлення про нові відкриті квитки.",
     "Zammad admin options saved" : "Параметри адміністратора Zammad збережено",
     "Failed to save Zammad admin options" : "Не вдалося зберегти параметри адміністратора Zammad",
-    "If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below." : "Якщо ви хочете дозволити користувачам Nextcloud використовувати OAuth для автентифікації в екземплярі Zammad, створіть додаток у налаштуваннях адміністратора Zammad і введіть ідентифікатор додатка (AppId) та секретний код нижче.",
+    "If you want to allow your Nextcloud users to use OAuth to authenticate to a Zammad instance, create an application in your Zammad admin settings and put the application ID (AppId) and secret below." : "Якщо ви хочете дозволити користувачам Nextcloud використовувати OAuth для автентифікації в екземплярі Zammad, спочатку створіть застосунок у налаштуваннях адміністратора Zammad, потім нижче зазначте ідентифікатор застосунку (AppId) та секретний код.",
     "Make sure you set the \"Callback URL\" to" : "Переконайтеся, що ви встановили \"URL-адресу зворотного дзвінка\" на",
     "Zammad instance address" : "Адреса екземпляра Zammad",
     "Zammad address" : "Адреса Заммада",
