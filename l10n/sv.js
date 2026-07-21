@@ -56,6 +56,7 @@ OC.L10N.register(
     "Ticket#{number}" : "Ärende nr {number}",
     "by {creator}" : "av {creator}",
     "Account manager" : "Kontoansvarig",
+    "Subscription ends: {date}" : "Prenumerationen upphör: {date}",
     "Comments" : "Kommentarer",
     "internal" : "intern",
     "Click to expand comment" : "Klicka för att visa hela kommentaren"
