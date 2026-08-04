@@ -20,7 +20,6 @@ use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\DataDisplayResponse;
 use OCP\AppFramework\Http\DataResponse;
-
 use OCP\Config\IUserConfig;
 use OCP\IRequest;
 use OCP\PreConditionNotMetException;

@@ -30,7 +30,6 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\Notification\IManager as INotificationManager;
 use OCP\PreConditionNotMetException;
-
 use OCP\Security\ICrypto;
 use Psr\Log\LoggerInterface;
 

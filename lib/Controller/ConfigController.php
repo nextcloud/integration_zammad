@@ -27,7 +27,6 @@ use OCP\Config\IUserConfig;
 use OCP\IAppConfig;
 use OCP\IL10N;
 use OCP\IRequest;
-
 use OCP\IURLGenerator;
 use OCP\PreConditionNotMetException;
 use OCP\Security\ICrypto;
@@ -191,8 +190,8 @@ class ConfigController extends Controller {
 				// get user info
 				$this->storeUserInfo();
 				return new RedirectResponse(
-					$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'connected-accounts']) .
-					'?zammadToken=success'
+					$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'connected-accounts'])
+					. '?zammadToken=success'
 				);
 			}
 			$result = $this->l->t('Error getting OAuth access token.') . ' ' . $result['error'];
@@ -200,8 +199,8 @@ class ConfigController extends Controller {
 			$result = $this->l->t('Error during OAuth exchanges');
 		}
 		return new RedirectResponse(
-			$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'connected-accounts']) .
-			'?zammadToken=error&message=' . urlencode($result)
+			$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'connected-accounts'])
+			. '?zammadToken=error&message=' . urlencode($result)
 		);
 	}
 

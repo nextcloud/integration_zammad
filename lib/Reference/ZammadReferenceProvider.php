@@ -93,7 +93,6 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 			return $ids;
 		}
 		return ['zammad-search'];
-
 	}
 
 	private function isMatching(string $referenceText, string $url): bool {
