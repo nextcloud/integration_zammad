@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [4.1.0] - 2026-08-04
+
+### New
+
+- Add support for nc 35
+
+### Fixed
+
+- Update dependencies
+- Update translations from Transifex
+
 ## [4.0.4] - 2026-05-26
 
 ### Fixed

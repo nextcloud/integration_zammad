@@ -26,7 +26,6 @@ namespace OCA\Zammad\BackgroundJob;
 use OCA\Zammad\Service\ZammadAPIService;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\BackgroundJob\TimedJob;
-
 use Psr\Log\LoggerInterface;
 
 class CheckOpenTickets extends TimedJob {

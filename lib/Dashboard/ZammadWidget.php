@@ -28,7 +28,6 @@ use OCA\Zammad\AppInfo\Application;
 use OCP\Dashboard\IWidget;
 use OCP\IL10N;
 use OCP\IURLGenerator;
-
 use OCP\Util;
 
 class ZammadWidget implements IWidget {

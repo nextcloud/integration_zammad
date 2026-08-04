@@ -1,6 +1,6 @@
 {
 	"name": "integration_zammad",
-	"version": "4.0.4",
+	"version": "4.1.0",
 	"description": "Zammad integration",
 	"main": "index.js",
 	"directories": {
