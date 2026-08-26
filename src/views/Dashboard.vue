@@ -1,12 +1,12 @@
 <template>
 	<NcDashboardWidget :items="items"
 		:show-more-url="showMoreUrl"
-		:show-more-text="title"
+		:show-more-label="title"
 		:loading="state === 'loading'">
 		<template #empty-content>
 			<NcEmptyContent
 				v-if="emptyContentMessage"
-				:title="emptyContentMessage">
+				:name="emptyContentMessage">
 				<template #icon>
 					<component :is="emptyContentIcon" />
 				</template>
@@ -69,7 +69,6 @@ export default {
 			loop: null,
 			state: 'loading',
 			settingsUrl: generateUrl('/settings/user/connected-accounts'),
-			themingColor: OCA.Theming ? OCA.Theming.color.replace('#', '') : '0082C9',
 			windowVisibility: true,
 		}
 	},
