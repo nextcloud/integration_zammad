@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [4.1.1] - 2026-08-026
+
+### Fixed
+
+- fix: Dashboard widget stayed completely empty (#247)
+- Fix: Use the current `NcDashboardWidget`/`NcEmptyContent` props so the empty state and the "connect account" button show up again
+
 ## [4.1.0] - 2026-08-04
 
 ### New
