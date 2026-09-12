@@ -16,6 +16,7 @@ OC.L10N.register(
     "updated {relativeDate}" : "diperbarui {relativeDate}",
     "Unknown error" : "Kesalahan tidak diketahui",
     "by {creator}" : "oleh {creator}",
+    "Account manager" : "Manajer akun",
     "Comments" : "Komentar",
     "Click to expand comment" : "Klik untuk membuka komentar"
 },
