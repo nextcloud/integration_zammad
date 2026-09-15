@@ -13,6 +13,7 @@
 namespace OCA\Zammad\Controller;
 
 use OCA\Zammad\AppInfo\Application;
+use OCA\Zammad\ContextChat\TicketImportService;
 use OCA\Zammad\Service\ZammadAPIService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
@@ -23,6 +24,9 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\Config\IUserConfig;
 use OCP\IRequest;
 use OCP\PreConditionNotMetException;
+use OCP\Server;
+use Psr\Log\LoggerInterface;
+use Throwable;
 
 class ZammadAPIController extends Controller {
 
@@ -31,6 +35,7 @@ class ZammadAPIController extends Controller {
 		IRequest $request,
 		private IUserConfig $userConfig,
 		private ZammadAPIService $zammadAPIService,
+		private LoggerInterface $logger,
 		private ?string $userId,
 	) {
 		parent::__construct($appName, $request);
@@ -85,8 +90,8 @@ class ZammadAPIController extends Controller {
 			return new DataResponse('connection_impossible', Http::STATUS_BAD_REQUEST);
 		}
 		$result = $this->zammadAPIService->getNotifications($this->userId, $since, 7);
-		$this->importTicketsToContextChat($result);
 		if (!isset($result['error'])) {
+			$this->importTicketsToContextChat($result);
 			$response = new DataResponse($result);
 		} else {
 			$response = new DataResponse($result, Http::STATUS_UNAUTHORIZED);
@@ -94,13 +99,42 @@ class ZammadAPIController extends Controller {
 		return $response;
 	}
 
+	/**
+	 * Push the tickets the user was just notified about to ContextChat.
+	 * The background job imports them as well, this only makes them available sooner.
+	 *
+	 * @param array $notifications a successful result of ZammadAPIService::getNotifications()
+	 * @return void
+	 */
 	private function importTicketsToContextChat(array $notifications): void {
-		if (!Application::$contextChatEnabled) {
+		if (!Application::$contextChatEnabled || $this->userId === null) {
 			return;
 		}
-		$contentProvider = \OCP\Server::get('OCA\Zammad\ContextChat\ContentProvider');
+		try {
+			$importService = Server::get(TicketImportService::class);
+		} catch (Throwable $e) {
+			$this->logger->warning('Could not load the Zammad ContextChat import service: ' . $e->getMessage(), [
+				'app' => Application::APP_ID,
+				'exception' => $e,
+			]);
+			return;
+		}
+		if (!$importService->isAvailable()) {
+			return;
+		}
 		foreach ($notifications as $notification) {
-			$contentProvider->importTicket($notification['o_id']);
+			if (!isset($notification['o_id'])) {
+				continue;
+			}
+			try {
+				$importService->importTicketById($this->userId, (int)$notification['o_id']);
+			} catch (Throwable $e) {
+				// never let the ContextChat import break the dashboard widget
+				$this->logger->warning('Could not import Zammad ticket ' . $notification['o_id'] . ' into ContextChat: ' . $e->getMessage(), [
+					'app' => Application::APP_ID,
+					'exception' => $e,
+				]);
+			}
 		}
 	}
 

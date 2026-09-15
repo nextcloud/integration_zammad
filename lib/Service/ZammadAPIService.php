@@ -34,6 +34,11 @@ use OCP\Security\ICrypto;
 use Psr\Log\LoggerInterface;
 
 class ZammadAPIService {
+	/**
+	 * Hard limit Zammad enforces on the per_page parameter of the ticket list endpoint
+	 */
+	public const TICKET_PAGE_MAX_SIZE = 100;
+
 	private ICache $cache;
 	private IClient $client;
 
@@ -442,13 +447,32 @@ class ZammadAPIService {
 	}
 
 	/**
-	 * @param string|null $userId
+	 * @param string $userId
 	 * @param int $ticketId
 	 * @return array
 	 * @throws Exception
 	 */
-	public function getArticlesByTicket(?string $userId, int $ticketId): array {
+	public function getArticlesByTicket(string $userId, int $ticketId): array {
 		return $this->request($userId, 'ticket_articles/by_ticket/' . $ticketId);
+	}
+
+	/**
+	 * List the tickets the user has access to, one page at a time.
+	 * Zammad scopes this endpoint to the tickets the token owner may read and
+	 * always orders it by ticket ID ascending, which makes paging through it stable.
+	 * Its hard limit is 100 tickets per page.
+	 *
+	 * @param string $userId
+	 * @param int $page page number, starting at 1
+	 * @param int $perPage number of tickets per page, at most 100
+	 * @return array the list of tickets or an array with an 'error' key
+	 * @throws Exception
+	 */
+	public function getTickets(string $userId, int $page, int $perPage): array {
+		return $this->request($userId, 'tickets', [
+			'page' => $page,
+			'per_page' => min($perPage, self::TICKET_PAGE_MAX_SIZE),
+		]);
 	}
 
 	/**

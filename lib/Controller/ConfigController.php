@@ -14,6 +14,7 @@ namespace OCA\Zammad\Controller;
 
 use DateTime;
 use OCA\Zammad\AppInfo\Application;
+use OCA\Zammad\ContextChat\TicketImportService;
 use OCA\Zammad\Reference\ZammadReferenceProvider;
 use OCA\Zammad\Service\ZammadAPIService;
 use OCP\AppFramework\Controller;
@@ -30,6 +31,9 @@ use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\PreConditionNotMetException;
 use OCP\Security\ICrypto;
+use OCP\Server;
+use Psr\Log\LoggerInterface;
+use Throwable;
 
 class ConfigController extends Controller {
 
@@ -43,6 +47,7 @@ class ConfigController extends Controller {
 		private ICrypto $crypto,
 		private ZammadAPIService $zammadAPIService,
 		private ZammadReferenceProvider $zammadReferenceProvider,
+		private LoggerInterface $logger,
 		private ?string $userId,
 	) {
 		parent::__construct($appName, $request);
@@ -91,7 +96,9 @@ class ConfigController extends Controller {
 		if (isset($values['token'])) {
 			if ($values['token'] && $values['token'] !== '') {
 				$result = $this->storeUserInfo();
+				$this->updateContextChatSchedule(true);
 			} else {
+				$this->updateContextChatSchedule(false);
 				$this->userConfig->deleteUserConfig($this->userId, Application::APP_ID, 'user_id');
 				$this->userConfig->deleteUserConfig($this->userId, Application::APP_ID, 'user_name');
 				$this->userConfig->deleteUserConfig($this->userId, Application::APP_ID, 'last_open_check');
@@ -189,6 +196,7 @@ class ConfigController extends Controller {
 				}
 				// get user info
 				$this->storeUserInfo();
+				$this->updateContextChatSchedule(true);
 				return new RedirectResponse(
 					$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'connected-accounts'])
 					. '?zammadToken=success'
@@ -202,6 +210,32 @@ class ConfigController extends Controller {
 			$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'connected-accounts'])
 			. '?zammadToken=error&message=' . urlencode($result)
 		);
+	}
+
+	/**
+	 * Schedule or unschedule the ContextChat ticket import for the current user.
+	 *
+	 * @param bool $connected whether the user just connected or disconnected their Zammad account
+	 * @return void
+	 */
+	private function updateContextChatSchedule(bool $connected): void {
+		if (!Application::$contextChatEnabled || $this->userId === null) {
+			return;
+		}
+		try {
+			// resolved lazily, the service depends on classes shipped by context_chat
+			$importService = Server::get(TicketImportService::class);
+			if ($connected) {
+				$importService->scheduleForUser($this->userId);
+			} else {
+				$importService->unscheduleForUser($this->userId);
+			}
+		} catch (Throwable $e) {
+			$this->logger->warning('Could not update the Zammad ContextChat import schedule: ' . $e->getMessage(), [
+				'app' => Application::APP_ID,
+				'exception' => $e,
+			]);
+		}
 	}
 
 	/**
