@@ -548,11 +548,11 @@ class ZammadAPIService {
 			if ($statusCode === Http::STATUS_UNAUTHORIZED) {
 				return ['error' => $this->l10n->t('Bad credentials'), 'error-code' => $statusCode];
 			} elseif ($statusCode === Http::STATUS_FORBIDDEN) {
-				return ['error' => 'Forbidden'];
+				return ['error' => 'Forbidden', 'error-code' => $statusCode];
 			} elseif ($statusCode === Http::STATUS_NOT_FOUND) {
-				return ['error' => 'Not found'];
+				return ['error' => 'Not found', 'error-code' => $statusCode];
 			}
-			return ['error' => $e->getMessage()];
+			return ['error' => $e->getMessage(), 'error-code' => $statusCode];
 		} catch (ConnectException $e) {
 			return ['error' => $e->getMessage()];
 		}
