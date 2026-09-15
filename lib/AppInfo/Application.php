@@ -24,7 +24,6 @@ use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\Collaboration\Reference\RenderReferenceEvent;
 use OCP\Config\IUserConfig;
 use OCP\ContextChat\Events\ContentProviderRegisterEvent;
-use OCP\ContextChat\IContentProvider;
 use OCP\IL10N;
 use OCP\INavigationManager;
 use OCP\IURLGenerator;
@@ -35,11 +34,6 @@ class Application extends App implements IBootstrap {
 
 	public const APP_ID = 'integration_zammad';
 	private IUserConfig $userConfig;
-
-	/**
-	 * Whether the server provides the ContextChat API, see register()
-	 */
-	public static bool $contextChatEnabled = false;
 
 	public function __construct(array $urlParams = []) {
 		parent::__construct(self::APP_ID, $urlParams);
@@ -57,14 +51,10 @@ class Application extends App implements IBootstrap {
 
 		$context->registerReferenceProvider(ZammadReferenceProvider::class);
 		$context->registerEventListener(RenderReferenceEvent::class, ZammadReferenceListener::class);
-		// the ContextChat API in OCP only exists since Nextcloud 32
-		if (interface_exists(IContentProvider::class)) {
-			self::$contextChatEnabled = true;
-			$context->registerEventListener(ContentProviderRegisterEvent::class, ContentProvider::class);
-			// context_chat dispatches its own subclass of the event and the dispatcher matches
-			// the exact class name, so the app specific event has to be listened for as well
-			$context->registerEventListener('OCA\ContextChat\Event\ContentProviderRegisterEvent', ContentProvider::class);
-		}
+		$context->registerEventListener(ContentProviderRegisterEvent::class, ContentProvider::class);
+		// context_chat dispatches its own subclass of the event and the dispatcher matches
+		// the exact class name, so the app specific event has to be listened for as well
+		$context->registerEventListener('OCA\ContextChat\Event\ContentProviderRegisterEvent', ContentProvider::class);
 	}
 
 	public function boot(IBootContext $context): void {

@@ -24,7 +24,6 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\Config\IUserConfig;
 use OCP\IRequest;
 use OCP\PreConditionNotMetException;
-use OCP\Server;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -35,6 +34,7 @@ class ZammadAPIController extends Controller {
 		IRequest $request,
 		private IUserConfig $userConfig,
 		private ZammadAPIService $zammadAPIService,
+		private TicketImportService $importService,
 		private LoggerInterface $logger,
 		private ?string $userId,
 	) {
@@ -107,19 +107,10 @@ class ZammadAPIController extends Controller {
 	 * @return void
 	 */
 	private function importTicketsToContextChat(array $notifications): void {
-		if (!Application::$contextChatEnabled || $this->userId === null) {
+		if ($this->userId === null) {
 			return;
 		}
-		try {
-			$importService = Server::get(TicketImportService::class);
-		} catch (Throwable $e) {
-			$this->logger->warning('Could not load the Zammad ContextChat import service: ' . $e->getMessage(), [
-				'app' => Application::APP_ID,
-				'exception' => $e,
-			]);
-			return;
-		}
-		if (!$importService->isAvailable()) {
+		if (!$this->importService->isAvailable()) {
 			return;
 		}
 		foreach ($notifications as $notification) {
@@ -127,7 +118,7 @@ class ZammadAPIController extends Controller {
 				continue;
 			}
 			try {
-				$importService->importTicketById($this->userId, (int)$notification['o_id']);
+				$this->importService->importTicketById($this->userId, (int)$notification['o_id']);
 			} catch (Throwable $e) {
 				// never let the ContextChat import break the dashboard widget
 				$this->logger->warning('Could not import Zammad ticket ' . $notification['o_id'] . ' into ContextChat: ' . $e->getMessage(), [

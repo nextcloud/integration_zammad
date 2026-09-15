@@ -31,7 +31,6 @@ use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\PreConditionNotMetException;
 use OCP\Security\ICrypto;
-use OCP\Server;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -47,6 +46,7 @@ class ConfigController extends Controller {
 		private ICrypto $crypto,
 		private ZammadAPIService $zammadAPIService,
 		private ZammadReferenceProvider $zammadReferenceProvider,
+		private TicketImportService $importService,
 		private LoggerInterface $logger,
 		private ?string $userId,
 	) {
@@ -190,7 +190,7 @@ class ConfigController extends Controller {
 				$refreshToken = $result['refresh_token'];
 				$this->userConfig->setValueString($this->userId, Application::APP_ID, 'refresh_token', $refreshToken, lazy: true, flags: IUserConfig::FLAG_SENSITIVE);
 				if (isset($result['expires_in'])) {
-					$nowTs = (new Datetime())->getTimestamp();
+					$nowTs = (new DateTime())->getTimestamp();
 					$expiresAt = $nowTs + (int)$result['expires_in'];
 					$this->userConfig->setValueString($this->userId, Application::APP_ID, 'token_expires_at', (string)$expiresAt, lazy: true);
 				}
@@ -219,16 +219,14 @@ class ConfigController extends Controller {
 	 * @return void
 	 */
 	private function updateContextChatSchedule(bool $connected): void {
-		if (!Application::$contextChatEnabled || $this->userId === null) {
+		if ($this->userId === null) {
 			return;
 		}
 		try {
-			// resolved lazily, the service depends on classes shipped by context_chat
-			$importService = Server::get(TicketImportService::class);
 			if ($connected) {
-				$importService->scheduleForUser($this->userId);
+				$this->importService->scheduleForUser($this->userId);
 			} else {
-				$importService->unscheduleForUser($this->userId);
+				$this->importService->unscheduleForUser($this->userId);
 			}
 		} catch (Throwable $e) {
 			$this->logger->warning('Could not update the Zammad ContextChat import schedule: ' . $e->getMessage(), [

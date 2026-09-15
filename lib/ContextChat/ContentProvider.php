@@ -10,11 +10,12 @@ declare(strict_types=1);
 namespace OCA\Zammad\ContextChat;
 
 use OCA\Zammad\AppInfo\Application;
+use OCP\Config\IUserConfig;
 use OCP\ContextChat\Events\ContentProviderRegisterEvent;
 use OCP\ContextChat\IContentProvider;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
-use OCP\IConfig;
+use OCP\IAppConfig;
 
 /**
  * @template-implements IEventListener<Event>
@@ -27,7 +28,8 @@ class ContentProvider implements IContentProvider, IEventListener {
 	public const ID = 'tickets';
 
 	public function __construct(
-		private IConfig $config,
+		private IAppConfig $appConfig,
+		private IUserConfig $userConfig,
 		private TicketImportService $importService,
 		private ?string $userId,
 	) {
@@ -70,9 +72,9 @@ class ContentProvider implements IContentProvider, IEventListener {
 	public function getItemUrl(string $id): string {
 		// this is called outside of a user session as well,
 		// the admin configured instance is the only thing available then
-		$zammadUrl = $this->config->getAppValue(Application::APP_ID, 'oauth_instance_url');
+		$zammadUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url');
 		if ($this->userId !== null) {
-			$zammadUrl = $this->config->getUserValue($this->userId, Application::APP_ID, 'url') ?: $zammadUrl;
+			$zammadUrl = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'url') ?: $zammadUrl;
 		}
 		return $zammadUrl . '/#ticket/zoom/' . $id;
 	}
