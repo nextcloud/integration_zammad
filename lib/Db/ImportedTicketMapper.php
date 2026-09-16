@@ -21,6 +21,10 @@ use OCP\IDBConnection;
  * accessible to that user. Comparing a completed sweep against these rows is what
  * surfaces those tickets. The rows double as a reference count that tells us when
  * the last user has lost access to a ticket and its content can be dropped.
+ *
+ * Every user can point at their own Zammad server and a ticket ID only means
+ * something within one of them, so a row is keyed by the instance it came from,
+ * see {@see \OCA\Zammad\ContextChat\TicketImportService::getInstanceId()}.
  */
 class ImportedTicketMapper {
 
@@ -38,6 +42,7 @@ class ImportedTicketMapper {
 	 * Remember that the given tickets were accessible to the user during the sweep
 	 * identified by $generation.
 	 *
+	 * @param string $instance
 	 * @param string $userId
 	 * @param int[] $ticketIds
 	 * @param int $generation
@@ -45,16 +50,17 @@ class ImportedTicketMapper {
 	 *               been handed to ContextChat for this user
 	 * @throws Exception
 	 */
-	public function markSeen(string $userId, array $ticketIds, int $generation): array {
+	public function markSeen(string $instance, string $userId, array $ticketIds, int $generation): array {
 		$ticketIds = array_values(array_unique(array_map('intval', $ticketIds)));
 		$new = [];
 		foreach (array_chunk($ticketIds, self::ID_CHUNK_SIZE) as $chunk) {
-			$known = $this->filterKnown($userId, $chunk);
+			$known = $this->filterKnown($instance, $userId, $chunk);
 			if ($known !== []) {
 				$qb = $this->db->getQueryBuilder();
 				$qb->update(self::TABLE_NAME)
 					->set('last_seen', $qb->createNamedParameter($generation, IQueryBuilder::PARAM_INT))
-					->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
+					->where($qb->expr()->eq('instance', $qb->createNamedParameter($instance)))
+					->andWhere($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
 					->andWhere($qb->expr()->in('ticket_id', $qb->createNamedParameter($known, IQueryBuilder::PARAM_INT_ARRAY)));
 				$qb->executeStatement();
 			}
@@ -63,6 +69,7 @@ class ImportedTicketMapper {
 				// a concurrent import of the same ticket may have inserted the row in
 				// the meantime, which is exactly what we would have written ourselves
 				$this->db->insertIgnoreConflict(self::TABLE_NAME, [
+					'instance' => $instance,
 					'user_id' => $userId,
 					'ticket_id' => $ticketId,
 					'last_seen' => $generation,
@@ -76,6 +83,7 @@ class ImportedTicketMapper {
 	 * The tickets of a user that the sweep $generation did not come across, in
 	 * ascending ticket ID order.
 	 *
+	 * @param string $instance
 	 * @param string $userId
 	 * @param int $generation
 	 * @param int $afterTicketId only return tickets with a higher ID, to page through the candidates
@@ -83,11 +91,12 @@ class ImportedTicketMapper {
 	 * @return int[]
 	 * @throws Exception
 	 */
-	public function findStale(string $userId, int $generation, int $afterTicketId, int $limit): array {
+	public function findStale(string $instance, string $userId, int $generation, int $afterTicketId, int $limit): array {
 		$qb = $this->db->getQueryBuilder();
 		$qb->select('ticket_id')
 			->from(self::TABLE_NAME)
-			->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
+			->where($qb->expr()->eq('instance', $qb->createNamedParameter($instance)))
+			->andWhere($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
 			->andWhere($qb->expr()->lt('last_seen', $qb->createNamedParameter($generation, IQueryBuilder::PARAM_INT)))
 			->andWhere($qb->expr()->gt('ticket_id', $qb->createNamedParameter($afterTicketId, IQueryBuilder::PARAM_INT)))
 			->orderBy('ticket_id', 'ASC')
@@ -96,15 +105,17 @@ class ImportedTicketMapper {
 	}
 
 	/**
+	 * @param string $instance
 	 * @param int $ticketId
 	 * @return string[] every user this ticket has been imported for
 	 * @throws Exception
 	 */
-	public function findUsersForTicket(int $ticketId): array {
+	public function findUsersForTicket(string $instance, int $ticketId): array {
 		$qb = $this->db->getQueryBuilder();
 		$qb->selectDistinct('user_id')
 			->from(self::TABLE_NAME)
-			->where($qb->expr()->eq('ticket_id', $qb->createNamedParameter($ticketId, IQueryBuilder::PARAM_INT)));
+			->where($qb->expr()->eq('instance', $qb->createNamedParameter($instance)))
+			->andWhere($qb->expr()->eq('ticket_id', $qb->createNamedParameter($ticketId, IQueryBuilder::PARAM_INT)));
 		$result = $qb->executeQuery();
 		$userIds = [];
 		while (($row = $result->fetch()) !== false) {
@@ -117,15 +128,17 @@ class ImportedTicketMapper {
 	/**
 	 * The highest sweep number any of the user's rows carries, 0 if they have none.
 	 *
+	 * @param string $instance
 	 * @param string $userId
 	 * @return int
 	 * @throws Exception
 	 */
-	public function findMaxLastSeen(string $userId): int {
+	public function findMaxLastSeen(string $instance, string $userId): int {
 		$qb = $this->db->getQueryBuilder();
 		$qb->select($qb->func()->max('last_seen'))
 			->from(self::TABLE_NAME)
-			->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)));
+			->where($qb->expr()->eq('instance', $qb->createNamedParameter($instance)))
+			->andWhere($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)));
 		$result = $qb->executeQuery();
 		$max = $result->fetchOne();
 		$result->closeCursor();
@@ -134,30 +147,61 @@ class ImportedTicketMapper {
 
 	/**
 	 * @param string $userId
-	 * @return int[] every ticket that has been imported for this user
+	 * @return string[] every Zammad instance this user has imported tickets from
+	 * @throws Exception
+	 */
+	public function findInstances(string $userId): array {
+		$qb = $this->db->getQueryBuilder();
+		$qb->selectDistinct('instance')
+			->from(self::TABLE_NAME)
+			->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)));
+		$result = $qb->executeQuery();
+		$instances = [];
+		while (($row = $result->fetch()) !== false) {
+			$instances[] = (string)$row['instance'];
+		}
+		$result->closeCursor();
+		return $instances;
+	}
+
+	/**
+	 * Every ticket that has been imported for a user, grouped by the Zammad
+	 * instance it came from. A user that has moved their account to another
+	 * Zammad server still has the rows of the one they came from.
+	 *
+	 * @param string $userId
+	 * @return array<string, int[]> instance => ticket IDs
 	 * @throws Exception
 	 */
 	public function findForUser(string $userId): array {
 		$qb = $this->db->getQueryBuilder();
-		$qb->select('ticket_id')
+		$qb->select('instance', 'ticket_id')
 			->from(self::TABLE_NAME)
 			->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)));
-		return $this->fetchTicketIds($qb);
+		$result = $qb->executeQuery();
+		$ticketIds = [];
+		while (($row = $result->fetch()) !== false) {
+			$ticketIds[(string)$row['instance']][] = (int)$row['ticket_id'];
+		}
+		$result->closeCursor();
+		return $ticketIds;
 	}
 
 	/**
+	 * @param string $instance
 	 * @param int[] $ticketIds
 	 * @return int[] those of $ticketIds that no user has access to any more
 	 * @throws Exception
 	 */
-	public function filterUnreferenced(array $ticketIds): array {
+	public function filterUnreferenced(string $instance, array $ticketIds): array {
 		$ticketIds = array_values(array_unique(array_map('intval', $ticketIds)));
 		$unreferenced = [];
 		foreach (array_chunk($ticketIds, self::ID_CHUNK_SIZE) as $chunk) {
 			$qb = $this->db->getQueryBuilder();
 			$qb->selectDistinct('ticket_id')
 				->from(self::TABLE_NAME)
-				->where($qb->expr()->in('ticket_id', $qb->createNamedParameter($chunk, IQueryBuilder::PARAM_INT_ARRAY)));
+				->where($qb->expr()->eq('instance', $qb->createNamedParameter($instance)))
+				->andWhere($qb->expr()->in('ticket_id', $qb->createNamedParameter($chunk, IQueryBuilder::PARAM_INT_ARRAY)));
 			$referenced = $this->fetchTicketIds($qb);
 			$unreferenced = array_merge($unreferenced, array_values(array_diff($chunk, $referenced)));
 		}
@@ -165,15 +209,17 @@ class ImportedTicketMapper {
 	}
 
 	/**
+	 * @param string $instance
 	 * @param string $userId
 	 * @param int $ticketId
 	 * @return void
 	 * @throws Exception
 	 */
-	public function delete(string $userId, int $ticketId): void {
+	public function delete(string $instance, string $userId, int $ticketId): void {
 		$qb = $this->db->getQueryBuilder();
 		$qb->delete(self::TABLE_NAME)
-			->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
+			->where($qb->expr()->eq('instance', $qb->createNamedParameter($instance)))
+			->andWhere($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
 			->andWhere($qb->expr()->eq('ticket_id', $qb->createNamedParameter($ticketId, IQueryBuilder::PARAM_INT)));
 		$qb->executeStatement();
 	}
@@ -191,19 +237,21 @@ class ImportedTicketMapper {
 	}
 
 	/**
+	 * @param string $instance
 	 * @param string $userId
 	 * @param int[] $ticketIds
 	 * @return int[] those of $ticketIds that already have a row for this user
 	 * @throws Exception
 	 */
-	private function filterKnown(string $userId, array $ticketIds): array {
+	private function filterKnown(string $instance, string $userId, array $ticketIds): array {
 		if ($ticketIds === []) {
 			return [];
 		}
 		$qb = $this->db->getQueryBuilder();
 		$qb->select('ticket_id')
 			->from(self::TABLE_NAME)
-			->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
+			->where($qb->expr()->eq('instance', $qb->createNamedParameter($instance)))
+			->andWhere($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
 			->andWhere($qb->expr()->in('ticket_id', $qb->createNamedParameter($ticketIds, IQueryBuilder::PARAM_INT_ARRAY)));
 		return $this->fetchTicketIds($qb);
 	}

@@ -83,6 +83,8 @@ class TicketImportService {
 	private const CONFIG_CLEANUP = 'cc_cleanup';
 	/** Highest ticket ID the cleanup of the current sweep has already looked at */
 	private const CONFIG_CLEANUP_CURSOR = 'cc_cleanup_cursor';
+	/** The Zammad instance the tickets imported so far were taken from */
+	private const CONFIG_INSTANCE = 'cc_instance';
 
 	private const CONFIG_KEYS = [
 		self::CONFIG_PAGE,
@@ -92,6 +94,7 @@ class TicketImportService {
 		self::CONFIG_GENERATION,
 		self::CONFIG_CLEANUP,
 		self::CONFIG_CLEANUP_CURSOR,
+		self::CONFIG_INSTANCE,
 	];
 
 	public function __construct(
@@ -136,7 +139,7 @@ class TicketImportService {
 		try {
 			$this->userConfig->setValueInt(
 				$userId, Application::APP_ID, self::CONFIG_GENERATION,
-				$this->importedTicketMapper->findMaxLastSeen($userId) + 1, lazy: true
+				$this->importedTicketMapper->findMaxLastSeen($this->getInstanceId($userId), $userId) + 1, lazy: true
 			);
 		} catch (Throwable $e) {
 			// not worth holding up the import for, the worst case is that leftover
@@ -202,8 +205,11 @@ class TicketImportService {
 	 * @throws Exception
 	 */
 	public function importChunk(string $userId): void {
+		$instance = $this->getInstanceId($userId);
+		$this->resetOnInstanceChange($userId, $instance);
+
 		if ($this->userConfig->getValueBool($userId, Application::APP_ID, self::CONFIG_CLEANUP, false, lazy: true)) {
-			$this->cleanupChunk($userId);
+			$this->cleanupChunk($userId, $instance);
 			return;
 		}
 
@@ -238,7 +244,7 @@ class TicketImportService {
 		// deletions shift the pages under it, and the watermark moves past it in the
 		// meantime, so without this they would stay out of the index until someone
 		// touches them again.
-		$newIds = $this->importedTicketMapper->markSeen($userId, $seenIds, $generation);
+		$newIds = $this->importedTicketMapper->markSeen($instance, $userId, $seenIds, $generation);
 
 		foreach ($tickets as $ticket) {
 			if (!is_array($ticket) || !isset($ticket['id'], $ticket['title'], $ticket['updated_at'])) {
@@ -250,7 +256,7 @@ class TicketImportService {
 				continue;
 			}
 			try {
-				$this->importTicket($userId, $ticket);
+				$this->importTicket($userId, $ticket, $instance);
 			} catch (Throwable $e) {
 				$this->logger->warning(
 					'Could not import Zammad ticket ' . $ticket['id'] . ' into ContextChat: ' . $e->getMessage(),
@@ -296,18 +302,19 @@ class TicketImportService {
 	 * across and revoke the ones that really are gone.
 	 *
 	 * @param string $userId
+	 * @param string $instance
 	 * @return void
 	 * @throws Exception
 	 */
-	private function cleanupChunk(string $userId): void {
+	private function cleanupChunk(string $userId, string $instance): void {
 		$generation = $this->getGeneration($userId);
 		$cursor = max(0, $this->userConfig->getValueInt($userId, Application::APP_ID, self::CONFIG_CLEANUP_CURSOR, 0, lazy: true));
-		$candidates = $this->importedTicketMapper->findStale($userId, $generation, $cursor, self::CLEANUP_CHUNK_SIZE);
+		$candidates = $this->importedTicketMapper->findStale($instance, $userId, $generation, $cursor, self::CLEANUP_CHUNK_SIZE);
 
 		foreach ($candidates as $ticketId) {
 			$cursor = max($cursor, $ticketId);
 			try {
-				$this->reconcileTicket($userId, $ticketId, $generation);
+				$this->reconcileTicket($userId, $ticketId, $generation, $instance);
 			} catch (Throwable $e) {
 				// we could not tell whether the ticket is gone, keep it and look at it
 				// again after the next sweep. Keeping a ticket that is gone is a lot
@@ -341,19 +348,20 @@ class TicketImportService {
 	 * @param string $userId
 	 * @param int $ticketId
 	 * @param int $generation
+	 * @param string $instance
 	 * @return void
 	 * @throws Exception if it could not be determined whether the ticket is gone
 	 */
-	private function reconcileTicket(string $userId, int $ticketId, int $generation): void {
+	private function reconcileTicket(string $userId, int $ticketId, int $generation, string $instance): void {
 		$ticket = $this->zammadAPIService->getTicketInfo($userId, $ticketId);
 		if (!isset($ticket['error'])) {
 			// Still accessible, the sweep just missed it. Import it instead of only
 			// recording it as seen: the watermark has already moved past this sweep, so
 			// a modification the sweep skipped over would never be picked up again.
 			if (isset($ticket['id'], $ticket['title'], $ticket['updated_at'])) {
-				$this->importTicket($userId, $ticket);
+				$this->importTicket($userId, $ticket, $instance);
 			} else {
-				$this->importedTicketMapper->markSeen($userId, [$ticketId], $generation);
+				$this->importedTicketMapper->markSeen($instance, $userId, [$ticketId], $generation);
 			}
 			return;
 		}
@@ -363,7 +371,7 @@ class TicketImportService {
 			// the ticket itself
 			throw new RuntimeException('Zammad API error: ' . $ticket['error']);
 		}
-		$this->revokeAccess($userId, $ticketId);
+		$this->revokeAccess($userId, $ticketId, $instance);
 	}
 
 	/**
@@ -376,16 +384,17 @@ class TicketImportService {
 	 *
 	 * @param string $userId
 	 * @param int $ticketId
+	 * @param string $instance
 	 * @return void
 	 * @throws Exception
 	 */
-	public function revokeAccess(string $userId, int $ticketId): void {
-		$itemId = (string)$ticketId;
+	public function revokeAccess(string $userId, int $ticketId, string $instance): void {
+		$itemId = self::getItemId($instance, $ticketId);
 		$this->contentManager->updateAccess(
 			Application::APP_ID, ContentProvider::ID, $itemId, UpdateAccessOp::DENY, [$userId]
 		);
-		$this->importedTicketMapper->delete($userId, $ticketId);
-		if ($this->importedTicketMapper->filterUnreferenced([$ticketId]) !== []) {
+		$this->importedTicketMapper->delete($instance, $userId, $ticketId);
+		if ($this->importedTicketMapper->filterUnreferenced($instance, [$ticketId]) !== []) {
 			$this->contentManager->deleteContent(Application::APP_ID, ContentProvider::ID, [$itemId]);
 		}
 	}
@@ -398,7 +407,10 @@ class TicketImportService {
 	 */
 	public function revokeAllAccess(string $userId): void {
 		try {
-			$ticketIds = $this->importedTicketMapper->findForUser($userId);
+			// a user that has moved their account to another Zammad server still has
+			// the rows of the one they came from, and a ticket ID only means something
+			// within the instance it was imported from
+			$ticketIdsByInstance = $this->importedTicketMapper->findForUser($userId);
 			// the rows are the only record of what this user had access to, so they are
 			// dropped only once ContextChat has taken the access away. Failing the other
 			// way around would leave the user reading their tickets forever, with nothing
@@ -407,10 +419,16 @@ class TicketImportService {
 				Application::APP_ID, ContentProvider::ID, UpdateAccessOp::DENY, [$userId]
 			);
 			$this->importedTicketMapper->deleteForUser($userId);
-			foreach (array_chunk($this->importedTicketMapper->filterUnreferenced($ticketIds), 500) as $orphans) {
-				$this->contentManager->deleteContent(
-					Application::APP_ID, ContentProvider::ID, array_map('strval', $orphans)
-				);
+			foreach ($ticketIdsByInstance as $instance => $ticketIds) {
+				// PHP turns an array key that looks like a number into an int
+				$instance = (string)$instance;
+				$unreferenced = $this->importedTicketMapper->filterUnreferenced($instance, $ticketIds);
+				foreach (array_chunk($unreferenced, 500) as $orphans) {
+					$this->contentManager->deleteContent(
+						Application::APP_ID, ContentProvider::ID,
+						array_map(fn (int $ticketId): string => self::getItemId($instance, $ticketId), $orphans)
+					);
+				}
 			}
 		} catch (Throwable $e) {
 			$this->logger->warning(
@@ -423,17 +441,21 @@ class TicketImportService {
 	/**
 	 * @param string $userId
 	 * @param array $ticket a ticket as returned by the Zammad API
+	 * @param string|null $instance the Zammad instance the ticket was taken from,
+	 *                              resolved from the user's configuration if omitted
 	 * @return void
 	 * @throws Exception
 	 */
-	public function importTicket(string $userId, array $ticket): void {
+	public function importTicket(string $userId, array $ticket, ?string $instance = null): void {
 		$ticketId = (int)$ticket['id'];
-		$itemId = (string)$ticketId;
-		// a ticket can be visible to several Nextcloud users and the item ID is the
-		// same for all of them. Submitting content sets the access list of the item
-		// to the users it carries, so the users the ticket was already imported for
-		// have to be submitted along with the one we are importing it for.
-		$users = $this->importedTicketMapper->findUsersForTicket($ticketId);
+		$instance ??= $this->getInstanceId($userId);
+		$itemId = self::getItemId($instance, $ticketId);
+		// a ticket can be visible to several Nextcloud users of the same Zammad
+		// instance and the item ID is the same for all of them. Submitting content
+		// sets the access list of the item to the users it carries, so the users the
+		// ticket was already imported for have to be submitted along with the one we
+		// are importing it for.
+		$users = $this->importedTicketMapper->findUsersForTicket($instance, $ticketId);
 		if (!in_array($userId, $users, true)) {
 			$users[] = $userId;
 		}
@@ -452,7 +474,7 @@ class TicketImportService {
 		$this->contentManager->updateAccess(
 			Application::APP_ID, ContentProvider::ID, $itemId, UpdateAccessOp::ALLOW, [$userId]
 		);
-		$this->importedTicketMapper->markSeen($userId, [$ticketId], $this->getGeneration($userId));
+		$this->importedTicketMapper->markSeen($instance, $userId, [$ticketId], $this->getGeneration($userId));
 	}
 
 	/**
@@ -514,6 +536,99 @@ class TicketImportService {
 		} catch (Exception $e) {
 			return 0;
 		}
+	}
+
+	/**
+	 * The item ID a ticket is known to ContextChat under.
+	 *
+	 * ContextChat has a single namespace of item IDs per provider, while a Zammad
+	 * ticket ID only means something within the server it lives on. Users can each
+	 * point their account at their own Zammad, so without the instance in here
+	 * ticket 42 of one server and ticket 42 of another would be one item, whose
+	 * access list would end up holding the users of both and whose content would be
+	 * whichever of the two was imported last.
+	 *
+	 * @param string $instance
+	 * @param int $ticketId
+	 * @return string
+	 */
+	public static function getItemId(string $instance, int $ticketId): string {
+		return $instance . '-' . $ticketId;
+	}
+
+	/**
+	 * The ticket ID an item ID was built from.
+	 *
+	 * @param string $itemId
+	 * @return string
+	 */
+	public static function getTicketIdFromItemId(string $itemId): string {
+		$separator = strrpos($itemId, '-');
+		return $separator === false ? $itemId : substr($itemId, $separator + 1);
+	}
+
+	/**
+	 * A short, stable name for the Zammad server a user is connected to.
+	 *
+	 * Two spellings of the same URL give two instances, which only costs a ticket
+	 * being imported as two items. Two servers sharing one instance would leak one
+	 * organisation's tickets into the other, so erring towards more instances is
+	 * the safe direction here.
+	 *
+	 * @param string $userId
+	 * @return string
+	 */
+	public function getInstanceId(string $userId): string {
+		$url = rtrim(trim($this->zammadAPIService->getZammadUrl($userId)), '/');
+		return substr(hash('sha256', $url), 0, 32);
+	}
+
+	/**
+	 * Start over when a user points their account at a different Zammad server.
+	 *
+	 * The tickets imported from the old server keep neither their IDs nor their
+	 * meaning on the new one, so the sweep can never come across them again and the
+	 * cleanup would never find them either. They are taken away here instead.
+	 *
+	 * @param string $userId
+	 * @param string $instance
+	 * @return void
+	 */
+	private function resetOnInstanceChange(string $userId, string $instance): void {
+		$known = $this->userConfig->getValueString($userId, Application::APP_ID, self::CONFIG_INSTANCE, '', lazy: true);
+		if ($known === $instance) {
+			return;
+		}
+		if ($known === '') {
+			// nothing has been imported for this connection yet, but a disconnect that
+			// failed to take away what an earlier one had imported leaves rows behind.
+			// Those of this instance are picked up by the sweep, see
+			// self::scheduleForUser(), the ones of another instance never are. This
+			// costs one query per connection, the instance is recorded below.
+			try {
+				$stale = array_diff($this->importedTicketMapper->findInstances($userId), [$instance]);
+			} catch (Throwable $e) {
+				// recording the instance now would keep us from ever looking again
+				$this->logger->warning(
+					'Could not determine which Zammad instance was imported for ' . $userId . ': ' . $e->getMessage(),
+					['app' => Application::APP_ID, 'userId' => $userId, 'exception' => $e]
+				);
+				return;
+			}
+			if ($stale === []) {
+				$this->userConfig->setValueString($userId, Application::APP_ID, self::CONFIG_INSTANCE, $instance, lazy: true);
+				return;
+			}
+		}
+		$this->logger->info(
+			'The Zammad instance of ' . $userId . ' has changed, starting the ContextChat import over.',
+			['app' => Application::APP_ID, 'userId' => $userId]
+		);
+		$this->revokeAllAccess($userId);
+		foreach (self::CONFIG_KEYS as $key) {
+			$this->userConfig->deleteUserConfig($userId, Application::APP_ID, $key);
+		}
+		$this->userConfig->setValueString($userId, Application::APP_ID, self::CONFIG_INSTANCE, $instance, lazy: true);
 	}
 
 	/**

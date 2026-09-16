@@ -76,7 +76,9 @@ class ContentProvider implements IContentProvider, IEventListener {
 		if ($this->userId !== null) {
 			$zammadUrl = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'url') ?: $zammadUrl;
 		}
-		return $zammadUrl . '/#ticket/zoom/' . $id;
+		// item IDs carry the Zammad instance the ticket was imported from, see
+		// TicketImportService::getItemId()
+		return $zammadUrl . '/#ticket/zoom/' . TicketImportService::getTicketIdFromItemId($id);
 	}
 
 	/**
