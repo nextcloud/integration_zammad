@@ -63,6 +63,22 @@ class TicketImportService {
 	public const MAX_CONTENT_SIZE = 1024 * 1024;
 
 	/**
+	 * Number of times importing a single ticket may fail before the sweep stops
+	 * holding the watermark back for it. Until then every ticket modified after it
+	 * is looked at again on every sweep, which a ticket that can never be imported
+	 * would otherwise keep up forever.
+	 */
+	public const MAX_IMPORT_FAILURES = 5;
+
+	/**
+	 * Seconds a token that went missing on its own has to stay missing before what
+	 * was imported for that user is taken away. A single request Zammad answers
+	 * with a 401 is enough to wipe the token, and rebuilding the index of a large
+	 * mailbox takes days.
+	 */
+	public const TOKEN_GRACE_PERIOD = 7 * 24 * 60 * 60;
+
+	/**
 	 * Seconds subtracted from the start of a sweep before it is used as the
 	 * watermark, so that a clock running behind the Zammad one cannot make us
 	 * consider a ticket in sync that was modified while the sweep was starting.
@@ -85,6 +101,8 @@ class TicketImportService {
 	private const CONFIG_CLEANUP_CURSOR = 'cc_cleanup_cursor';
 	/** The Zammad instance the tickets imported so far were taken from */
 	private const CONFIG_INSTANCE = 'cc_instance';
+	/** Time at which the user's token was first found missing */
+	private const CONFIG_TOKEN_LOST = 'cc_token_lost';
 
 	private const CONFIG_KEYS = [
 		self::CONFIG_PAGE,
@@ -95,6 +113,7 @@ class TicketImportService {
 		self::CONFIG_CLEANUP,
 		self::CONFIG_CLEANUP_CURSOR,
 		self::CONFIG_INSTANCE,
+		self::CONFIG_TOKEN_LOST,
 	];
 
 	public function __construct(
@@ -205,6 +224,11 @@ class TicketImportService {
 	 * @throws Exception
 	 */
 	public function importChunk(string $userId): void {
+		if ($this->getTimestamp($userId, self::CONFIG_TOKEN_LOST) !== 0) {
+			// the token is back, see self::hasTokenStayedMissing()
+			$this->userConfig->deleteUserConfig($userId, Application::APP_ID, self::CONFIG_TOKEN_LOST);
+		}
+
 		$instance = $this->getInstanceId($userId);
 		$this->resetOnInstanceChange($userId, $instance);
 
@@ -239,19 +263,21 @@ class TicketImportService {
 				$seenIds[] = (int)$ticket['id'];
 			}
 		}
-		// tickets we had no row for yet have never been handed to ContextChat, no
+		// tickets that have not been handed to ContextChat yet have to be imported no
 		// matter what their modification time says. A sweep can miss a ticket when
 		// deletions shift the pages under it, and the watermark moves past it in the
 		// meantime, so without this they would stay out of the index until someone
-		// touches them again.
-		$newIds = $this->importedTicketMapper->markSeen($instance, $userId, $seenIds, $generation);
+		// touches them again. Being recorded above is not enough to count as
+		// imported: a run that dies between the two would otherwise leave a row that
+		// makes the ticket look done for good.
+		$pendingIds = $this->importedTicketMapper->markSeen($instance, $userId, $seenIds, $generation);
 
 		foreach ($tickets as $ticket) {
 			if (!is_array($ticket) || !isset($ticket['id'], $ticket['title'], $ticket['updated_at'])) {
 				continue;
 			}
 			$ticketTs = $this->parseTimestamp((string)$ticket['updated_at']);
-			if ($ticketTs > 0 && $ticketTs <= $sinceTs && !in_array((int)$ticket['id'], $newIds, true)) {
+			if ($ticketTs > 0 && $ticketTs <= $sinceTs && !in_array((int)$ticket['id'], $pendingIds, true)) {
 				// unchanged since the last completed sweep, and already imported
 				continue;
 			}
@@ -262,10 +288,11 @@ class TicketImportService {
 					'Could not import Zammad ticket ' . $ticket['id'] . ' into ContextChat: ' . $e->getMessage(),
 					['app' => Application::APP_ID, 'userId' => $userId, 'exception' => $e]
 				);
+				$failures = $this->noteImportFailure($instance, $userId, (int)$ticket['id']);
 				// a ticket whose modification time we could not parse carries no
 				// information about how far back the sweep has to reach, and folding its
 				// zero in here would drop the watermark and lose every other failure
-				if ($ticketTs > 0) {
+				if ($ticketTs > 0 && $failures <= self::MAX_IMPORT_FAILURES) {
 					$failedTs = $failedTs === 0 ? $ticketTs : min($failedTs, $ticketTs);
 				}
 			}
@@ -285,7 +312,10 @@ class TicketImportService {
 		// page carries a lower modification time than tickets seen later on and would
 		// never be picked up again.
 		// Tickets that failed to import must be picked up again as well, so the
-		// watermark never moves past the oldest failure of this sweep.
+		// watermark never moves past the oldest failure of this sweep. One that has
+		// failed too often no longer counts, see self::noteImportFailure(): it is
+		// still retried once per sweep, but it stops dragging every ticket modified
+		// after it along with it.
 		$watermark = $failedTs > 0 ? min($startedTs, $failedTs - 1) : $startedTs;
 		$this->setTimestamp($userId, self::CONFIG_SINCE, $watermark);
 		$this->userConfig->deleteUserConfig($userId, Application::APP_ID, self::CONFIG_STARTED);
@@ -475,7 +505,7 @@ class TicketImportService {
 		$this->contentManager->updateAccess(
 			Application::APP_ID, ContentProvider::ID, $itemId, UpdateAccessOp::ALLOW, [$userId]
 		);
-		$this->importedTicketMapper->markSeen($instance, $userId, [$ticketId], $this->getGeneration($userId));
+		$this->importedTicketMapper->markImported($instance, $userId, $ticketId, $this->getGeneration($userId));
 	}
 
 	/**
@@ -553,6 +583,64 @@ class TicketImportService {
 		} catch (Exception $e) {
 			return 0;
 		}
+	}
+
+	/**
+	 * Count an import attempt that failed, and say whether the ticket has run out
+	 * of attempts.
+	 *
+	 * A ticket the sweep can never import would otherwise hold the watermark just
+	 * below its modification time forever, which makes every sweep import every
+	 * ticket modified after it again, for good.
+	 *
+	 * @param string $instance
+	 * @param string $userId
+	 * @param int $ticketId
+	 * @return int how often importing this ticket has failed in a row
+	 */
+	private function noteImportFailure(string $instance, string $userId, int $ticketId): int {
+		try {
+			$failures = $this->importedTicketMapper->noteFailure($instance, $userId, $ticketId);
+		} catch (Throwable $e) {
+			// we cannot tell how often this has happened, so treat it as the first
+			// time: holding the watermark back costs a sweep, moving it on costs the
+			// ticket
+			$this->logger->warning(
+				'Could not count the failed import of Zammad ticket ' . $ticketId . ': ' . $e->getMessage(),
+				['app' => Application::APP_ID, 'userId' => $userId, 'exception' => $e]
+			);
+			return 1;
+		}
+		if ($failures === self::MAX_IMPORT_FAILURES + 1) {
+			$this->logger->warning(
+				'Zammad ticket ' . $ticketId . ' has failed to import ' . $failures . ' times, the sweep stops waiting for it.',
+				['app' => Application::APP_ID, 'userId' => $userId]
+			);
+		}
+		return $failures;
+	}
+
+	/**
+	 * Whether a token that went missing on its own has stayed missing long enough
+	 * to take away what was imported for that user.
+	 *
+	 * A disconnect the user asked for takes their tickets away right away, see
+	 * {@see \OCA\Zammad\Controller\ConfigController::setSensitiveConfig()}. Getting
+	 * here means the token disappeared on its own instead, and one request Zammad
+	 * answers with a 401 is enough for that. Giving up on the import straight away
+	 * would turn a Zammad restart into days of re-importing, so it is only given up
+	 * once the user has had the chance to connect again.
+	 *
+	 * @param string $userId
+	 * @return bool
+	 */
+	public function hasTokenStayedMissing(string $userId): bool {
+		$lostTs = $this->getTimestamp($userId, self::CONFIG_TOKEN_LOST);
+		if ($lostTs === 0) {
+			$this->setTimestamp($userId, self::CONFIG_TOKEN_LOST, $this->timeFactory->getTime());
+			return false;
+		}
+		return $this->timeFactory->getTime() - $lostTs >= self::TOKEN_GRACE_PERIOD;
 	}
 
 	/**

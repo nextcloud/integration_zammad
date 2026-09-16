@@ -46,26 +46,31 @@ class ImportedTicketMapper {
 	 * @param string $userId
 	 * @param int[] $ticketIds
 	 * @param int $generation
-	 * @return int[] those of $ticketIds that had no row yet, i.e. that have never
-	 *               been handed to ContextChat for this user
+	 * @return int[] those of $ticketIds that have not been handed to ContextChat
+	 *               for this user yet
 	 * @throws Exception
 	 */
 	public function markSeen(string $instance, string $userId, array $ticketIds, int $generation): array {
 		$ticketIds = array_values(array_unique(array_map('intval', $ticketIds)));
-		$new = [];
+		$pending = [];
 		foreach (array_chunk($ticketIds, self::ID_CHUNK_SIZE) as $chunk) {
-			$known = $this->filterKnown($instance, $userId, $chunk);
+			$known = $this->findKnown($instance, $userId, $chunk);
 			if ($known !== []) {
 				$qb = $this->db->getQueryBuilder();
 				$qb->update(self::TABLE_NAME)
 					->set('last_seen', $qb->createNamedParameter($generation, IQueryBuilder::PARAM_INT))
 					->where($qb->expr()->eq('instance', $qb->createNamedParameter($instance)))
 					->andWhere($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
-					->andWhere($qb->expr()->in('ticket_id', $qb->createNamedParameter($known, IQueryBuilder::PARAM_INT_ARRAY)));
+					->andWhere($qb->expr()->in('ticket_id', $qb->createNamedParameter(array_keys($known), IQueryBuilder::PARAM_INT_ARRAY)));
 				$qb->executeStatement();
 			}
-			foreach (array_diff($chunk, $known) as $ticketId) {
-				$new[] = $ticketId;
+			foreach ($known as $ticketId => $lastImport) {
+				if ($lastImport === 0) {
+					$pending[] = $ticketId;
+				}
+			}
+			foreach (array_diff($chunk, array_keys($known)) as $ticketId) {
+				$pending[] = $ticketId;
 				// a concurrent import of the same ticket may have inserted the row in
 				// the meantime, which is exactly what we would have written ourselves
 				$this->db->insertIgnoreConflict(self::TABLE_NAME, [
@@ -76,7 +81,71 @@ class ImportedTicketMapper {
 				]);
 			}
 		}
-		return $new;
+		return $pending;
+	}
+
+	/**
+	 * Remember that a ticket has been handed to ContextChat for the user.
+	 *
+	 * @param string $instance
+	 * @param string $userId
+	 * @param int $ticketId
+	 * @param int $generation
+	 * @return void
+	 * @throws Exception
+	 */
+	public function markImported(string $instance, string $userId, int $ticketId, int $generation): void {
+		$qb = $this->db->getQueryBuilder();
+		$qb->update(self::TABLE_NAME)
+			->set('last_seen', $qb->createNamedParameter($generation, IQueryBuilder::PARAM_INT))
+			->set('last_import', $qb->createNamedParameter($generation, IQueryBuilder::PARAM_INT))
+			->set('failures', $qb->createNamedParameter(0, IQueryBuilder::PARAM_INT))
+			->where($qb->expr()->eq('instance', $qb->createNamedParameter($instance)))
+			->andWhere($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
+			->andWhere($qb->expr()->eq('ticket_id', $qb->createNamedParameter($ticketId, IQueryBuilder::PARAM_INT)));
+		if ($qb->executeStatement() !== 0) {
+			return;
+		}
+		// no row of ours to update, or one that already said exactly this
+		$this->db->insertIgnoreConflict(self::TABLE_NAME, [
+			'instance' => $instance,
+			'user_id' => $userId,
+			'ticket_id' => $ticketId,
+			'last_seen' => $generation,
+			'last_import' => $generation,
+		]);
+	}
+
+	/**
+	 * Count an import attempt that failed.
+	 *
+	 * @param string $instance
+	 * @param string $userId
+	 * @param int $ticketId
+	 * @return int how often importing this ticket has failed in a row
+	 * @throws Exception
+	 */
+	public function noteFailure(string $instance, string $userId, int $ticketId): int {
+		$qb = $this->db->getQueryBuilder();
+		$qb->select('failures')
+			->from(self::TABLE_NAME)
+			->where($qb->expr()->eq('instance', $qb->createNamedParameter($instance)))
+			->andWhere($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
+			->andWhere($qb->expr()->eq('ticket_id', $qb->createNamedParameter($ticketId, IQueryBuilder::PARAM_INT)));
+		$result = $qb->executeQuery();
+		$failures = $result->fetchOne();
+		$result->closeCursor();
+		// only one job ever writes the rows of a user, so nobody can race us here
+		$failures = ($failures === false || $failures === null ? 0 : (int)$failures) + 1;
+
+		$qb = $this->db->getQueryBuilder();
+		$qb->update(self::TABLE_NAME)
+			->set('failures', $qb->createNamedParameter($failures, IQueryBuilder::PARAM_INT))
+			->where($qb->expr()->eq('instance', $qb->createNamedParameter($instance)))
+			->andWhere($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
+			->andWhere($qb->expr()->eq('ticket_id', $qb->createNamedParameter($ticketId, IQueryBuilder::PARAM_INT)));
+		$qb->executeStatement();
+		return $failures;
 	}
 
 	/**
@@ -240,20 +309,27 @@ class ImportedTicketMapper {
 	 * @param string $instance
 	 * @param string $userId
 	 * @param int[] $ticketIds
-	 * @return int[] those of $ticketIds that already have a row for this user
+	 * @return array<int, int> those of $ticketIds that already have a row for this
+	 *                         user, mapped to the sweep they were last imported in
 	 * @throws Exception
 	 */
-	private function filterKnown(string $instance, string $userId, array $ticketIds): array {
+	private function findKnown(string $instance, string $userId, array $ticketIds): array {
 		if ($ticketIds === []) {
 			return [];
 		}
 		$qb = $this->db->getQueryBuilder();
-		$qb->select('ticket_id')
+		$qb->select('ticket_id', 'last_import')
 			->from(self::TABLE_NAME)
 			->where($qb->expr()->eq('instance', $qb->createNamedParameter($instance)))
 			->andWhere($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
 			->andWhere($qb->expr()->in('ticket_id', $qb->createNamedParameter($ticketIds, IQueryBuilder::PARAM_INT_ARRAY)));
-		return $this->fetchTicketIds($qb);
+		$result = $qb->executeQuery();
+		$known = [];
+		while (($row = $result->fetch()) !== false) {
+			$known[(int)$row['ticket_id']] = (int)$row['last_import'];
+		}
+		$result->closeCursor();
+		return $known;
 	}
 
 	/**

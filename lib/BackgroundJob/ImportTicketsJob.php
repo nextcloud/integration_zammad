@@ -54,9 +54,21 @@ class ImportTicketsJob extends TimedJob {
 			return;
 		}
 
-		if ($this->userManager->get($userId) === null || !$this->importService->hasToken($userId)) {
-			$this->logger->debug('Zammad account of ' . $userId . ' is gone, unscheduling the ticket import.', ['app' => Application::APP_ID]);
+		if ($this->userManager->get($userId) === null) {
+			$this->logger->debug('Nextcloud user ' . $userId . ' is gone, unscheduling the Zammad ticket import.', ['app' => Application::APP_ID]);
 			$this->importService->unscheduleForUser($userId);
+			return;
+		}
+
+		if (!$this->importService->hasToken($userId)) {
+			// not necessarily a disconnect, see TicketImportService::hasTokenStayedMissing()
+			if ($this->importService->hasTokenStayedMissing($userId)) {
+				$this->logger->info(
+					'The Zammad token of ' . $userId . ' has stayed gone, unscheduling the ticket import.',
+					['app' => Application::APP_ID]
+				);
+				$this->importService->unscheduleForUser($userId);
+			}
 			return;
 		}
 

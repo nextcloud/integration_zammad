@@ -55,6 +55,15 @@ class Version040200Date20260915094500 extends SimpleMigrationStep {
 				'default' => '',
 				'length' => 64,
 			]);
+			$table->addColumn('last_import', Types::BIGINT, [
+				'notnull' => true,
+				'default' => 0,
+				'length' => 20,
+			]);
+			$table->addColumn('failures', Types::INTEGER, [
+				'notnull' => true,
+				'default' => 0,
+			]);
 			if ($table->hasIndex('zammad_cc_user_ticket')) {
 				$table->dropIndex('zammad_cc_user_ticket');
 			}
@@ -92,6 +101,21 @@ class Version040200Date20260915094500 extends SimpleMigrationStep {
 			'notnull' => true,
 			'default' => 0,
 			'length' => 20,
+		]);
+		// the sweep during which this ticket was last handed to ContextChat, 0 while
+		// it never has been. Being seen is not the same as having been imported: a
+		// run that dies between the two leaves the row behind and the ticket has to
+		// be picked up again no matter how old its modification time is by then
+		$table->addColumn('last_import', Types::BIGINT, [
+			'notnull' => true,
+			'default' => 0,
+			'length' => 20,
+		]);
+		// consecutive failed import attempts, so that a ticket which cannot be
+		// imported at all is eventually left behind instead of holding the sweep back
+		$table->addColumn('failures', Types::INTEGER, [
+			'notnull' => true,
+			'default' => 0,
 		]);
 		$table->setPrimaryKey(['id']);
 		$table->addUniqueIndex(['instance', 'user_id', 'ticket_id'], 'zammad_cc_user_ticket');
