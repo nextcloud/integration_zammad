@@ -454,7 +454,8 @@ class TicketImportService {
 		// instance and the item ID is the same for all of them. Submitting content
 		// sets the access list of the item to the users it carries, so the users the
 		// ticket was already imported for have to be submitted along with the one we
-		// are importing it for.
+		// are importing it for. One item for all of them means it may only hold what
+		// all of them may read, see self::getTicketContent().
 		$users = $this->importedTicketMapper->findUsersForTicket($instance, $ticketId);
 		if (!in_array($userId, $users, true)) {
 			$users[] = $userId;
@@ -478,6 +479,17 @@ class TicketImportService {
 	}
 
 	/**
+	 * The article history of a ticket, as far as every user the item is shared
+	 * with may read it.
+	 *
+	 * Zammad answers this endpoint with what the token it was asked with is allowed
+	 * to see: an agent gets the internal articles of a ticket, a customer does not.
+	 * The item that carries them is shared by every user of the ticket though, see
+	 * {@see self::importTicket()}, so whichever of them imported the ticket last
+	 * would decide what all of the others get to read. Internal articles are left
+	 * out for that reason, which makes the result the same no matter who asked for
+	 * it. It also keeps them out of the index entirely.
+	 *
 	 * @param string $userId
 	 * @param int $ticketId
 	 * @return string
@@ -491,6 +503,11 @@ class TicketImportService {
 		$content = '';
 		foreach ($articles as $article) {
 			if (!is_array($article)) {
+				continue;
+			}
+			// anything but a plain false counts as internal here, an article we cannot
+			// tell about must not end up in front of a customer
+			if (!empty($article['internal'])) {
 				continue;
 			}
 			$body = (string)($article['body'] ?? '');

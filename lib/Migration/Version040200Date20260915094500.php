@@ -10,7 +10,10 @@ declare(strict_types=1);
 namespace OCA\Zammad\Migration;
 
 use Closure;
+use OCA\Zammad\AppInfo\Application;
+use OCA\Zammad\ContextChat\ContentProvider;
 use OCA\Zammad\Db\ImportedTicketMapper;
+use OCP\ContextChat\IContentManager;
 use OCP\DB\ISchemaWrapper;
 use OCP\DB\Types;
 use OCP\IDBConnection;
@@ -26,6 +29,7 @@ class Version040200Date20260915094500 extends SimpleMigrationStep {
 
 	public function __construct(
 		private IDBConnection $db,
+		private IContentManager $contentManager,
 	) {
 	}
 
@@ -106,9 +110,28 @@ class Version040200Date20260915094500 extends SimpleMigrationStep {
 	 * @return void
 	 */
 	public function postSchemaChange(IOutput $output, Closure $schemaClosure, array $options): void {
-		// rows left behind by a development version that predates the instance
-		// column. The sweep imports the tickets again, this only costs the record
-		// of what had already been handed to ContextChat
+		// Rows left behind by a development version that predates the instance
+		// column. Its items are keyed by the ticket ID alone and hold whatever the
+		// user who imported them last was allowed to read, internal articles
+		// included, so they are taken out of ContextChat rather than left behind
+		// unreachable. The sweep imports the tickets again under their new item IDs,
+		// this only costs the record of what had already been handed over.
+		$qb = $this->db->getQueryBuilder();
+		$qb->selectDistinct('ticket_id')
+			->from(ImportedTicketMapper::TABLE_NAME)
+			->where($qb->expr()->eq('instance', $qb->createNamedParameter('')));
+		$result = $qb->executeQuery();
+		$itemIds = [];
+		while (($row = $result->fetch()) !== false) {
+			$itemIds[] = (string)(int)$row['ticket_id'];
+		}
+		$result->closeCursor();
+
+		// a no-op while context_chat is not installed, nothing was imported then
+		foreach (array_chunk($itemIds, 500) as $chunk) {
+			$this->contentManager->deleteContent(Application::APP_ID, ContentProvider::ID, $chunk);
+		}
+
 		$qb = $this->db->getQueryBuilder();
 		$qb->delete(ImportedTicketMapper::TABLE_NAME)
 			->where($qb->expr()->eq('instance', $qb->createNamedParameter('')));
