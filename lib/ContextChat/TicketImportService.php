@@ -233,15 +233,20 @@ class TicketImportService {
 				$seenIds[] = (int)$ticket['id'];
 			}
 		}
-		$this->importedTicketMapper->markSeen($userId, $seenIds, $generation);
+		// tickets we had no row for yet have never been handed to ContextChat, no
+		// matter what their modification time says. A sweep can miss a ticket when
+		// deletions shift the pages under it, and the watermark moves past it in the
+		// meantime, so without this they would stay out of the index until someone
+		// touches them again.
+		$newIds = $this->importedTicketMapper->markSeen($userId, $seenIds, $generation);
 
 		foreach ($tickets as $ticket) {
 			if (!is_array($ticket) || !isset($ticket['id'], $ticket['title'], $ticket['updated_at'])) {
 				continue;
 			}
 			$ticketTs = $this->parseTimestamp((string)$ticket['updated_at']);
-			if ($ticketTs > 0 && $ticketTs <= $sinceTs) {
-				// unchanged since the last completed sweep
+			if ($ticketTs > 0 && $ticketTs <= $sinceTs && !in_array((int)$ticket['id'], $newIds, true)) {
+				// unchanged since the last completed sweep, and already imported
 				continue;
 			}
 			try {
@@ -251,7 +256,12 @@ class TicketImportService {
 					'Could not import Zammad ticket ' . $ticket['id'] . ' into ContextChat: ' . $e->getMessage(),
 					['app' => Application::APP_ID, 'userId' => $userId, 'exception' => $e]
 				);
-				$failedTs = $failedTs === 0 ? $ticketTs : min($failedTs, $ticketTs);
+				// a ticket whose modification time we could not parse carries no
+				// information about how far back the sweep has to reach, and folding its
+				// zero in here would drop the watermark and lose every other failure
+				if ($ticketTs > 0) {
+					$failedTs = $failedTs === 0 ? $ticketTs : min($failedTs, $ticketTs);
+				}
 			}
 		}
 
@@ -337,8 +347,14 @@ class TicketImportService {
 	private function reconcileTicket(string $userId, int $ticketId, int $generation): void {
 		$ticket = $this->zammadAPIService->getTicketInfo($userId, $ticketId);
 		if (!isset($ticket['error'])) {
-			// still accessible, the sweep just missed it
-			$this->importedTicketMapper->markSeen($userId, [$ticketId], $generation);
+			// Still accessible, the sweep just missed it. Import it instead of only
+			// recording it as seen: the watermark has already moved past this sweep, so
+			// a modification the sweep skipped over would never be picked up again.
+			if (isset($ticket['id'], $ticket['title'], $ticket['updated_at'])) {
+				$this->importTicket($userId, $ticket);
+			} else {
+				$this->importedTicketMapper->markSeen($userId, [$ticketId], $generation);
+			}
 			return;
 		}
 		$errorCode = (int)($ticket['error-code'] ?? 0);
@@ -383,10 +399,14 @@ class TicketImportService {
 	public function revokeAllAccess(string $userId): void {
 		try {
 			$ticketIds = $this->importedTicketMapper->findForUser($userId);
-			$this->importedTicketMapper->deleteForUser($userId);
+			// the rows are the only record of what this user had access to, so they are
+			// dropped only once ContextChat has taken the access away. Failing the other
+			// way around would leave the user reading their tickets forever, with nothing
+			// left to tell us about it
 			$this->contentManager->updateAccessProvider(
 				Application::APP_ID, ContentProvider::ID, UpdateAccessOp::DENY, [$userId]
 			);
+			$this->importedTicketMapper->deleteForUser($userId);
 			foreach (array_chunk($this->importedTicketMapper->filterUnreferenced($ticketIds), 500) as $orphans) {
 				$this->contentManager->deleteContent(
 					Application::APP_ID, ContentProvider::ID, array_map('strval', $orphans)

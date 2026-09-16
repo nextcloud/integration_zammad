@@ -96,7 +96,11 @@ class ConfigController extends Controller {
 		if (isset($values['token'])) {
 			if ($values['token'] && $values['token'] !== '') {
 				$result = $this->storeUserInfo();
-				$this->updateContextChatSchedule(true);
+				// a token Zammad rejects would otherwise leave a job behind that keeps
+				// running into the same error every few minutes
+				if (!isset($result['error'])) {
+					$this->updateContextChatSchedule(true);
+				}
 			} else {
 				$this->updateContextChatSchedule(false);
 				$this->userConfig->deleteUserConfig($this->userId, Application::APP_ID, 'user_id');

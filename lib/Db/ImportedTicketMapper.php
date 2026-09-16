@@ -41,11 +41,13 @@ class ImportedTicketMapper {
 	 * @param string $userId
 	 * @param int[] $ticketIds
 	 * @param int $generation
-	 * @return void
+	 * @return int[] those of $ticketIds that had no row yet, i.e. that have never
+	 *               been handed to ContextChat for this user
 	 * @throws Exception
 	 */
-	public function markSeen(string $userId, array $ticketIds, int $generation): void {
+	public function markSeen(string $userId, array $ticketIds, int $generation): array {
 		$ticketIds = array_values(array_unique(array_map('intval', $ticketIds)));
+		$new = [];
 		foreach (array_chunk($ticketIds, self::ID_CHUNK_SIZE) as $chunk) {
 			$known = $this->filterKnown($userId, $chunk);
 			if ($known !== []) {
@@ -57,6 +59,7 @@ class ImportedTicketMapper {
 				$qb->executeStatement();
 			}
 			foreach (array_diff($chunk, $known) as $ticketId) {
+				$new[] = $ticketId;
 				// a concurrent import of the same ticket may have inserted the row in
 				// the meantime, which is exactly what we would have written ourselves
 				$this->db->insertIgnoreConflict(self::TABLE_NAME, [
@@ -66,6 +69,7 @@ class ImportedTicketMapper {
 				]);
 			}
 		}
+		return $new;
 	}
 
 	/**
