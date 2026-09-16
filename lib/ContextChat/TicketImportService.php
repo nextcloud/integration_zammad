@@ -16,6 +16,7 @@ use OCA\Zammad\BackgroundJob\ImportTicketsJob;
 use OCA\Zammad\Db\ImportedTicketMapper;
 use OCA\Zammad\Service\ZammadAPIService;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\BackgroundJob\IJobList;
 use OCP\Config\IUserConfig;
 use OCP\ContextChat\ContentItem;
@@ -54,12 +55,26 @@ class TicketImportService {
 	 */
 	public const CLEANUP_CHUNK_SIZE = 20;
 
+	/**
+	 * Maximum number of bytes of ticket content handed to ContextChat.
+	 * ContextChat silently drops content that is too large for its backend, so the
+	 * article history of a long running ticket is cut off instead.
+	 */
+	public const MAX_CONTENT_SIZE = 1024 * 1024;
+
+	/**
+	 * Seconds subtracted from the start of a sweep before it is used as the
+	 * watermark, so that a clock running behind the Zammad one cannot make us
+	 * consider a ticket in sync that was modified while the sweep was starting.
+	 */
+	private const CLOCK_SKEW_MARGIN = 300;
+
 	/** Next page of the ticket list to fetch */
 	private const CONFIG_PAGE = 'cc_sweep_page';
 	/** Tickets modified at or before this timestamp are in sync (last completed sweep) */
 	private const CONFIG_SINCE = 'cc_sweep_since';
-	/** Highest ticket modification timestamp seen during the sweep that is currently running */
-	private const CONFIG_MAX = 'cc_sweep_max';
+	/** Time at which the sweep that is currently running started */
+	private const CONFIG_STARTED = 'cc_sweep_started';
 	/** Lowest ticket modification timestamp that failed to import during the current sweep */
 	private const CONFIG_FAILED = 'cc_sweep_failed';
 	/** Number of the sweep that is currently running, used to tell apart the tickets it has seen */
@@ -72,7 +87,7 @@ class TicketImportService {
 	private const CONFIG_KEYS = [
 		self::CONFIG_PAGE,
 		self::CONFIG_SINCE,
-		self::CONFIG_MAX,
+		self::CONFIG_STARTED,
 		self::CONFIG_FAILED,
 		self::CONFIG_GENERATION,
 		self::CONFIG_CLEANUP,
@@ -86,6 +101,7 @@ class TicketImportService {
 		private ZammadAPIService $zammadAPIService,
 		private IContentManager $contentManager,
 		private ImportedTicketMapper $importedTicketMapper,
+		private ITimeFactory $timeFactory,
 		private LoggerInterface $logger,
 	) {
 	}
@@ -109,9 +125,28 @@ class TicketImportService {
 	 */
 	public function scheduleForUser(string $userId): void {
 		$argument = self::jobArgument($userId);
-		if (!$this->jobList->has(ImportTicketsJob::class, $argument)) {
-			$this->jobList->add(ImportTicketsJob::class, $argument);
+		if ($this->jobList->has(ImportTicketsJob::class, $argument)) {
+			return;
 		}
+		// a previous disconnect may have failed to take away what had been imported.
+		// The sweep number starts over from scratch together with the rest of the
+		// state, so those rows would sit above every sweep that follows and never be
+		// looked at again. Starting above them instead makes the first sweep treat
+		// them like any other ticket it does not come across.
+		try {
+			$this->userConfig->setValueInt(
+				$userId, Application::APP_ID, self::CONFIG_GENERATION,
+				$this->importedTicketMapper->findMaxLastSeen($userId) + 1, lazy: true
+			);
+		} catch (Throwable $e) {
+			// not worth holding up the import for, the worst case is that leftover
+			// rows of an earlier connection are never looked at again
+			$this->logger->warning(
+				'Could not determine the ContextChat sweep to start from: ' . $e->getMessage(),
+				['app' => Application::APP_ID, 'userId' => $userId, 'exception' => $e]
+			);
+		}
+		$this->jobList->add(ImportTicketsJob::class, $argument);
 	}
 
 	/**
@@ -173,6 +208,9 @@ class TicketImportService {
 		}
 
 		$page = max(1, $this->userConfig->getValueInt($userId, Application::APP_ID, self::CONFIG_PAGE, 1, lazy: true));
+		// taken before anything is fetched, everything modified after it is looked at
+		// again by the next sweep even if this one no longer comes across it
+		$startedTs = $this->getStartTimestamp($userId);
 		$tickets = $this->zammadAPIService->getTickets($userId, $page, self::CHUNK_SIZE);
 		if (isset($tickets['error'])) {
 			// leave the sweep state untouched, the same page is retried on the next run
@@ -185,7 +223,6 @@ class TicketImportService {
 
 		$generation = $this->getGeneration($userId);
 		$sinceTs = $this->getTimestamp($userId, self::CONFIG_SINCE);
-		$maxTs = $this->getTimestamp($userId, self::CONFIG_MAX);
 		$failedTs = $this->getTimestamp($userId, self::CONFIG_FAILED);
 
 		// record the whole page as still accessible before importing any of it, a
@@ -203,7 +240,6 @@ class TicketImportService {
 				continue;
 			}
 			$ticketTs = $this->parseTimestamp((string)$ticket['updated_at']);
-			$maxTs = max($maxTs, $ticketTs);
 			if ($ticketTs > 0 && $ticketTs <= $sinceTs) {
 				// unchanged since the last completed sweep
 				continue;
@@ -220,18 +256,23 @@ class TicketImportService {
 		}
 
 		if (count($tickets) >= self::CHUNK_SIZE) {
-			$this->setTimestamp($userId, self::CONFIG_MAX, $maxTs);
 			$this->setTimestamp($userId, self::CONFIG_FAILED, $failedTs);
 			$this->userConfig->setValueInt($userId, Application::APP_ID, self::CONFIG_PAGE, $page + 1, lazy: true);
 			return;
 		}
 
-		// the sweep has reached the end of the ticket list.
-		// tickets that failed to import must be picked up again, so the watermark
-		// never moves past the oldest failure of this sweep.
-		$watermark = $failedTs > 0 ? min($maxTs, $failedTs - 1) : $maxTs;
+		// the sweep has reached the end of the ticket list. Every ticket that was
+		// modified before it started has been looked at in its final state, so that
+		// is the point up to which we are in sync. The highest modification time the
+		// sweep came across must not be used instead: the sweep walks the list by
+		// ticket ID over many runs, so a ticket modified after the sweep passed its
+		// page carries a lower modification time than tickets seen later on and would
+		// never be picked up again.
+		// Tickets that failed to import must be picked up again as well, so the
+		// watermark never moves past the oldest failure of this sweep.
+		$watermark = $failedTs > 0 ? min($startedTs, $failedTs - 1) : $startedTs;
 		$this->setTimestamp($userId, self::CONFIG_SINCE, $watermark);
-		$this->userConfig->deleteUserConfig($userId, Application::APP_ID, self::CONFIG_MAX);
+		$this->userConfig->deleteUserConfig($userId, Application::APP_ID, self::CONFIG_STARTED);
 		$this->userConfig->deleteUserConfig($userId, Application::APP_ID, self::CONFIG_FAILED);
 		$this->userConfig->setValueInt($userId, Application::APP_ID, self::CONFIG_PAGE, 1, lazy: true);
 		// everything the sweep did not see is gone, the next runs take care of it
@@ -361,45 +402,37 @@ class TicketImportService {
 
 	/**
 	 * @param string $userId
-	 * @param int $ticketId
-	 * @return void
-	 * @throws Exception
-	 */
-	public function importTicketById(string $userId, int $ticketId): void {
-		$ticket = $this->zammadAPIService->getTicketInfo($userId, $ticketId);
-		if (isset($ticket['error'])) {
-			throw new RuntimeException('Could not get ticket information: ' . $ticket['error']);
-		}
-		if (!isset($ticket['id'], $ticket['title'], $ticket['updated_at'])) {
-			throw new RuntimeException('Unexpected ticket information for ticket ' . $ticketId);
-		}
-		$this->importTicket($userId, $ticket);
-	}
-
-	/**
-	 * @param string $userId
 	 * @param array $ticket a ticket as returned by the Zammad API
 	 * @return void
 	 * @throws Exception
 	 */
 	public function importTicket(string $userId, array $ticket): void {
-		$itemId = (string)$ticket['id'];
+		$ticketId = (int)$ticket['id'];
+		$itemId = (string)$ticketId;
+		// a ticket can be visible to several Nextcloud users and the item ID is the
+		// same for all of them. Submitting content sets the access list of the item
+		// to the users it carries, so the users the ticket was already imported for
+		// have to be submitted along with the one we are importing it for.
+		$users = $this->importedTicketMapper->findUsersForTicket($ticketId);
+		if (!in_array($userId, $users, true)) {
+			$users[] = $userId;
+		}
 		$item = new ContentItem(
 			$itemId,
 			ContentProvider::ID,
 			(string)$ticket['title'],
-			$this->getTicketContent($userId, (int)$ticket['id']),
+			$this->getTicketContent($userId, $ticketId),
 			'Ticket',
 			$this->parseDateTime((string)$ticket['updated_at']),
-			[$userId],
+			$users,
 		);
 		$this->contentManager->submitContent(Application::APP_ID, [$item]);
-		// a ticket can be visible to several Nextcloud users and the item ID is the
-		// same for all of them, so grant access additively instead of replacing it
+		// another user may have submitted the same item in the meantime without
+		// knowing about this one yet, so grant access additively on top of it
 		$this->contentManager->updateAccess(
 			Application::APP_ID, ContentProvider::ID, $itemId, UpdateAccessOp::ALLOW, [$userId]
 		);
-		$this->importedTicketMapper->markSeen($userId, [(int)$ticket['id']], $this->getGeneration($userId));
+		$this->importedTicketMapper->markSeen($userId, [$ticketId], $this->getGeneration($userId));
 	}
 
 	/**
@@ -424,6 +457,16 @@ class TicketImportService {
 			}
 			$from = trim((string)($article['from'] ?? ''));
 			$content .= ($from === '' ? '' : $from . ":\n\n") . $body . "\n\n";
+			// ContextChat drops content that is too large for its backend without
+			// telling us, which would leave the ticket recorded as imported but
+			// missing from the index. Cut the article history off instead.
+			if (mb_strlen($content, '8bit') >= self::MAX_CONTENT_SIZE) {
+				$this->logger->info(
+					'Zammad ticket ' . $ticketId . ' is too large for ContextChat, only part of it is imported.',
+					['app' => Application::APP_ID, 'userId' => $userId]
+				);
+				return mb_strcut($content, 0, self::MAX_CONTENT_SIZE, 'UTF-8');
+			}
 		}
 		return $content;
 	}
@@ -461,6 +504,22 @@ class TicketImportService {
 	 */
 	private function getGeneration(string $userId): int {
 		return max(1, $this->userConfig->getValueInt($userId, Application::APP_ID, self::CONFIG_GENERATION, 1, lazy: true));
+	}
+
+	/**
+	 * The time at which the sweep that is currently running started, recorded on
+	 * its first run.
+	 *
+	 * @param string $userId
+	 * @return int
+	 */
+	private function getStartTimestamp(string $userId): int {
+		$startedTs = $this->getTimestamp($userId, self::CONFIG_STARTED);
+		if ($startedTs === 0) {
+			$startedTs = max(0, $this->timeFactory->getTime() - self::CLOCK_SKEW_MARGIN);
+			$this->setTimestamp($userId, self::CONFIG_STARTED, $startedTs);
+		}
+		return $startedTs;
 	}
 
 	/**

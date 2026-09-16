@@ -92,6 +92,43 @@ class ImportedTicketMapper {
 	}
 
 	/**
+	 * @param int $ticketId
+	 * @return string[] every user this ticket has been imported for
+	 * @throws Exception
+	 */
+	public function findUsersForTicket(int $ticketId): array {
+		$qb = $this->db->getQueryBuilder();
+		$qb->selectDistinct('user_id')
+			->from(self::TABLE_NAME)
+			->where($qb->expr()->eq('ticket_id', $qb->createNamedParameter($ticketId, IQueryBuilder::PARAM_INT)));
+		$result = $qb->executeQuery();
+		$userIds = [];
+		while (($row = $result->fetch()) !== false) {
+			$userIds[] = (string)$row['user_id'];
+		}
+		$result->closeCursor();
+		return $userIds;
+	}
+
+	/**
+	 * The highest sweep number any of the user's rows carries, 0 if they have none.
+	 *
+	 * @param string $userId
+	 * @return int
+	 * @throws Exception
+	 */
+	public function findMaxLastSeen(string $userId): int {
+		$qb = $this->db->getQueryBuilder();
+		$qb->select($qb->func()->max('last_seen'))
+			->from(self::TABLE_NAME)
+			->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)));
+		$result = $qb->executeQuery();
+		$max = $result->fetchOne();
+		$result->closeCursor();
+		return $max === false || $max === null ? 0 : (int)$max;
+	}
+
+	/**
 	 * @param string $userId
 	 * @return int[] every ticket that has been imported for this user
 	 * @throws Exception
