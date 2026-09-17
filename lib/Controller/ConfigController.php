@@ -199,8 +199,12 @@ class ConfigController extends Controller {
 					$this->userConfig->setValueString($this->userId, Application::APP_ID, 'token_expires_at', (string)$expiresAt, lazy: true);
 				}
 				// get user info
-				$this->storeUserInfo();
-				$this->updateContextChatSchedule(true);
+				$userInfo = $this->storeUserInfo();
+				// a token Zammad rejects would otherwise leave a job behind that keeps
+				// running into the same error every few minutes
+				if (!isset($userInfo['error'])) {
+					$this->updateContextChatSchedule(true);
+				}
 				return new RedirectResponse(
 					$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'connected-accounts'])
 					. '?zammadToken=success'

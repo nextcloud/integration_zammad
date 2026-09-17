@@ -22,6 +22,7 @@ use OCP\Config\IUserConfig;
 use OCP\ContextChat\ContentItem;
 use OCP\ContextChat\IContentManager;
 use OCP\ContextChat\Type\UpdateAccessOp;
+use OCP\IAppConfig;
 use OCP\IUser;
 use OCP\IUserManager;
 use Psr\Log\LoggerInterface;
@@ -75,6 +76,14 @@ class TicketImportService {
 	public const MAX_IMPORT_FAILURES = 5;
 
 	/**
+	 * Number of times a page of the ticket list may fail to be fetched before the
+	 * sweep moves past it. Retrying is the right answer to a Zammad that is down or
+	 * a request that timed out, but a page it cannot serve at all would otherwise
+	 * stall that user's import for good, see {@see self::notePageFailure()}.
+	 */
+	public const MAX_PAGE_FAILURES = 5;
+
+	/**
 	 * Seconds a token that went missing on its own has to stay missing before what
 	 * was imported for that user is taken away. A single request Zammad answers
 	 * with a 401 is enough to wipe the token, and rebuilding the index of a large
@@ -91,6 +100,8 @@ class TicketImportService {
 
 	/** Next page of the ticket list to fetch */
 	private const CONFIG_PAGE = 'cc_sweep_page';
+	/** Consecutive times the page the sweep is on could not be fetched or used */
+	private const CONFIG_PAGE_FAILURES = 'cc_sweep_page_failures';
 	/** Tickets modified at or before this timestamp are in sync (last completed sweep) */
 	private const CONFIG_SINCE = 'cc_sweep_since';
 	/** Time at which the sweep that is currently running started */
@@ -109,10 +120,17 @@ class TicketImportService {
 	private const CONFIG_TOKEN_LOST = 'cc_token_lost';
 
 	/**
+	 * App config key prefix the URL of a Zammad instance is recorded under, one key
+	 * per instance so that no two users writing at once can lose each other's entry
+	 */
+	private const CONFIG_INSTANCE_URL_PREFIX = 'cc_instance_url_';
+
+	/**
 	 * Every key the sweep state is kept under, so that it can be dropped as a whole
 	 */
 	public const CONFIG_KEYS = [
 		self::CONFIG_PAGE,
+		self::CONFIG_PAGE_FAILURES,
 		self::CONFIG_SINCE,
 		self::CONFIG_STARTED,
 		self::CONFIG_FAILED,
@@ -130,7 +148,16 @@ class TicketImportService {
 	 */
 	private array $scheduled = [];
 
+	/**
+	 * The URL recorded for an instance, memoised for the run of one job so that
+	 * resolving the instance of a user does not write on every call.
+	 *
+	 * @var array<string, string>
+	 */
+	private array $instanceUrls = [];
+
 	public function __construct(
+		private IAppConfig $appConfig,
 		private IUserConfig $userConfig,
 		private IUserManager $userManager,
 		private IJobList $jobList,
@@ -162,6 +189,7 @@ class TicketImportService {
 	public function scheduleForUser(string $userId): void {
 		$argument = self::jobArgument($userId);
 		if ($this->jobList->has(ImportTicketsJob::class, $argument)) {
+			$this->scheduled[$userId] = true;
 			return;
 		}
 		// a previous disconnect may have failed to take away what had been imported.
@@ -183,6 +211,10 @@ class TicketImportService {
 			);
 		}
 		$this->jobList->add(ImportTicketsJob::class, $argument);
+		// the memo outlives this call: one cron run executes many jobs in the same
+		// process and the service is resolved once for all of them, see
+		// self::isScheduled()
+		$this->scheduled[$userId] = true;
 	}
 
 	/**
@@ -194,6 +226,9 @@ class TicketImportService {
 	 */
 	public function unscheduleForUser(string $userId): void {
 		$this->jobList->remove(ImportTicketsJob::class, self::jobArgument($userId));
+		// an import later in the same process must not rebuild the access list of an
+		// item from a memo taken before this, see self::isScheduled()
+		$this->scheduled[$userId] = false;
 		foreach (self::CONFIG_KEYS as $key) {
 			$this->userConfig->deleteUserConfig($userId, Application::APP_ID, $key);
 		}
@@ -269,12 +304,28 @@ class TicketImportService {
 		$startedTs = $this->getStartTimestamp($userId);
 		$tickets = $this->zammadAPIService->getTickets($userId, $page, self::CHUNK_SIZE);
 		if (isset($tickets['error'])) {
-			// leave the sweep state untouched, the same page is retried on the next run
-			$this->logger->warning(
-				'Zammad API error: could not list tickets for the ContextChat import. ' . $tickets['error'],
-				['app' => Application::APP_ID, 'userId' => $userId]
+			$this->notePageFailure(
+				$userId, $page,
+				'Zammad API error: could not list tickets for the ContextChat import. ' . $tickets['error']
 			);
 			return;
+		}
+		// A 200 whose body is not a list of tickets at all: an error shape we do not
+		// know, or whatever a proxy in front of Zammad answered with. Left unchecked
+		// it would go through both loops below without yielding a single ticket and
+		// then, being shorter than a full page, be read as the end of the ticket
+		// list, which hands every ticket of the pages that were never fetched to the
+		// cleanup and has them fetched back one by one.
+		if (!array_is_list($tickets)) {
+			$this->notePageFailure(
+				$userId, $page,
+				'Zammad API error: the ticket list for the ContextChat import is not a list of tickets.'
+			);
+			return;
+		}
+		if ($this->userConfig->getValueInt($userId, Application::APP_ID, self::CONFIG_PAGE_FAILURES, 0, lazy: true) !== 0) {
+			// the page came through, whatever was wrong with it before is over
+			$this->userConfig->deleteUserConfig($userId, Application::APP_ID, self::CONFIG_PAGE_FAILURES);
 		}
 
 		$generation = $this->getGeneration($userId);
@@ -587,22 +638,34 @@ class TicketImportService {
 			if (!empty($article['internal'])) {
 				continue;
 			}
+			$remaining = self::MAX_CONTENT_SIZE - strlen($content);
 			$body = (string)($article['body'] ?? '');
+			// The budget is applied to the raw body first, before anything is built
+			// out of it: htmlToText() walks a body several times over and keeps the
+			// result of every step, so a single huge article would cost a multiple of
+			// its own size in memory on the way to being cut down here. Running out of
+			// memory is a fatal error that takes the whole cron run with it, not
+			// something the caller could catch and count as a failed import.
+			$overBudget = strlen($body) > $remaining;
+			if ($overBudget) {
+				$body = mb_strcut($body, 0, $remaining, 'UTF-8');
+			}
 			if (($article['content_type'] ?? '') === 'text/html') {
 				$body = self::htmlToText($body);
 			}
 			$from = trim((string)($article['from'] ?? ''));
-			$content .= ($from === '' ? '' : $from . ":\n\n") . $body . "\n\n";
+			$next = ($from === '' ? '' : $from . ":\n\n") . $body . "\n\n";
 			// ContextChat drops content that is too large for its backend without
 			// telling us, which would leave the ticket recorded as imported but
 			// missing from the index. Cut the article history off instead.
-			if (mb_strlen($content, '8bit') >= self::MAX_CONTENT_SIZE) {
+			if ($overBudget || strlen($next) >= $remaining) {
 				$this->logger->info(
 					'Zammad ticket ' . $ticketId . ' is too large for ContextChat, only part of it is imported.',
 					['app' => Application::APP_ID, 'userId' => $userId]
 				);
-				return mb_strcut($content, 0, self::MAX_CONTENT_SIZE, 'UTF-8');
+				return $content . mb_strcut($next, 0, $remaining, 'UTF-8');
 			}
+			$content .= $next;
 		}
 		return $content;
 	}
@@ -700,6 +763,43 @@ class TicketImportService {
 	}
 
 	/**
+	 * Count a page of the ticket list the sweep could not use, and move past it
+	 * once it has failed often enough.
+	 *
+	 * Leaving the sweep state untouched is the right answer to a Zammad that is
+	 * down or a request that timed out: the same page is fetched again on the next
+	 * run. A page Zammad can never serve would stall that user's import for good
+	 * though, one page short of ever completing a sweep, with no ticket behind it
+	 * ever imported and the cleanup never reached.
+	 *
+	 * Nothing is lost by moving on. The tickets of the page that were imported
+	 * before are not seen by this sweep, so the cleanup asks Zammad about each of
+	 * them and imports them again, see {@see self::reconcileTicket()}; the ones
+	 * that were never imported are picked up by the next sweep that gets the page,
+	 * whatever the watermark says by then, see {@see self::importChunk()}.
+	 *
+	 * @param string $userId
+	 * @param int $page the page that could not be used
+	 * @param string $message what was wrong with it, for the log
+	 * @return void
+	 */
+	private function notePageFailure(string $userId, int $page, string $message): void {
+		$failures = max(0, $this->userConfig->getValueInt($userId, Application::APP_ID, self::CONFIG_PAGE_FAILURES, 0, lazy: true)) + 1;
+		if ($failures <= self::MAX_PAGE_FAILURES) {
+			$this->userConfig->setValueInt($userId, Application::APP_ID, self::CONFIG_PAGE_FAILURES, $failures, lazy: true);
+			$this->logger->warning($message, ['app' => Application::APP_ID, 'userId' => $userId]);
+			return;
+		}
+		$this->logger->error(
+			$message . ' Page ' . $page . ' of the ticket list has failed ' . $failures
+			. ' times in a row, the ContextChat import moves past it.',
+			['app' => Application::APP_ID, 'userId' => $userId]
+		);
+		$this->userConfig->deleteUserConfig($userId, Application::APP_ID, self::CONFIG_PAGE_FAILURES);
+		$this->userConfig->setValueInt($userId, Application::APP_ID, self::CONFIG_PAGE, $page + 1, lazy: true);
+	}
+
+	/**
 	 * Whether a token that went missing on its own has stayed missing long enough
 	 * to take away what was imported for that user.
 	 *
@@ -752,6 +852,17 @@ class TicketImportService {
 	}
 
 	/**
+	 * The Zammad instance an item ID was built from.
+	 *
+	 * @param string $itemId
+	 * @return string the instance, or an empty string if the ID does not carry one
+	 */
+	public static function getInstanceFromItemId(string $itemId): string {
+		$separator = strrpos($itemId, '-');
+		return $separator === false ? '' : substr($itemId, 0, $separator);
+	}
+
+	/**
 	 * A short, stable name for the Zammad server a user is connected to.
 	 *
 	 * Two spellings of the same URL give two instances, which only costs a ticket
@@ -764,7 +875,32 @@ class TicketImportService {
 	 */
 	public function getInstanceId(string $userId): string {
 		$url = rtrim(trim($this->zammadAPIService->getZammadUrl($userId)), '/');
-		return substr(hash('sha256', $url), 0, 32);
+		$instance = substr(hash('sha256', $url), 0, 32);
+		// A hash cannot be turned back into the URL it was built from, and the link
+		// to an imported ticket is built from its item ID alone, outside of any user
+		// session and without knowing whose ticket it is, see
+		// {@see ContentProvider::getItemUrl()}. So the URL is recorded here, where
+		// the instance is still known to belong to it.
+		if ($url !== '' && ($this->instanceUrls[$instance] ?? null) !== $url) {
+			$this->instanceUrls[$instance] = $url;
+			$this->appConfig->setValueString(Application::APP_ID, self::CONFIG_INSTANCE_URL_PREFIX . $instance, $url, lazy: true);
+		}
+		return $instance;
+	}
+
+	/**
+	 * The URL of the Zammad server an instance stands for, as it was recorded by
+	 * {@see self::getInstanceId()}.
+	 *
+	 * @param string $instance
+	 * @return string the URL, or an empty string if nothing was ever imported from
+	 *                that instance by this version
+	 */
+	public function getInstanceUrl(string $instance): string {
+		if ($instance === '') {
+			return '';
+		}
+		return $this->appConfig->getValueString(Application::APP_ID, self::CONFIG_INSTANCE_URL_PREFIX . $instance, '', lazy: true);
 	}
 
 	/**

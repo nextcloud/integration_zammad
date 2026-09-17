@@ -171,7 +171,21 @@ class ImportedTicketMapper {
 			->where($qb->expr()->eq('instance', $qb->createNamedParameter($instance)))
 			->andWhere($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
 			->andWhere($qb->expr()->eq('ticket_id', $qb->createNamedParameter($ticketId, IQueryBuilder::PARAM_INT)));
-		$qb->executeStatement();
+		if ($qb->executeStatement() !== 0) {
+			return $failures;
+		}
+		// No row of ours to update, the count would be thrown away and start over at
+		// one on every attempt. That is exactly the runaway the cap is there to stop:
+		// the ticket would hold the watermark just below its modification time
+		// forever and every sweep would import every ticket modified after it again.
+		// The row can be missing because a concurrent revoke took it away, which the
+		// cleanup of the next sweep undoes again for a ticket that is really gone.
+		$this->db->insertIgnoreConflict(self::TABLE_NAME, [
+			'instance' => $instance,
+			'user_id' => $userId,
+			'ticket_id' => $ticketId,
+			'failures' => $failures,
+		]);
 		return $failures;
 	}
 

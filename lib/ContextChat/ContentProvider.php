@@ -70,14 +70,20 @@ class ContentProvider implements IContentProvider, IEventListener {
 	 * @since 32.0.0
 	 */
 	public function getItemUrl(string $id): string {
-		// this is called outside of a user session as well,
-		// the admin configured instance is the only thing available then
-		$zammadUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url');
-		if ($this->userId !== null) {
-			$zammadUrl = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'url') ?: $zammadUrl;
+		// Item IDs carry the Zammad instance the ticket was imported from, see
+		// TicketImportService::getItemId(), and that is the only thing here that says
+		// which server the ticket lives on: this is called for the sources of someone
+		// else's answer and outside of any user session, so the session user, if
+		// there even is one, may well be connected to a different Zammad.
+		$zammadUrl = $this->importService->getInstanceUrl(TicketImportService::getInstanceFromItemId($id));
+		if ($zammadUrl === '') {
+			// nothing was recorded for that instance, fall back to whatever this
+			// installation is pointed at
+			$zammadUrl = $this->userId === null
+				? ''
+				: $this->userConfig->getValueString($this->userId, Application::APP_ID, 'url');
+			$zammadUrl = $zammadUrl ?: $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url');
 		}
-		// item IDs carry the Zammad instance the ticket was imported from, see
-		// TicketImportService::getItemId()
 		return $zammadUrl . '/#ticket/zoom/' . TicketImportService::getTicketIdFromItemId($id);
 	}
 
