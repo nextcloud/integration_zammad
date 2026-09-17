@@ -117,6 +117,33 @@ class ImportedTicketMapper {
 	}
 
 	/**
+	 * Have the given tickets handed to ContextChat again by every user that still
+	 * has a row for them.
+	 *
+	 * Used when a user loses access to a ticket the others keep. Both the submit
+	 * that built the access list of the item and the revoke that takes this user
+	 * out of it only queue an action in ContextChat, and the two are not ordered
+	 * against each other, so the list can end up still holding the revoked user.
+	 * Importing the ticket again rebuilds that list from these rows.
+	 *
+	 * @param string $instance
+	 * @param int[] $ticketIds
+	 * @return void
+	 * @throws Exception
+	 */
+	public function markPending(string $instance, array $ticketIds): void {
+		$ticketIds = array_values(array_unique(array_map('intval', $ticketIds)));
+		foreach (array_chunk($ticketIds, self::ID_CHUNK_SIZE) as $chunk) {
+			$qb = $this->db->getQueryBuilder();
+			$qb->update(self::TABLE_NAME)
+				->set('last_import', $qb->createNamedParameter(0, IQueryBuilder::PARAM_INT))
+				->where($qb->expr()->eq('instance', $qb->createNamedParameter($instance)))
+				->andWhere($qb->expr()->in('ticket_id', $qb->createNamedParameter($chunk, IQueryBuilder::PARAM_INT_ARRAY)));
+			$qb->executeStatement();
+		}
+	}
+
+	/**
 	 * Count an import attempt that failed.
 	 *
 	 * @param string $instance

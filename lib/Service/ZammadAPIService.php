@@ -534,7 +534,7 @@ class ZammadAPIService {
 			$body = $response->getBody();
 
 			if ($jsonResponse) {
-				return json_decode($body, true);
+				return $this->decodeJson((string)$body, $endPoint);
 			}
 
 			return [
@@ -556,6 +556,36 @@ class ZammadAPIService {
 		} catch (ConnectException $e) {
 			return ['error' => $e->getMessage()];
 		}
+	}
+
+	/**
+	 * The JSON body of a Zammad response, as the array every caller of
+	 * {@see self::request()} expects.
+	 *
+	 * A Zammad behind a reverse proxy or a captive portal answers with HTML, and an
+	 * endpoint can answer with no body at all. json_decode() returns null for both,
+	 * which used to be handed back from a method declared to return an array and
+	 * turned into a TypeError in the caller. The background jobs run unattended, so
+	 * this is reported the same way every other failure of a request is instead.
+	 *
+	 * @param string $body
+	 * @param string $endPoint the endpoint the body came from, for the log
+	 * @return array the decoded body or an array with an 'error' key
+	 */
+	private function decodeJson(string $body, string $endPoint): array {
+		$decoded = json_decode($body, true);
+		if (is_array($decoded)) {
+			return $decoded;
+		}
+		$this->logger->warning(
+			'Zammad API error: the response of ' . $endPoint . ' is not a JSON object or array.',
+			['app' => Application::APP_ID, 'jsonError' => json_last_error_msg()]
+		);
+		// no 'error-code': the request itself did not fail, and a caller that tells
+		// apart a ticket that is gone from one it could not ask about must not read
+		// this as an answer about the ticket, see
+		// \OCA\Zammad\ContextChat\TicketImportService::reconcileTicket()
+		return ['error' => $this->l10n->t('Unexpected response from Zammad')];
 	}
 
 	private function checkTokenExpiration(string $userId): void {
@@ -652,7 +682,9 @@ class ZammadAPIService {
 			if ($respCode >= 400) {
 				return ['error' => $this->l10n->t('OAuth access token refused')];
 			} else {
-				return json_decode($body, true);
+				// the endpoint rather than the URL, which carries the authorization code
+				// and the client secret when the request was made with GET
+				return $this->decodeJson((string)$body, 'oauth/token');
 			}
 		} catch (Exception $e) {
 			$this->logger->warning('Zammad OAuth error : ' . $e->getMessage(), ['app' => Application::APP_ID]);

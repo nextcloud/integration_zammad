@@ -57,10 +57,14 @@ class TicketImportService {
 
 	/**
 	 * Maximum number of bytes of ticket content handed to ContextChat.
-	 * ContextChat silently drops content that is too large for its backend, so the
-	 * article history of a long running ticket is cut off instead.
+	 *
+	 * This is a budget of our own, well below the limit ContextChat applies: it
+	 * refuses an item larger than its `indexing_max_size`, which defaults to 100MB
+	 * and is also the size of a whole indexing batch, and says so in the log. The
+	 * article history of a long running ticket is cut off here rather than handing
+	 * over something that would push everything else out of a batch.
 	 */
-	public const MAX_CONTENT_SIZE = 1024 * 1024;
+	public const MAX_CONTENT_SIZE = 10 * 1024 * 1024;
 
 	/**
 	 * Number of times importing a single ticket may fail before the sweep stops
@@ -104,7 +108,10 @@ class TicketImportService {
 	/** Time at which the user's token was first found missing */
 	private const CONFIG_TOKEN_LOST = 'cc_token_lost';
 
-	private const CONFIG_KEYS = [
+	/**
+	 * Every key the sweep state is kept under, so that it can be dropped as a whole
+	 */
+	public const CONFIG_KEYS = [
 		self::CONFIG_PAGE,
 		self::CONFIG_SINCE,
 		self::CONFIG_STARTED,
@@ -115,6 +122,13 @@ class TicketImportService {
 		self::CONFIG_INSTANCE,
 		self::CONFIG_TOKEN_LOST,
 	];
+
+	/**
+	 * Whether we are still importing for a user, memoised for the run of one job.
+	 *
+	 * @var array<string, bool>
+	 */
+	private array $scheduled = [];
 
 	public function __construct(
 		private IUserConfig $userConfig,
@@ -201,6 +215,18 @@ class TicketImportService {
 	 */
 	public function isAvailable(): bool {
 		return $this->contentManager->isContextChatAvailable();
+	}
+
+	/**
+	 * Whether a user still has an import job of their own, which is what tells the
+	 * rows of a user we are still importing for apart from the ones a disconnect
+	 * failed to clean up, see {@see self::unscheduleForUser()}.
+	 *
+	 * @param string $userId
+	 * @return bool
+	 */
+	private function isScheduled(string $userId): bool {
+		return $this->scheduled[$userId] ??= $this->jobList->has(ImportTicketsJob::class, self::jobArgument($userId));
 	}
 
 	/**
@@ -426,7 +452,12 @@ class TicketImportService {
 		$this->importedTicketMapper->delete($instance, $userId, $ticketId);
 		if ($this->importedTicketMapper->filterUnreferenced($instance, [$ticketId]) !== []) {
 			$this->contentManager->deleteContent(Application::APP_ID, ContentProvider::ID, [$itemId]);
+			return;
 		}
+		// the item stays, shared with the users that kept the ticket. Its access list
+		// is whatever the last submit put there and may still hold this user, see
+		// ImportedTicketMapper::markPending(), so those users hand it over again.
+		$this->importedTicketMapper->markPending($instance, [$ticketId]);
 	}
 
 	/**
@@ -441,10 +472,12 @@ class TicketImportService {
 			// the rows of the one they came from, and a ticket ID only means something
 			// within the instance it was imported from
 			$ticketIdsByInstance = $this->importedTicketMapper->findForUser($userId);
-			// the rows are the only record of what this user had access to, so they are
-			// dropped only once ContextChat has taken the access away. Failing the other
-			// way around would leave the user reading their tickets forever, with nothing
-			// left to tell us about it
+			// the rows are the only record of what this user had access to, so the access
+			// is taken away before they are dropped. Failing the other way around would
+			// leave the user reading their tickets forever, with nothing left to tell us
+			// about it. This is the better order rather than a guarantee: ContextChat
+			// logs and swallows the errors of its own scheduling, so a call that did not
+			// get through looks exactly like one that did
 			$this->contentManager->updateAccessProvider(
 				Application::APP_ID, ContentProvider::ID, UpdateAccessOp::DENY, [$userId]
 			);
@@ -459,6 +492,9 @@ class TicketImportService {
 						array_map(fn (int $ticketId): string => self::getItemId($instance, $ticketId), $orphans)
 					);
 				}
+				// the items of the tickets the others kept may still hold this user in their
+				// access list, see ImportedTicketMapper::markPending()
+				$this->importedTicketMapper->markPending($instance, array_values(array_diff($ticketIds, $unreferenced)));
 			}
 		} catch (Throwable $e) {
 			$this->logger->warning(
@@ -486,7 +522,18 @@ class TicketImportService {
 		// ticket was already imported for have to be submitted along with the one we
 		// are importing it for. One item for all of them means it may only hold what
 		// all of them may read, see self::getTicketContent().
-		$users = $this->importedTicketMapper->findUsersForTicket($instance, $ticketId);
+		// a disconnect whose cleanup failed leaves rows behind, see
+		// self::revokeAllAccess(), and submitting one of those users would hand them
+		// the ticket back. A missing token is not the signal for that: it comes back
+		// on its own often enough that the import sits it out, see
+		// self::hasTokenStayedMissing(), and a user dropped from the list here would
+		// not be put back into it by their own sweep, which skips the tickets it has
+		// already imported. Having a job of their own is what says we still import
+		// for a user, and it is taken away together with their rows.
+		$users = array_values(array_filter(
+			$this->importedTicketMapper->findUsersForTicket($instance, $ticketId),
+			fn (string $otherUserId): bool => $otherUserId === $userId || $this->isScheduled($otherUserId),
+		));
 		if (!in_array($userId, $users, true)) {
 			$users[] = $userId;
 		}
@@ -542,7 +589,7 @@ class TicketImportService {
 			}
 			$body = (string)($article['body'] ?? '');
 			if (($article['content_type'] ?? '') === 'text/html') {
-				$body = html_entity_decode(strip_tags($body), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+				$body = self::htmlToText($body);
 			}
 			$from = trim((string)($article['from'] ?? ''));
 			$content .= ($from === '' ? '' : $from . ":\n\n") . $body . "\n\n";
@@ -558,6 +605,38 @@ class TicketImportService {
 			}
 		}
 		return $content;
+	}
+
+	/**
+	 * The text of an HTML article body, as it goes into the index.
+	 *
+	 * strip_tags() on its own is not enough for the HTML mails that make up most of
+	 * the article history of a ticket: it takes out the tags but keeps what is
+	 * between them, so the stylesheet of a mail ends up in the index, and it leaves
+	 * no whitespace behind, so the last word of a paragraph and the first word of
+	 * the next one are glued into one.
+	 *
+	 * @param string $html
+	 * @return string
+	 */
+	private static function htmlToText(string $html): string {
+		// these carry no text of the article, tags and content alike
+		$text = preg_replace('#<(script|style|head)\b[^>]*>.*?</\1\s*>#is', ' ', $html) ?? $html;
+		// the line structure the markup carries, before the markup itself is gone
+		$text = preg_replace('#<(br|/p|/div|/li|/tr|/h[1-6]|/table|/blockquote)\b[^>]*>#i', "\n", $text) ?? $text;
+		// neighbouring cells of a row belong on one line, but not in one word
+		$text = preg_replace('#</(td|th)\b[^>]*>#i', ' ', $text) ?? $text;
+		$text = strip_tags($text);
+		// decoded only once the tags are gone, so that an escaped tag in the article
+		// body stays the text the author wrote instead of turning into markup that
+		// strip_tags() would have taken out
+		$text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+		// whatever whitespace the markup was laid out with, collapsed, while the line
+		// breaks that stand for a block of their own are kept
+		$text = preg_replace('#[^\S\n]+#u', ' ', $text) ?? $text;
+		$text = preg_replace('#[^\S\n]*\n[^\S\n]*#u', "\n", $text) ?? $text;
+		$text = preg_replace('#\n{3,}#', "\n\n", $text) ?? $text;
+		return trim($text);
 	}
 
 	/**
