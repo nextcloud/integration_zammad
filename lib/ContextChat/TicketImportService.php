@@ -128,7 +128,7 @@ class TicketImportService {
 	/**
 	 * Every key the sweep state is kept under, so that it can be dropped as a whole
 	 */
-	public const CONFIG_KEYS = [
+	private const CONFIG_KEYS = [
 		self::CONFIG_PAGE,
 		self::CONFIG_PAGE_FAILURES,
 		self::CONFIG_SINCE,
