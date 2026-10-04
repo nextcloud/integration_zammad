@@ -16,6 +16,7 @@ OC.L10N.register(
     "Unknown error" : "Ukendt fejl",
     "by {creator}" : "af {creator}",
     "Account manager" : "Konto bestyrer",
-    "Comments" : "Kommentarer"
+    "Comments" : "Kommentarer",
+    "Click to expand comment" : "Klik for at udvide kommentaren"
 },
 "nplurals=2; plural=(n != 1);");
