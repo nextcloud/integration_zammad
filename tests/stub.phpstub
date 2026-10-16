@@ -103,6 +103,28 @@ namespace Doctrine\DBAL {
     }
 }
 
+namespace Doctrine\DBAL\Schema {
+    class Column
+    {
+        public function setNotnull(bool $notnull): self;
+        public function setDefault($default): self;
+        public function setLength(?int $length): self;
+    }
+
+    class Table
+    {
+        public function addColumn(string $name, string $typeName, array $options = []): Column;
+        public function getColumn(string $name): Column;
+        public function hasColumn(string $name): bool;
+        public function dropColumn(string $name): self;
+        public function setPrimaryKey(array $columnNames, $indexName = false): self;
+        public function addIndex(array $columnNames, ?string $indexName = null, array $flags = [], array $options = []): self;
+        public function addUniqueIndex(array $columnNames, ?string $indexName = null, array $options = []): self;
+        public function hasIndex(string $indexName): bool;
+        public function dropIndex(string $indexName): self;
+    }
+}
+
 namespace OCA\DAV\CalDAV {
 
     /**

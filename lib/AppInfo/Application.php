@@ -11,6 +11,7 @@
 namespace OCA\Zammad\AppInfo;
 
 use Closure;
+use OCA\Zammad\ContextChat\ContentProvider;
 use OCA\Zammad\Dashboard\ZammadWidget;
 use OCA\Zammad\Listener\ZammadReferenceListener;
 use OCA\Zammad\Notification\Notifier;
@@ -22,6 +23,7 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\Collaboration\Reference\RenderReferenceEvent;
 use OCP\Config\IUserConfig;
+use OCP\ContextChat\Events\ContentProviderRegisterEvent;
 use OCP\IL10N;
 use OCP\INavigationManager;
 use OCP\IURLGenerator;
@@ -49,6 +51,10 @@ class Application extends App implements IBootstrap {
 
 		$context->registerReferenceProvider(ZammadReferenceProvider::class);
 		$context->registerEventListener(RenderReferenceEvent::class, ZammadReferenceListener::class);
+		$context->registerEventListener(ContentProviderRegisterEvent::class, ContentProvider::class);
+		// context_chat dispatches its own subclass of the event and the dispatcher matches
+		// the exact class name, so the app specific event has to be listened for as well
+		$context->registerEventListener('OCA\ContextChat\Event\ContentProviderRegisterEvent', ContentProvider::class);
 	}
 
 	public function boot(IBootContext $context): void {

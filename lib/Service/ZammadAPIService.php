@@ -34,6 +34,11 @@ use OCP\Security\ICrypto;
 use Psr\Log\LoggerInterface;
 
 class ZammadAPIService {
+	/**
+	 * Hard limit Zammad enforces on the per_page parameter of the ticket list endpoint
+	 */
+	public const TICKET_PAGE_MAX_SIZE = 100;
+
 	private ICache $cache;
 	private IClient $client;
 
@@ -443,6 +448,35 @@ class ZammadAPIService {
 
 	/**
 	 * @param string $userId
+	 * @param int $ticketId
+	 * @return array
+	 * @throws Exception
+	 */
+	public function getArticlesByTicket(string $userId, int $ticketId): array {
+		return $this->request($userId, 'ticket_articles/by_ticket/' . $ticketId);
+	}
+
+	/**
+	 * List the tickets the user has access to, one page at a time.
+	 * Zammad scopes this endpoint to the tickets the token owner may read and
+	 * always orders it by ticket ID ascending, which makes paging through it stable.
+	 * Its hard limit is 100 tickets per page.
+	 *
+	 * @param string $userId
+	 * @param int $page page number, starting at 1
+	 * @param int $perPage number of tickets per page, at most 100
+	 * @return array the list of tickets or an array with an 'error' key
+	 * @throws Exception
+	 */
+	public function getTickets(string $userId, int $page, int $perPage): array {
+		return $this->request($userId, 'tickets', [
+			'page' => $page,
+			'per_page' => min($perPage, self::TICKET_PAGE_MAX_SIZE),
+		]);
+	}
+
+	/**
+	 * @param string $userId
 	 * @param string $endPoint
 	 * @param array $params
 	 * @param string $method
@@ -500,7 +534,7 @@ class ZammadAPIService {
 			$body = $response->getBody();
 
 			if ($jsonResponse) {
-				return json_decode($body, true);
+				return $this->decodeJson((string)$body, $endPoint);
 			}
 
 			return [
@@ -514,14 +548,44 @@ class ZammadAPIService {
 			if ($statusCode === Http::STATUS_UNAUTHORIZED) {
 				return ['error' => $this->l10n->t('Bad credentials'), 'error-code' => $statusCode];
 			} elseif ($statusCode === Http::STATUS_FORBIDDEN) {
-				return ['error' => 'Forbidden'];
+				return ['error' => 'Forbidden', 'error-code' => $statusCode];
 			} elseif ($statusCode === Http::STATUS_NOT_FOUND) {
-				return ['error' => 'Not found'];
+				return ['error' => 'Not found', 'error-code' => $statusCode];
 			}
-			return ['error' => $e->getMessage()];
+			return ['error' => $e->getMessage(), 'error-code' => $statusCode];
 		} catch (ConnectException $e) {
 			return ['error' => $e->getMessage()];
 		}
+	}
+
+	/**
+	 * The JSON body of a Zammad response, as the array every caller of
+	 * {@see self::request()} expects.
+	 *
+	 * A Zammad behind a reverse proxy or a captive portal answers with HTML, and an
+	 * endpoint can answer with no body at all. json_decode() returns null for both,
+	 * which used to be handed back from a method declared to return an array and
+	 * turned into a TypeError in the caller. The background jobs run unattended, so
+	 * this is reported the same way every other failure of a request is instead.
+	 *
+	 * @param string $body
+	 * @param string $endPoint the endpoint the body came from, for the log
+	 * @return array the decoded body or an array with an 'error' key
+	 */
+	private function decodeJson(string $body, string $endPoint): array {
+		$decoded = json_decode($body, true);
+		if (is_array($decoded)) {
+			return $decoded;
+		}
+		$this->logger->warning(
+			'Zammad API error: the response of ' . $endPoint . ' is not a JSON object or array.',
+			['app' => Application::APP_ID, 'jsonError' => json_last_error_msg()]
+		);
+		// no 'error-code': the request itself did not fail, and a caller that tells
+		// apart a ticket that is gone from one it could not ask about must not read
+		// this as an answer about the ticket, see
+		// \OCA\Zammad\ContextChat\TicketImportService::reconcileTicket()
+		return ['error' => $this->l10n->t('Unexpected response from Zammad')];
 	}
 
 	private function checkTokenExpiration(string $userId): void {
@@ -618,7 +682,9 @@ class ZammadAPIService {
 			if ($respCode >= 400) {
 				return ['error' => $this->l10n->t('OAuth access token refused')];
 			} else {
-				return json_decode($body, true);
+				// the endpoint rather than the URL, which carries the authorization code
+				// and the client secret when the request was made with GET
+				return $this->decodeJson((string)$body, 'oauth/token');
 			}
 		} catch (Exception $e) {
 			$this->logger->warning('Zammad OAuth error : ' . $e->getMessage(), ['app' => Application::APP_ID]);
