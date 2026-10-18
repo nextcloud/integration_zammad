@@ -8,6 +8,7 @@ OC.L10N.register(
     "Connected accounts" : "Conturile conectate",
     "Enable navigation link" : "Pornește link-ul de navifare",
     "Unknown error" : "Eroare necunoscută",
+    "by {creator}" : "de {creator}",
     "Comments" : "Comentarii",
     "Click to expand comment" : "Click pentru extindere comentariu"
 },
