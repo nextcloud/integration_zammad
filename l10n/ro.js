@@ -1,14 +1,17 @@
 OC.L10N.register(
     "integration_zammad",
     {
+    "Error getting OAuth access token." : "Eroare la obținerea tokenului de acces OAuth.",
     "Error during OAuth exchanges" : "Eroare în schimbarea OAuth",
     "Bad HTTP method" : "Metodă HTTP nepotrivită",
     "Bad credentials" : "Credențiale greșite",
     "OAuth access token refused" : "Token-ul OAuth a fost refuzat",
     "Connected accounts" : "Conturile conectate",
+    "Connected as {user}" : "Conectat ca {user}",
     "Enable navigation link" : "Pornește link-ul de navifare",
     "Unknown error" : "Eroare necunoscută",
     "by {creator}" : "de {creator}",
+    "Account manager" : "Responsabil de cont",
     "Comments" : "Comentarii",
     "Click to expand comment" : "Click pentru extindere comentariu"
 },
