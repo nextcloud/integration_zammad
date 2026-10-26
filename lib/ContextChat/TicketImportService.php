@@ -126,6 +126,22 @@ class TicketImportService {
 	private const CONFIG_INSTANCE_URL_PREFIX = 'cc_instance_url_';
 
 	/**
+	 * The keys that say how far the sweep of a user has come. Dropping them starts
+	 * the sweep over from the first page with nothing considered in sync. The sweep
+	 * number and the instance are left out on purpose: the rows of the user are
+	 * relative to them.
+	 */
+	private const CONFIG_PROGRESS_KEYS = [
+		self::CONFIG_PAGE,
+		self::CONFIG_PAGE_FAILURES,
+		self::CONFIG_SINCE,
+		self::CONFIG_STARTED,
+		self::CONFIG_FAILED,
+		self::CONFIG_CLEANUP,
+		self::CONFIG_CLEANUP_CURSOR,
+	];
+
+	/**
 	 * Every key the sweep state is kept under, so that it can be dropped as a whole
 	 */
 	private const CONFIG_KEYS = [
@@ -180,6 +196,42 @@ class TicketImportService {
 				$this->scheduleForUser($user->getUID());
 			}
 		});
+	}
+
+	/**
+	 * Import everything again from scratch, for every connected user.
+	 *
+	 * ContextChat asks for the initial import whenever it has nothing of ours,
+	 * which is not only the very first time: it drops all of our items when this
+	 * app is disabled and asks again once it is back, and its own provider state
+	 * can be reset. The jobs of the users that are already connected keep running
+	 * through all of that with their sweep state intact, which considers every
+	 * ticket that has not changed since the last sweep in sync and would leave it
+	 * out of the index for good. So the sweeps start over and every ticket that was
+	 * imported before is counted as not imported yet, see
+	 * {@see ImportedTicketMapper::markAllPending()}.
+	 *
+	 * A job that runs while this happens may still write its progress after it.
+	 * That costs nothing: the tickets are imported because they are pending, no
+	 * matter what the watermark says.
+	 *
+	 * @return void
+	 */
+	public function reimportForAllUsers(): void {
+		try {
+			$this->importedTicketMapper->markAllPending();
+		} catch (Throwable $e) {
+			// the sweeps below still pick up every ticket modified since they last
+			// completed, which is all that can be done without the rows
+			$this->logger->error(
+				'Could not mark the Zammad tickets for import into ContextChat again: ' . $e->getMessage(),
+				['app' => Application::APP_ID, 'exception' => $e]
+			);
+		}
+		foreach (self::CONFIG_PROGRESS_KEYS as $key) {
+			$this->userConfig->deleteKey(Application::APP_ID, $key);
+		}
+		$this->scheduleForAllUsers();
 	}
 
 	/**
