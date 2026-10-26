@@ -90,10 +90,13 @@ class ContentProvider implements IContentProvider, IEventListener {
 	/**
 	 * Starts the initial import of content items into content chat
 	 *
+	 * This is also called after ContextChat has dropped everything it had of ours,
+	 * so it starts the import over instead of picking up where it left off.
+	 *
 	 * @return void
 	 * @since 32.0.0
 	 */
 	public function triggerInitialImport(): void {
-		$this->importService->scheduleForAllUsers();
+		$this->importService->reimportForAllUsers();
 	}
 }

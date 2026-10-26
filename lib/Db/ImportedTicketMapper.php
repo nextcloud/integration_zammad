@@ -144,6 +144,25 @@ class ImportedTicketMapper {
 	}
 
 	/**
+	 * Have every ticket handed to ContextChat again, by every user that has a row
+	 * for it.
+	 *
+	 * Used when ContextChat has dropped everything it had of ours and asks for the
+	 * initial import again. The rows stay: they are what the access list of an item
+	 * is rebuilt from and what tells us which tickets to take away later on.
+	 *
+	 * @return void
+	 * @throws Exception
+	 */
+	public function markAllPending(): void {
+		$qb = $this->db->getQueryBuilder();
+		$qb->update(self::TABLE_NAME)
+			->set('last_import', $qb->createNamedParameter(0, IQueryBuilder::PARAM_INT))
+			->set('failures', $qb->createNamedParameter(0, IQueryBuilder::PARAM_INT));
+		$qb->executeStatement();
+	}
+
+	/**
 	 * Count an import attempt that failed.
 	 *
 	 * @param string $instance
