@@ -9,6 +9,7 @@
     "updated %1$s" : "已更新 %1$s",
     "Bad HTTP method" : "不正確的 HTTP 方法",
     "Bad credentials" : "錯誤的身分驗證",
+    "Unexpected response from Zammad" : "Zammad 回應異常。",
     "OAuth access token refused" : "OAuth 存取權杖被拒絕",
     "Connected accounts" : "已連線的帳號",
     "Zammad integration" : "Zammad 整合",

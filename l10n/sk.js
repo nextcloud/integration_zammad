@@ -11,6 +11,7 @@ OC.L10N.register(
     "updated %1$s" : "upravených %1$s",
     "Bad HTTP method" : "Zlá metóda HTTP",
     "Bad credentials" : "Nesprávne prihlasovacie údaje",
+    "Unexpected response from Zammad" : "Neočakávaná odpoveď od Zammadu",
     "OAuth access token refused" : "Prístupový token OAuth bol zamietnutý",
     "Connected accounts" : "Prepojené účty",
     "Zammad integration" : "Zammad integrácia",

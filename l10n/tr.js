@@ -11,6 +11,7 @@ OC.L10N.register(
     "updated %1$s" : "%1$s güncellendi",
     "Bad HTTP method" : "HTTP yöntemi hatalı",
     "Bad credentials" : "Kimlik doğrulama bilgileri hatalı",
+    "Unexpected response from Zammad" : "Zammad tarafından beklenmeyen bir yanıt alındı",
     "OAuth access token refused" : "OAuth erişim kodu reddedildi",
     "Connected accounts" : "Bağlı hesaplar",
     "Zammad integration" : "Zammad bütünleştirmesi",

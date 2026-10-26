@@ -11,6 +11,7 @@ OC.L10N.register(
     "updated %1$s" : "Aktualisiert %1$s",
     "Bad HTTP method" : "Ungültige HTTP-Methode",
     "Bad credentials" : "Falsche Anmeldeinformationen",
+    "Unexpected response from Zammad" : "Unerwartete Antwort von Zammad",
     "OAuth access token refused" : "OAuth-Zugriffstoken abgelehnt",
     "Connected accounts" : "Verbundene Konten",
     "Zammad integration" : "Zammad-Einbindung",
