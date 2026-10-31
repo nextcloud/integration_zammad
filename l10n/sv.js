@@ -11,6 +11,7 @@ OC.L10N.register(
     "updated %1$s" : "uppdaterades %1$s",
     "Bad HTTP method" : "Felaktig HTTP-metod",
     "Bad credentials" : "Ogiltiga inloggningsuppgifter",
+    "Unexpected response from Zammad" : "Oväntat svar från Zammad",
     "OAuth access token refused" : "OAuth-åtkomsttoken avvisades",
     "Connected accounts" : "Anslutna konton",
     "Zammad integration" : "Zammad-integrering",
