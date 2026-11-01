@@ -11,6 +11,7 @@ OC.L10N.register(
     "updated %1$s" : "nuashonraithe %1$s",
     "Bad HTTP method" : "Droch-mhodh HTTP",
     "Bad credentials" : "Dintiúir dona",
+    "Unexpected response from Zammad" : "Freagra gan choinne ó Zammad",
     "OAuth access token refused" : "Diúltaíodh comhartha rochtana OAuth",
     "Connected accounts" : "Cuntais nasctha",
     "Zammad integration" : "Comhtháthú Zammad",
