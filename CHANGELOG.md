@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [4.2.0] - 2026-11-05
+
+### New
+
+- Integrate with ContextChat [#64](https://github.com/nextcloud/integration_zammad/pull/64) @marcelklehr
+- Add support for Nextcloud 36 [#288](https://github.com/nextcloud/integration_zammad/pull/288) @lukasdotcom
+
+### Fixed
+
+- fix(context_chat): React correctly to reimport call [#284](https://github.com/nextcloud/integration_zammad/pull/284) @marcelklehr
+- Fix translation for ticket identifier in Italian [#260](https://github.com/nextcloud/integration_zammad/pull/260) @albanobattistella
+- Update dependencies and workflows [#288](https://github.com/nextcloud/integration_zammad/pull/288) @lukasdotcom
+
+### Changed
+
+- ci: Add release relay job [#285](https://github.com/nextcloud/integration_zammad/pull/285) @AndyScherzinger
+
 ## [4.1.1] - 2026-08-026
 
 ### Fixed
