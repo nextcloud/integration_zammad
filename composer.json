@@ -13,8 +13,8 @@
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3",
-    "nextcloud/coding-standard": "^1",
-    "nextcloud/ocp": "dev-master",
+    "nextcloud/coding-standard": "^1.5",
+    "nextcloud/ocp": "dev-stable32",
     "guzzlehttp/guzzle": "^7.5.1"
   },
   "config": {
