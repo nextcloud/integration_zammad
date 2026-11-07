@@ -51,7 +51,7 @@
     "Zammad API error" : "Errore API Zammad",
     "Unknown error" : "Errore sconosciuto",
     "Zammad connected accounts settings" : "Impostazioni degli account connessi a Zammad",
-    "Ticket#{number}" : "Biglietto#{number}",
+    "Ticket#{number}" : "Ticket#{number}",
     "by {creator}" : "da {creator}",
     "Account manager" : "Responsabile dell'account",
     "Subscription ends: {date}" : "La sottoscrizione termina: {date}",
