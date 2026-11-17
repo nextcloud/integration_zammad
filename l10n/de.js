@@ -39,7 +39,7 @@ OC.L10N.register(
     "Zammad access token" : "Zammad Zugriffstoken",
     "Connect to Zammad" : "Mit Zammad verbinden",
     "Connected as {user}" : "Verbunden als {user}",
-    "Disconnect from Zammad" : "Von Zamaad trennen",
+    "Disconnect from Zammad" : "Von Zammad trennen",
     "Enable unified search for tickets" : "Einheitliche Suche nach Tickets aktivieren",
     "Enable notifications for open tickets" : "Benachrichtigungen für offene Tickets aktivieren",
     "Enable navigation link" : "Navigations-Link aktivieren",
