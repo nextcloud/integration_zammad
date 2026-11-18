@@ -14,6 +14,7 @@ use Exception;
 use OCA\Zammad\AppInfo\Application;
 use OCA\Zammad\BackgroundJob\ImportTicketsJob;
 use OCA\Zammad\Db\ImportedTicketMapper;
+use OCA\Zammad\Db\TicketContentMapper;
 use OCA\Zammad\Service\ZammadAPIService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Utility\ITimeFactory;
@@ -180,6 +181,7 @@ class TicketImportService {
 		private ZammadAPIService $zammadAPIService,
 		private IContentManager $contentManager,
 		private ImportedTicketMapper $importedTicketMapper,
+		private TicketContentMapper $ticketContentMapper,
 		private ITimeFactory $timeFactory,
 		private LoggerInterface $logger,
 	) {
@@ -219,6 +221,7 @@ class TicketImportService {
 	 */
 	public function reimportForAllUsers(): void {
 		try {
+			$this->ticketContentMapper->deleteAll();
 			$this->importedTicketMapper->markAllPending();
 		} catch (Throwable $e) {
 			// the sweeps below still pick up every ticket modified since they last
@@ -553,13 +556,15 @@ class TicketImportService {
 			Application::APP_ID, ContentProvider::ID, $itemId, UpdateAccessOp::DENY, [$userId]
 		);
 		$this->importedTicketMapper->delete($instance, $userId, $ticketId);
+		$this->ticketContentMapper->delete($instance, [$ticketId]);
 		if ($this->importedTicketMapper->filterUnreferenced($instance, [$ticketId]) !== []) {
 			$this->contentManager->deleteContent(Application::APP_ID, ContentProvider::ID, [$itemId]);
 			return;
 		}
 		// the item stays, shared with the users that kept the ticket. Its access list
 		// is whatever the last submit put there and may still hold this user, see
-		// ImportedTicketMapper::markPending(), so those users hand it over again.
+		// ImportedTicketMapper::markPending(), so the first of those users to come
+		// across it submits it again, for all of them.
 		$this->importedTicketMapper->markPending($instance, [$ticketId]);
 	}
 
@@ -588,6 +593,9 @@ class TicketImportService {
 			foreach ($ticketIdsByInstance as $instance => $ticketIds) {
 				// PHP turns an array key that looks like a number into an int
 				$instance = (string)$instance;
+				// the items of the tickets the others kept are submitted again below, the
+				// others are dropped
+				$this->ticketContentMapper->delete($instance, $ticketIds);
 				$unreferenced = $this->importedTicketMapper->filterUnreferenced($instance, $ticketIds);
 				foreach (array_chunk($unreferenced, 500) as $orphans) {
 					$this->contentManager->deleteContent(
@@ -608,6 +616,16 @@ class TicketImportService {
 	}
 
 	/**
+	 * Make sure ContextChat has the current version of a ticket, with the user in
+	 * its access list.
+	 *
+	 * There is one item per ticket for all of its users, so its content is only
+	 * submitted by the first user that comes across a version of the ticket that has
+	 * not been submitted yet, for every user known to have the ticket at once. A user
+	 * that comes across a version that has already been submitted without them is
+	 * granted access to it instead, and one that already has access costs nothing.
+	 * See {@see TicketContentMapper} for why this matters.
+	 *
 	 * @param string $userId
 	 * @param array $ticket a ticket as returned by the Zammad API
 	 * @param string|null $instance the Zammad instance the ticket was taken from,
@@ -619,12 +637,26 @@ class TicketImportService {
 		$ticketId = (int)$ticket['id'];
 		$instance ??= $this->getInstanceId($userId);
 		$itemId = self::getItemId($instance, $ticketId);
-		// a ticket can be visible to several Nextcloud users of the same Zammad
-		// instance and the item ID is the same for all of them. Submitting content
-		// sets the access list of the item to the users it carries, so the users the
-		// ticket was already imported for have to be submitted along with the one we
-		// are importing it for. One item for all of them means it may only hold what
-		// all of them may read, see self::getTicketContent().
+		$version = $this->parseVersion((string)$ticket['updated_at']);
+
+		// a ticket whose modification time we could not parse cannot be compared
+		// against anything, so it is submitted every time it is looked at
+		$submitted = $version === 0 ? null : $this->ticketContentMapper->findVersion($instance, $ticketId);
+		if ($submitted !== null && $version <= $submitted) {
+			if (!$this->importedTicketMapper->isImported($instance, $userId, $ticketId)) {
+				$this->contentManager->updateAccess(
+					Application::APP_ID, ContentProvider::ID, $itemId, UpdateAccessOp::ALLOW, [$userId]
+				);
+			}
+			$this->importedTicketMapper->markImported($instance, $userId, $ticketId, $this->getGeneration($userId));
+			return;
+		}
+
+		// Submitting content sets the access list of the item to the users it
+		// carries, so every user the ticket was already imported for has to be
+		// submitted along with the one we are importing it for. One item for all of
+		// them means it may only hold what all of them may read, see
+		// self::getTicketContent().
 		// a disconnect whose cleanup failed leaves rows behind, see
 		// self::revokeAllAccess(), and submitting one of those users would hand them
 		// the ticket back. A missing token is not the signal for that: it comes back
@@ -633,13 +665,7 @@ class TicketImportService {
 		// not be put back into it by their own sweep, which skips the tickets it has
 		// already imported. Having a job of their own is what says we still import
 		// for a user, and it is taken away together with their rows.
-		$users = array_values(array_filter(
-			$this->importedTicketMapper->findUsersForTicket($instance, $ticketId),
-			fn (string $otherUserId): bool => $otherUserId === $userId || $this->isScheduled($otherUserId),
-		));
-		if (!in_array($userId, $users, true)) {
-			$users[] = $userId;
-		}
+		$users = $this->findImportingUsers($instance, $ticketId, $userId);
 		$item = new ContentItem(
 			$itemId,
 			ContentProvider::ID,
@@ -650,12 +676,43 @@ class TicketImportService {
 			$users,
 		);
 		$this->contentManager->submitContent(Application::APP_ID, [$item]);
-		// another user may have submitted the same item in the meantime without
-		// knowing about this one yet, so grant access additively on top of it
-		$this->contentManager->updateAccess(
-			Application::APP_ID, ContentProvider::ID, $itemId, UpdateAccessOp::ALLOW, [$userId]
-		);
+		if ($version !== 0) {
+			$this->ticketContentMapper->setVersion($instance, $ticketId, $version);
+		}
+		// Another user's sweep may have come across the ticket while this one was
+		// being submitted. If their submit read the users before ours, and ContextChat
+		// ends up with it after ours, its access list leaves out every user that came
+		// in between. Granting access to whoever has turned up since the users were
+		// read covers that from the side of whichever submit was last.
+		$late = array_values(array_diff($this->findImportingUsers($instance, $ticketId, $userId), $users));
+		if ($late !== []) {
+			$this->contentManager->updateAccess(
+				Application::APP_ID, ContentProvider::ID, $itemId, UpdateAccessOp::ALLOW, $late
+			);
+		}
+		// the other users do not have to grant themselves access to it any more
+		$this->importedTicketMapper->markImportedForUsers($instance, $ticketId, array_merge($users, $late));
 		$this->importedTicketMapper->markImported($instance, $userId, $ticketId, $this->getGeneration($userId));
+	}
+
+	/**
+	 * The users we import a ticket for, always including the given one.
+	 *
+	 * @param string $instance
+	 * @param int $ticketId
+	 * @param string $userId
+	 * @return string[]
+	 * @throws Exception
+	 */
+	private function findImportingUsers(string $instance, int $ticketId, string $userId): array {
+		$users = array_values(array_filter(
+			$this->importedTicketMapper->findUsersForTicket($instance, $ticketId),
+			fn (string $otherUserId): bool => $otherUserId === $userId || $this->isScheduled($otherUserId),
+		));
+		if (!in_array($userId, $users, true)) {
+			$users[] = $userId;
+		}
+		return $users;
 	}
 
 	/**
@@ -764,6 +821,22 @@ class TicketImportService {
 			return new DateTime($date);
 		} catch (Exception $e) {
 			return new DateTime('@0');
+		}
+	}
+
+	/**
+	 * The version of a ticket as {@see TicketContentMapper} records it: its
+	 * modification time in milliseconds. Zammad reports it with milliseconds, and
+	 * two changes within the same second must not look like one.
+	 *
+	 * @param string $date
+	 * @return int the version, or 0 if the date could not be parsed
+	 */
+	private function parseVersion(string $date): int {
+		try {
+			return max(0, (int)(new DateTime($date))->format('Uv'));
+		} catch (Exception $e) {
+			return 0;
 		}
 	}
 
