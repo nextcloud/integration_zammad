@@ -16,6 +16,12 @@ use OCP\IDBConnection;
 /**
  * Remembers which Zammad tickets have been handed to ContextChat for which user.
  *
+ * A ticket counts as imported for a user once its content is in ContextChat with
+ * that user in its access list, whether that user submitted the content, another
+ * user submitted it with them in the list, or they were granted access to content
+ * that was already there. The content itself is tracked once per ticket, see
+ * {@see TicketContentMapper}.
+ *
  * The Zammad ticket list only ever contains the tickets a user may read, so a
  * ticket that stops showing up in it has either been deleted or is no longer
  * accessible to that user. Comparing a completed sweep against these rows is what
@@ -117,14 +123,64 @@ class ImportedTicketMapper {
 	}
 
 	/**
-	 * Have the given tickets handed to ContextChat again by every user that still
+	 * Remember that the given users were in the access list of a ticket's content
+	 * when it was handed to ContextChat, so that their own sweeps do not have to
+	 * grant it to them again.
+	 *
+	 * Only rows that are pending are touched. They are set to the sweep they were
+	 * last seen in, which is the closest to the sweep of the user that we know
+	 * without asking for their state. A row that was never seen stays pending and
+	 * costs that user one access update later on.
+	 *
+	 * @param string $instance
+	 * @param int $ticketId
+	 * @param string[] $userIds
+	 * @return void
+	 * @throws Exception
+	 */
+	public function markImportedForUsers(string $instance, int $ticketId, array $userIds): void {
+		$userIds = array_values(array_unique($userIds));
+		foreach (array_chunk($userIds, self::ID_CHUNK_SIZE) as $chunk) {
+			$qb = $this->db->getQueryBuilder();
+			$qb->update(self::TABLE_NAME)
+				->set('last_import', $qb->createFunction($qb->getColumnName('last_seen')))
+				->where($qb->expr()->eq('instance', $qb->createNamedParameter($instance)))
+				->andWhere($qb->expr()->eq('ticket_id', $qb->createNamedParameter($ticketId, IQueryBuilder::PARAM_INT)))
+				->andWhere($qb->expr()->eq('last_import', $qb->createNamedParameter(0, IQueryBuilder::PARAM_INT)))
+				->andWhere($qb->expr()->in('user_id', $qb->createNamedParameter($chunk, IQueryBuilder::PARAM_STR_ARRAY)));
+			$qb->executeStatement();
+		}
+	}
+
+	/**
+	 * Whether a ticket has been handed to ContextChat with this user in its access
+	 * list.
+	 *
+	 * @param string $instance
+	 * @param string $userId
+	 * @param int $ticketId
+	 * @return bool
+	 * @throws Exception
+	 */
+	public function isImported(string $instance, string $userId, int $ticketId): bool {
+		$known = $this->findKnown($instance, $userId, [$ticketId]);
+		return ($known[$ticketId] ?? 0) !== 0;
+	}
+
+	/**
+	 * Have the given tickets handed to ContextChat again for every user that still
 	 * has a row for them.
 	 *
 	 * Used when a user loses access to a ticket the others keep. Both the submit
 	 * that built the access list of the item and the revoke that takes this user
 	 * out of it only queue an action in ContextChat, and the two are not ordered
 	 * against each other, so the list can end up still holding the revoked user.
-	 * Importing the ticket again rebuilds that list from these rows.
+	 * Submitting the ticket again rebuilds that list from these rows. The caller
+	 * also has to forget the submitted version of the ticket, see
+	 * {@see TicketContentMapper::delete()}, or the users would only be granted access
+	 * one by one and the revoked user would never be taken out of the list. The
+	 * first user whose sweep comes across the ticket then submits it once for all of
+	 * them, see {@see self::markImportedForUsers()}.
 	 *
 	 * @param string $instance
 	 * @param int[] $ticketIds
@@ -144,12 +200,14 @@ class ImportedTicketMapper {
 	}
 
 	/**
-	 * Have every ticket handed to ContextChat again, by every user that has a row
+	 * Have every ticket handed to ContextChat again, for every user that has a row
 	 * for it.
 	 *
 	 * Used when ContextChat has dropped everything it had of ours and asks for the
 	 * initial import again. The rows stay: they are what the access list of an item
-	 * is rebuilt from and what tells us which tickets to take away later on.
+	 * is rebuilt from and what tells us which tickets to take away later on. The
+	 * caller also has to forget every submitted version, see
+	 * {@see TicketContentMapper::deleteAll()}.
 	 *
 	 * @return void
 	 * @throws Exception
