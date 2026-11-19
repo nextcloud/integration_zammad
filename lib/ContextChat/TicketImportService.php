@@ -14,6 +14,7 @@ use Exception;
 use OCA\Zammad\AppInfo\Application;
 use OCA\Zammad\BackgroundJob\ImportTicketsJob;
 use OCA\Zammad\Db\ImportedTicketMapper;
+use OCA\Zammad\Service\TicketText;
 use OCA\Zammad\Service\ZammadAPIService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Utility\ITimeFactory;
@@ -703,7 +704,7 @@ class TicketImportService {
 				$body = mb_strcut($body, 0, $remaining, 'UTF-8');
 			}
 			if (($article['content_type'] ?? '') === 'text/html') {
-				$body = self::htmlToText($body);
+				$body = TicketText::htmlToText($body);
 			}
 			$from = trim((string)($article['from'] ?? ''));
 			$next = ($from === '' ? '' : $from . ":\n\n") . $body . "\n\n";
@@ -720,38 +721,6 @@ class TicketImportService {
 			$content .= $next;
 		}
 		return $content;
-	}
-
-	/**
-	 * The text of an HTML article body, as it goes into the index.
-	 *
-	 * strip_tags() on its own is not enough for the HTML mails that make up most of
-	 * the article history of a ticket: it takes out the tags but keeps what is
-	 * between them, so the stylesheet of a mail ends up in the index, and it leaves
-	 * no whitespace behind, so the last word of a paragraph and the first word of
-	 * the next one are glued into one.
-	 *
-	 * @param string $html
-	 * @return string
-	 */
-	private static function htmlToText(string $html): string {
-		// these carry no text of the article, tags and content alike
-		$text = preg_replace('#<(script|style|head)\b[^>]*>.*?</\1\s*>#is', ' ', $html) ?? $html;
-		// the line structure the markup carries, before the markup itself is gone
-		$text = preg_replace('#<(br|/p|/div|/li|/tr|/h[1-6]|/table|/blockquote)\b[^>]*>#i', "\n", $text) ?? $text;
-		// neighbouring cells of a row belong on one line, but not in one word
-		$text = preg_replace('#</(td|th)\b[^>]*>#i', ' ', $text) ?? $text;
-		$text = strip_tags($text);
-		// decoded only once the tags are gone, so that an escaped tag in the article
-		// body stays the text the author wrote instead of turning into markup that
-		// strip_tags() would have taken out
-		$text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-		// whatever whitespace the markup was laid out with, collapsed, while the line
-		// breaks that stand for a block of their own are kept
-		$text = preg_replace('#[^\S\n]+#u', ' ', $text) ?? $text;
-		$text = preg_replace('#[^\S\n]*\n[^\S\n]*#u', "\n", $text) ?? $text;
-		$text = preg_replace('#\n{3,}#', "\n\n", $text) ?? $text;
-		return trim($text);
 	}
 
 	/**
@@ -927,6 +896,7 @@ class TicketImportService {
 	 */
 	public function getInstanceId(string $userId): string {
 		$url = rtrim(trim($this->zammadAPIService->getZammadUrl($userId)), '/');
+		// the Context Agent's Zammad tools compute the same ID, pinned by InstanceIdTest
 		$instance = substr(hash('sha256', $url), 0, 32);
 		// A hash cannot be turned back into the URL it was built from, and the link
 		// to an imported ticket is built from its item ID alone, outside of any user
