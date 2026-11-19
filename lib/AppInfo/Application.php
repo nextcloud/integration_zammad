@@ -11,6 +11,7 @@
 namespace OCA\Zammad\AppInfo;
 
 use Closure;
+use OCA\Zammad\Capabilities;
 use OCA\Zammad\ContextChat\ContentProvider;
 use OCA\Zammad\Dashboard\ZammadWidget;
 use OCA\Zammad\Listener\ZammadReferenceListener;
@@ -46,6 +47,7 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function register(IRegistrationContext $context): void {
+		$context->registerCapability(Capabilities::class);
 		$context->registerDashboardWidget(ZammadWidget::class);
 		$context->registerSearchProvider(ZammadSearchProvider::class);
 
