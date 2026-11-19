@@ -703,9 +703,11 @@ class TicketImportService {
 			if ($overBudget) {
 				$body = mb_strcut($body, 0, $remaining, 'UTF-8');
 			}
-			if (($article['content_type'] ?? '') === 'text/html') {
-				$body = TicketText::htmlToText($body);
-			}
+			// mails without their signature and quoted thread, which would put every
+			// earlier article into the index once more with each reply
+			$body = ($article['type'] ?? null) === 'email'
+				? TicketText::articleText($body, (string)($article['content_type'] ?? ''))
+				: TicketText::articleBodyToText($body, (string)($article['content_type'] ?? ''));
 			$from = trim((string)($article['from'] ?? ''));
 			$next = ($from === '' ? '' : $from . ":\n\n") . $body . "\n\n";
 			// ContextChat drops content that is too large for its backend without
