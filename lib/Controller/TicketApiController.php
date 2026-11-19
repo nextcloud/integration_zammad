@@ -22,6 +22,7 @@ use OCP\AppFramework\OCSController;
 use OCP\Config\IUserConfig;
 use OCP\IL10N;
 use OCP\IRequest;
+use OCP\IUserManager;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -30,8 +31,14 @@ use Psr\Log\LoggerInterface;
  * All calls are made with the user's own Zammad token, so Zammad decides which
  * tickets and articles, internal notes included, a user may see.
  *
+ * Notes the Assistant writes end with a footer block: an empty line, a line "---"
+ * and a line starting with "Nextcloud Assistant for ". The block is a contract.
+ * Earlier notes are recognized by it, so changing it breaks the duplicate check
+ * and the assistant_note flag for every note written before the change.
+ *
  * @psalm-import-type ZammadArticle from ResponseDefinitions
  * @psalm-import-type ZammadError from ResponseDefinitions
+ * @psalm-import-type ZammadNote from ResponseDefinitions
  * @psalm-import-type ZammadTicket from ResponseDefinitions
  * @psalm-import-type ZammadTicketList from ResponseDefinitions
  * @psalm-import-type ZammadTicketListEntry from ResponseDefinitions
@@ -45,11 +52,19 @@ class TicketApiController extends OCSController {
 	/** The rest of max_chars is left for the ticket's fields and the JSON around the text */
 	private const TEXT_SHARE_OF_MAX_CHARS = 0.75;
 
+	public const NOTE_MAX_CHARS = 20000;
+	/**
+	 * The fixed last line of every note the Assistant writes. Never translated, as
+	 * earlier Assistant notes are recognized by it whatever the user's language.
+	 */
+	public const ASSISTANT_FOOTER_PREFIX = 'Nextcloud Assistant for ';
+
 	public function __construct(
 		string $appName,
 		IRequest $request,
 		private ZammadAPIService $zammadAPIService,
 		private IUserConfig $userConfig,
+		private IUserManager $userManager,
 		private IL10N $l10n,
 		private LoggerInterface $logger,
 		private ?string $userId,
@@ -152,6 +167,7 @@ class TicketApiController extends OCSController {
 	 *
 	 * The articles come as plain text, emails without quoted earlier messages, newest last. When they do not fit into
 	 * max_chars, the oldest ones are left out and `truncated` is true. Attachments are listed, not downloaded.
+	 * `assistant_note` marks internal notes the Assistant wrote earlier.
 	 *
 	 * @param string $ticket Ticket ID, or a ticket link of the user's Zammad server
 	 * @param int|null $max_chars How large the answer may get, e.g. what a language model client has room for
@@ -170,15 +186,10 @@ class TicketApiController extends OCSController {
 		if ($zammadUrl === null) {
 			return $this->notConnected();
 		}
-		$parsed = TicketText::parseTicketReference($zammadUrl, $ticket);
-		if (!isset($parsed['id'])) {
-			return $parsed['error'] === 'wrong_host'
-				? self::error(Http::STATUS_BAD_REQUEST, 'wrong_host',
-					$this->l10n->t('This ticket link points to a different Zammad server than the one your account is connected to (%s).', [$zammadUrl]))
-				: self::error(Http::STATUS_BAD_REQUEST, 'invalid_ticket',
-					$this->l10n->t('Give a ticket ID or a ticket link like %s/#ticket/zoom/123.', [$zammadUrl]));
+		$ticketId = TicketText::parseTicketReference($zammadUrl, $ticket)['id'] ?? null;
+		if ($ticketId === null) {
+			return $this->invalidTicket($zammadUrl, $ticket);
 		}
-		$ticketId = $parsed['id'];
 
 		try {
 			// full: the ticket with its users and organization, the same assets a search returns
@@ -192,12 +203,7 @@ class TicketApiController extends OCSController {
 		}
 		foreach ([$info, $articles] as $response) {
 			if (isset($response['error'])) {
-				return match ($response['error-code'] ?? null) {
-					Http::STATUS_UNAUTHORIZED => $this->badCredentials(),
-					Http::STATUS_FORBIDDEN, Http::STATUS_NOT_FOUND => self::error(Http::STATUS_NOT_FOUND, 'not_found',
-						$this->l10n->t('Ticket %s does not exist, or your Zammad account has no access to it.', [(string)$ticketId])),
-					default => self::error(Http::STATUS_BAD_GATEWAY, 'zammad_error', $this->l10n->t('Zammad answered with an error.')),
-				};
+				return $this->zammadError($response, $ticketId);
 			}
 		}
 
@@ -223,6 +229,150 @@ class TicketApiController extends OCSController {
 			'truncated' => $truncated,
 			'articles' => $articleList,
 		]);
+	}
+
+	/**
+	 * Add an internal note to a ticket
+	 *
+	 * The note is written with the user's own Zammad token, so it shows the user as its author, and Zammad
+	 * decides whether the user may add notes to the ticket. The note is plain text. The server ends every
+	 * note with an empty line, a line "---" and the line "Nextcloud Assistant for <user's name>", which mark
+	 * it as written by the Assistant.
+	 *
+	 * @param string $ticket Ticket ID or ticket link
+	 * @param string $text Text of the note, plain text without a footer
+	 * @param string|null $ticket_number Number of the ticket the note is meant for. The note is refused if the ticket has another number
+	 * @param bool $force Add the note even if the ticket already has an Assistant note newer than the customer's last message
+	 * @return DataResponse<Http::STATUS_CREATED, ZammadNote, array{}>|DataResponse<Http::STATUS_BAD_REQUEST|Http::STATUS_NOT_FOUND|Http::STATUS_CONFLICT|Http::STATUS_PRECONDITION_FAILED|Http::STATUS_BAD_GATEWAY, ZammadError, array{}>
+	 *
+	 * 201: Note added
+	 * 400: The text is empty or too long, the ticket is not an ID or a link, or the ticket number does not match
+	 * 404: The ticket does not exist, or the user may not add notes to it
+	 * 409: The ticket already has an Assistant note newer than the customer's last message
+	 * 412: The user is not connected to Zammad
+	 * 502: Zammad could not be reached
+	 */
+	#[NoAdminRequired]
+	#[ApiRoute(verb: 'POST', url: '/api/v1/ticket/notes')]
+	public function addNote(string $ticket, string $text, ?string $ticket_number = null, bool $force = false): DataResponse {
+		$zammadUrl = $this->getZammadUrl();
+		if ($zammadUrl === null) {
+			return $this->notConnected();
+		}
+		$ticketId = TicketText::parseTicketReference($zammadUrl, $ticket)['id'] ?? null;
+		if ($ticketId === null) {
+			return $this->invalidTicket($zammadUrl, $ticket);
+		}
+		$text = self::removeFooter(trim($text));
+		if ($text === '' || mb_strlen($text) > self::NOTE_MAX_CHARS) {
+			return self::error(Http::STATUS_BAD_REQUEST, 'invalid_parameter',
+				$this->l10n->t('The note has to have between 1 and %s characters.', [(string)self::NOTE_MAX_CHARS]));
+		}
+
+		try {
+			$info = $this->zammadAPIService->request((string)$this->userId, 'tickets/' . $ticketId);
+			if (isset($info['error'])) {
+				return $this->zammadError($info, $ticketId);
+			}
+			$number = (string)($info['number'] ?? '');
+			$title = (string)($info['title'] ?? '');
+			$expected = ltrim(trim((string)$ticket_number), '#');
+			if ($expected !== '' && $expected !== $number) {
+				return self::error(Http::STATUS_BAD_REQUEST, 'ticket_mismatch',
+					$this->l10n->t('Ticket %1$s is number %2$s ("%3$s"), not number %4$s. Check that the note goes to the right ticket.',
+						[(string)$ticketId, $number, $title, $expected]));
+			}
+			if (!$force) {
+				$articles = $this->zammadAPIService->getArticlesByTicket((string)$this->userId, $ticketId);
+				if (isset($articles['error'])) {
+					return $this->zammadError($articles, $ticketId);
+				}
+				$lastNoteAt = self::lastAssistantNoteAt($articles);
+				$customerAt = self::stringOrNull($info['last_contact_customer_at'] ?? null);
+				if ($lastNoteAt !== null && ($customerAt === null || strtotime($customerAt) <= strtotime($lastNoteAt))) {
+					return self::error(Http::STATUS_CONFLICT, 'already_noted',
+						$this->l10n->t('Ticket %1$s ("%2$s") already has an Assistant note that is newer than the customer\'s last message.', [$number, $title]));
+				}
+			}
+
+			$footer = self::ASSISTANT_FOOTER_PREFIX . $this->getAuthorName();
+			$article = $this->zammadAPIService->request((string)$this->userId, 'ticket_articles', [
+				'ticket_id' => $ticketId,
+				'body' => $text . "\n\n---\n" . $footer,
+				'content_type' => 'text/plain',
+				'type' => 'note',
+				'internal' => true,
+			], 'POST');
+		} catch (Exception $e) {
+			return $this->unreachable($e);
+		}
+		if (isset($article['error'])) {
+			return $this->zammadError($article, $ticketId);
+		}
+		$articleId = (int)($article['id'] ?? 0);
+		return new DataResponse([
+			'id' => $articleId,
+			'ticket_id' => $ticketId,
+			'number' => $number,
+			'title' => $title,
+			'created_at' => self::stringOrNull($article['created_at'] ?? null),
+			'url' => $zammadUrl . '/#ticket/zoom/' . $ticketId . ($articleId > 0 ? '/' . $articleId : ''),
+		], Http::STATUS_CREATED);
+	}
+
+	/**
+	 * When the newest internal note ending with the Assistant's footer was written.
+	 */
+	private static function lastAssistantNoteAt(array $articles): ?string {
+		$last = null;
+		foreach ($articles as $article) {
+			$createdAt = is_array($article) ? self::stringOrNull($article['created_at'] ?? null) : null;
+			if ($createdAt !== null && self::isAssistantNote($article) && ($last === null || strtotime($createdAt) > strtotime($last))) {
+				$last = $createdAt;
+			}
+		}
+		return $last;
+	}
+
+	/**
+	 * Whether an article is a note the Assistant wrote: an internal note by an agent
+	 * whose last two non-empty lines are the footer block, see the class description.
+	 */
+	private static function isAssistantNote(array $article): bool {
+		if (empty($article['internal']) || ($article['type'] ?? null) !== 'note' || ($article['sender'] ?? null) !== 'Agent') {
+			return false;
+		}
+		$text = TicketText::articleBodyToText((string)($article['body'] ?? ''), (string)($article['content_type'] ?? ''));
+		$lines = array_values(array_filter(array_map('trim', preg_split('/\R/u', $text) ?: []), static fn (string $line) => $line !== ''));
+		$count = count($lines);
+		return $count >= 2 && $lines[$count - 2] === '---' && str_starts_with($lines[$count - 1], self::ASSISTANT_FOOTER_PREFIX);
+	}
+
+	/**
+	 * Drops a footer the model wrote itself, so a note never carries two.
+	 */
+	private static function removeFooter(string $text): string {
+		$lines = preg_split('/\R/u', $text) ?: [];
+		while ($lines !== []) {
+			$last = trim((string)end($lines));
+			if ($last !== '' && $last !== '---' && $last !== '***' && !str_starts_with($last, self::ASSISTANT_FOOTER_PREFIX)) {
+				break;
+			}
+			array_pop($lines);
+		}
+		return trim(implode("\n", $lines));
+	}
+
+	/**
+	 * The user's name as Zammad knows it, or their Nextcloud display name.
+	 */
+	private function getAuthorName(): string {
+		$userId = (string)$this->userId;
+		$name = trim($this->userConfig->getValueString($userId, Application::APP_ID, 'user_name', lazy: true));
+		if ($name === '') {
+			$name = trim((string)$this->userManager->getDisplayName($userId));
+		}
+		return $name !== '' ? $name : $userId;
 	}
 
 	/**
@@ -296,6 +446,7 @@ class TicketApiController extends OCSController {
 				'sender' => self::stringOrNull($article['sender'] ?? null),
 				'type' => self::stringOrNull($article['type'] ?? null),
 				'internal' => !empty($article['internal']),
+				'assistant_note' => self::isAssistantNote($article),
 				'created_at' => self::stringOrNull($article['created_at'] ?? null),
 				'text' => $text,
 				'attachments' => $attachments,
@@ -315,6 +466,30 @@ class TicketApiController extends OCSController {
 		$token = $this->userConfig->getValueString((string)$this->userId, Application::APP_ID, 'token', lazy: true);
 		$zammadUrl = rtrim(trim($this->zammadAPIService->getZammadUrl((string)$this->userId)), '/');
 		return $token === '' || $zammadUrl === '' ? null : $zammadUrl;
+	}
+
+	/**
+	 * @return DataResponse<Http::STATUS_BAD_REQUEST, ZammadError, array{}>
+	 */
+	private function invalidTicket(string $zammadUrl, string $ticket): DataResponse {
+		return TicketText::parseTicketReference($zammadUrl, $ticket)['error'] === 'wrong_host'
+			? self::error(Http::STATUS_BAD_REQUEST, 'wrong_host',
+				$this->l10n->t('This ticket link points to a different Zammad server than the one your account is connected to (%s).', [$zammadUrl]))
+			: self::error(Http::STATUS_BAD_REQUEST, 'invalid_ticket',
+				$this->l10n->t('Give a ticket ID or a ticket link like %s/#ticket/zoom/123.', [$zammadUrl]));
+	}
+
+	/**
+	 * @param array $response a Zammad response with an 'error' key
+	 * @return DataResponse<Http::STATUS_NOT_FOUND|Http::STATUS_PRECONDITION_FAILED|Http::STATUS_BAD_GATEWAY, ZammadError, array{}>
+	 */
+	private function zammadError(array $response, int $ticketId): DataResponse {
+		return match ($response['error-code'] ?? null) {
+			Http::STATUS_UNAUTHORIZED => $this->badCredentials(),
+			Http::STATUS_FORBIDDEN, Http::STATUS_NOT_FOUND => self::error(Http::STATUS_NOT_FOUND, 'not_found',
+				$this->l10n->t('Ticket %s does not exist, or your Zammad account has no access to it.', [(string)$ticketId])),
+			default => self::error(Http::STATUS_BAD_GATEWAY, 'zammad_error', $this->l10n->t('Zammad answered with an error.')),
+		};
 	}
 
 	/**
