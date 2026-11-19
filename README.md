@@ -23,8 +23,9 @@ With this app and the [Context Agent](https://github.com/nextcloud/context_agent
 - **Token permissions:** users need a Zammad personal access token with agent access to tickets (`ticket.agent`). Users connected with OAuth have the permissions of their Zammad account.
 - **Ticket lists** use Zammad's ticket search with its query syntax (`state.name:new`, `priority.name:"3 high"`, custom fields by their internal name). Zammad needs Elasticsearch for field queries; without it, a query is matched as plain text.
 - **One ticket** comes with its articles as plain text, without quoted mail history. Long tickets are cut to what the Context Agent has room for, keeping the newest articles. Attachments are listed, not downloaded.
+- **Internal notes** can be added by the Assistant after the user confirms each one. They are plain text, written with the user's token, so they show the user as author, and always end with a line `---` and the line "Nextcloud Assistant for <name>". A note is refused if the ticket number does not match the one the Assistant meant, or if the ticket already has an Assistant note and the customer has not written since.
 
-The same data is available to other clients through the OCS API (`/ocs/v2.php/apps/integration_zammad/api/v1/tickets` and `.../ticket?ticket=<ID or link>`), described in [openapi.json](openapi.json).
+The same is available to other clients through the OCS API (`/ocs/v2.php/apps/integration_zammad/api/v1/tickets`, `.../ticket?ticket=<ID or link>` and `POST .../ticket/notes`), described in [openapi.json](openapi.json).
 
 ## **🛠️ State of maintenance**
 

@@ -28,6 +28,7 @@
                     "sender",
                     "type",
                     "internal",
+                    "assistant_note",
                     "created_at",
                     "text",
                     "attachments"
@@ -50,6 +51,9 @@
                         "nullable": true
                     },
                     "internal": {
+                        "type": "boolean"
+                    },
+                    "assistant_note": {
                         "type": "boolean"
                     },
                     "created_at": {
@@ -114,6 +118,40 @@
                         "type": "string"
                     },
                     "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Note": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "ticket_id",
+                    "number",
+                    "title",
+                    "created_at",
+                    "url"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "ticket_id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "number": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "url": {
                         "type": "string"
                     }
                 }
@@ -549,7 +587,7 @@
             "get": {
                 "operationId": "ticket_api-get-ticket",
                 "summary": "Get a ticket with its conversation",
-                "description": "The articles come as plain text, emails without quoted earlier messages, newest last. When they do not fit into max_chars, the oldest ones are left out and `truncated` is true. Attachments are listed, not downloaded.",
+                "description": "The articles come as plain text, emails without quoted earlier messages, newest last. When they do not fit into max_chars, the oldest ones are left out and `truncated` is true. Attachments are listed, not downloaded. `assistant_note` marks internal notes the Assistant wrote earlier.",
                 "tags": [
                     "ticket_api"
                 ],
@@ -774,12 +812,287 @@
                     }
                 }
             }
+        },
+        "/ocs/v2.php/apps/integration_zammad/api/v1/ticket/notes": {
+            "post": {
+                "operationId": "ticket_api-add-note",
+                "summary": "Add an internal note to a ticket",
+                "description": "The note is written with the user's own Zammad token, so it shows the user as its author, and Zammad decides whether the user may add notes to the ticket. The note is plain text. The server ends every note with an empty line, a line \"---\" and the line \"Nextcloud Assistant for <user's name>\", which mark it as written by the Assistant.",
+                "tags": [
+                    "ticket_api"
+                ],
+                "security": [
+                    {
+                        "bearer_auth": []
+                    },
+                    {
+                        "basic_auth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "ticket",
+                                    "text"
+                                ],
+                                "properties": {
+                                    "ticket": {
+                                        "type": "string",
+                                        "description": "Ticket ID or ticket link"
+                                    },
+                                    "text": {
+                                        "type": "string",
+                                        "description": "Text of the note, plain text without a footer"
+                                    },
+                                    "ticket_number": {
+                                        "type": "string",
+                                        "nullable": true,
+                                        "default": null,
+                                        "description": "Number of the ticket the note is meant for. The note is refused if the ticket has another number"
+                                    },
+                                    "force": {
+                                        "type": "boolean",
+                                        "default": false,
+                                        "description": "Add the note even if the ticket already has an Assistant note newer than the customer's last message"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "OCS-APIRequest",
+                        "in": "header",
+                        "description": "Required to be true for the API request to pass",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean",
+                            "default": true
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Note added",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "ocs"
+                                    ],
+                                    "properties": {
+                                        "ocs": {
+                                            "type": "object",
+                                            "required": [
+                                                "meta",
+                                                "data"
+                                            ],
+                                            "properties": {
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/OCSMeta"
+                                                },
+                                                "data": {
+                                                    "$ref": "#/components/schemas/Note"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The text is empty or too long, the ticket is not an ID or a link, or the ticket number does not match",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "ocs"
+                                    ],
+                                    "properties": {
+                                        "ocs": {
+                                            "type": "object",
+                                            "required": [
+                                                "meta",
+                                                "data"
+                                            ],
+                                            "properties": {
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/OCSMeta"
+                                                },
+                                                "data": {
+                                                    "$ref": "#/components/schemas/Error"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The ticket does not exist, or the user may not add notes to it",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "ocs"
+                                    ],
+                                    "properties": {
+                                        "ocs": {
+                                            "type": "object",
+                                            "required": [
+                                                "meta",
+                                                "data"
+                                            ],
+                                            "properties": {
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/OCSMeta"
+                                                },
+                                                "data": {
+                                                    "$ref": "#/components/schemas/Error"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "The ticket already has an Assistant note newer than the customer's last message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "ocs"
+                                    ],
+                                    "properties": {
+                                        "ocs": {
+                                            "type": "object",
+                                            "required": [
+                                                "meta",
+                                                "data"
+                                            ],
+                                            "properties": {
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/OCSMeta"
+                                                },
+                                                "data": {
+                                                    "$ref": "#/components/schemas/Error"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "412": {
+                        "description": "The user is not connected to Zammad",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "ocs"
+                                    ],
+                                    "properties": {
+                                        "ocs": {
+                                            "type": "object",
+                                            "required": [
+                                                "meta",
+                                                "data"
+                                            ],
+                                            "properties": {
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/OCSMeta"
+                                                },
+                                                "data": {
+                                                    "$ref": "#/components/schemas/Error"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "502": {
+                        "description": "Zammad could not be reached",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "ocs"
+                                    ],
+                                    "properties": {
+                                        "ocs": {
+                                            "type": "object",
+                                            "required": [
+                                                "meta",
+                                                "data"
+                                            ],
+                                            "properties": {
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/OCSMeta"
+                                                },
+                                                "data": {
+                                                    "$ref": "#/components/schemas/Error"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Current user is not logged in",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "ocs"
+                                    ],
+                                    "properties": {
+                                        "ocs": {
+                                            "type": "object",
+                                            "required": [
+                                                "meta",
+                                                "data"
+                                            ],
+                                            "properties": {
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/OCSMeta"
+                                                },
+                                                "data": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "tags": [
         {
             "name": "ticket_api",
-            "description": "Zammad tickets for API clients such as the Assistant. All calls are made with the user's own Zammad token, so Zammad decides which tickets and articles, internal notes included, a user may see."
+            "description": "Zammad tickets for API clients such as the Assistant. All calls are made with the user's own Zammad token, so Zammad decides which tickets and articles, internal notes included, a user may see. Notes the Assistant writes end with a footer block: an empty line, a line \"---\" and a line starting with \"Nextcloud Assistant for \". The block is a contract. Earlier notes are recognized by it, so changing it breaks the duplicate check and the assistant_note flag for every note written before the change."
         }
     ]
 }

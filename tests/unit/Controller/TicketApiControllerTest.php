@@ -14,6 +14,7 @@ use OCA\Zammad\Service\ZammadAPIService;
 use OCP\Config\IUserConfig;
 use OCP\IL10N;
 use OCP\IRequest;
+use OCP\IUserManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -25,6 +26,7 @@ class TicketApiControllerTest extends TestCase {
 	private ZammadAPIService&MockObject $api;
 	private IUserConfig&MockObject $userConfig;
 	private TicketApiController $controller;
+	private string $writtenBody = '';
 
 	protected function setUp(): void {
 		$this->api = $this->createMock(ZammadAPIService::class);
@@ -35,11 +37,12 @@ class TicketApiControllerTest extends TestCase {
 		$this->userConfig->method('getValueString')->willReturnMap([
 			['alice', 'integration_zammad', 'token', '', true, 'secret'],
 			['alice', 'integration_zammad', 'user_id', '', true, '7'],
+			['alice', 'integration_zammad', 'user_name', '', true, 'Bob Agent'],
 		]);
 		$l10n = $this->createMock(IL10N::class);
 		$l10n->method('t')->willReturnCallback(fn (string $text, array $params = []) => vsprintf($text, $params));
 		$this->controller = new TicketApiController('integration_zammad', $this->createMock(IRequest::class), $this->api,
-			$this->userConfig, $l10n, $this->createMock(LoggerInterface::class), 'alice');
+			$this->userConfig, $this->createMock(IUserManager::class), $l10n, $this->createMock(LoggerInterface::class), 'alice');
 	}
 
 	public function testListPassesTheQueryAndMapsNames(): void {
@@ -102,6 +105,7 @@ class TicketApiControllerTest extends TestCase {
 		$this->assertSame(['Still broken.', [['filename' => 'log.txt', 'size' => 12]]], [$data['articles'][2]['text'], $data['articles'][2]['attachments']]);
 		$this->assertSame("Config:\n> proxy on\n--\nend", $data['articles'][3]['text']);
 		$this->assertSame(['sync'], $data['tags']);
+		$this->assertSame([false, false, false, false], array_column($data['articles'], 'assistant_note'));
 		// names the same way a list gives them
 		$this->assertSame(['31042', 'open', null, 'Eve Customer', 'Acme'], [$data['number'], $data['state'], $data['owner'], $data['customer'], $data['organization']]);
 	}
@@ -117,8 +121,83 @@ class TicketApiControllerTest extends TestCase {
 		$userConfig = $this->createMock(IUserConfig::class);
 		$userConfig->method('getValueString')->willReturn('');
 		$controller = new TicketApiController('integration_zammad', $this->createMock(IRequest::class), $this->api,
-			$userConfig, $this->createMock(IL10N::class), $this->createMock(LoggerInterface::class), 'alice');
+			$userConfig, $this->createMock(IUserManager::class), $this->createMock(IL10N::class), $this->createMock(LoggerInterface::class), 'alice');
 		$this->assertSame(412, $controller->listTickets()->getStatus());
 		$this->assertSame(412, $controller->getTicket('42')->getStatus());
+		$this->assertSame(412, $controller->addNote('42', 'Text')->getStatus());
+	}
+
+	/**
+	 * @param list<array> $articles
+	 */
+	private function ticketForNote(array $articles, ?string $lastCustomerAt = '2026-06-01T10:00:00Z'): void {
+		$this->api->method('request')->willReturnCallback(function (string $userId, string $endPoint, array $params = [], string $method = 'GET') use ($lastCustomerAt) {
+			if ($method === 'POST') {
+				$this->assertSame(['ticket_articles', 42, 'note', true, 'text/plain'], [$endPoint, $params['ticket_id'], $params['type'], $params['internal'], $params['content_type']]);
+				$this->writtenBody = $params['body'];
+				return ['id' => 7, 'created_at' => '2026-06-02T10:00:00Z'];
+			}
+			return ['id' => 42, 'number' => '31042', 'title' => 'Sync', 'last_contact_customer_at' => $lastCustomerAt];
+		});
+		$this->api->method('getArticlesByTicket')->willReturn($articles);
+	}
+
+	private static function assistantNote(string $createdAt): array {
+		return ['internal' => true, 'type' => 'note', 'sender' => 'Agent', 'content_type' => 'text/plain', 'created_at' => $createdAt,
+			'body' => "Summary\n\n---\nNextcloud Assistant for Bob Agent"];
+	}
+
+	public function testNoteGetsExactlyOneFooter(): void {
+		$this->ticketForNote([]);
+		$response = $this->controller->addNote('42', "Proxy blocks sync.\n- check the settings\n\n---\nNextcloud Assistant for Somebody", '#31042');
+		$this->assertSame(201, $response->getStatus());
+		$this->assertSame(self::ZAMMAD . '/#ticket/zoom/42/7', $response->getData()['url']);
+		$body = $this->writtenBody;
+		$this->assertSame(1, substr_count($body, 'Nextcloud Assistant for'));
+		// the text as given, then the footer block
+		$this->assertSame("Proxy blocks sync.\n- check the settings\n\n---\nNextcloud Assistant for Bob Agent", $body);
+	}
+
+	public function testNoteForAnotherTicketNumberIsRefused(): void {
+		$this->ticketForNote([]);
+		$response = $this->controller->addNote('42', 'Text', '31043');
+		$this->assertSame([400, 'ticket_mismatch'], [$response->getStatus(), $response->getData()['error']]);
+	}
+
+	public function testSecondNoteWithoutNewCustomerMessageIsRefused(): void {
+		$this->ticketForNote([self::assistantNote('2026-06-01T11:00:00Z')]);
+		$response = $this->controller->addNote('42', 'Text');
+		$this->assertSame([409, 'already_noted'], [$response->getStatus(), $response->getData()['error']]);
+		$this->assertSame(201, $this->controller->addNote('42', 'Text', null, true)->getStatus());
+	}
+
+	public function testTicketMarksEarlierAssistantNotes(): void {
+		$this->api->method('request')->willReturn(['id' => 42, 'assets' => ['Ticket' => [42 => ['id' => 42]]]]);
+		$note = self::assistantNote('2026-06-01T09:00:00Z');
+		$this->api->method('getArticlesByTicket')->willReturn([
+			$note,
+			// the phrase in the middle of a note
+			['internal' => true, 'type' => 'note', 'sender' => 'Agent', 'content_type' => 'text/plain', 'body' => "Mentions Nextcloud Assistant for Bob Agent\nin the middle."],
+			// a customer quoting the footer in a public email
+			['internal' => false, 'type' => 'email', 'sender' => 'Customer', 'content_type' => 'text/plain', 'body' => "Customer quoting\n---\nNextcloud Assistant for Bob Agent"],
+			// a public article by an agent with the whole footer block
+			['internal' => false] + $note,
+			// the footer line without the --- line
+			['body' => "Summary\n\nNextcloud Assistant for Bob Agent"] + $note,
+			// an internal note with the footer, but written by the system
+			['sender' => 'System'] + $note,
+		]);
+		$data = $this->controller->getTicket('42')->getData();
+		$this->assertSame([true, false, false, false, false, false], array_column($data['articles'], 'assistant_note'));
+	}
+
+	public function testNoteAfterANewCustomerMessage(): void {
+		$this->ticketForNote([self::assistantNote('2026-06-01T09:00:00Z')]);
+		$this->assertSame(201, $this->controller->addNote('42', 'Text')->getStatus());
+	}
+
+	public function testEmptyOrTooLongNotesAreRefused(): void {
+		$this->assertSame(400, $this->controller->addNote('42', "---\nNextcloud Assistant for Bob")->getStatus());
+		$this->assertSame(400, $this->controller->addNote('42', str_repeat('a', TicketApiController::NOTE_MAX_CHARS + 1))->getStatus());
 	}
 }

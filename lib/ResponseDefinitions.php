@@ -26,6 +26,7 @@ namespace OCA\Zammad;
  *     sender: ?string,
  *     type: ?string,
  *     internal: bool,
+ *     assistant_note: bool,
  *     created_at: ?string,
  *     text: string,
  *     attachments: list<ZammadAttachment>,
@@ -68,6 +69,15 @@ namespace OCA\Zammad;
  * @psalm-type ZammadTicketList = array{
  *     tickets: list<ZammadTicketListEntry>,
  *     count: int,
+ * }
+ *
+ * @psalm-type ZammadNote = array{
+ *     id: int,
+ *     ticket_id: int,
+ *     number: string,
+ *     title: string,
+ *     created_at: ?string,
+ *     url: string,
  * }
  */
 class ResponseDefinitions {
