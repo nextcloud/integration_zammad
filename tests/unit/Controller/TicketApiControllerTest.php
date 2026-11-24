@@ -65,12 +65,27 @@ class TicketApiControllerTest extends TestCase {
 	public function testSearchErrors(): void {
 		$this->api->method('request')->willReturnOnConsecutiveCalls(
 			['error' => 'Unable to process query', 'error-code' => 422],
+			['error' => 'Bad request', 'error-code' => 400],
+			['error' => 'Forbidden', 'error-code' => 403],
+			['error' => 'Bad credentials', 'error-code' => 401],
+			['error' => 'Not found', 'error-code' => 404],
 			['error' => 'Server error', 'error-code' => 500],
 			['error' => 'cURL error 28: timeout'],
 		);
-		$this->assertSame([400, 'search_failed'], [($r = $this->controller->listTickets('state.name:(open'))->getStatus(), $r->getData()['error']]);
-		$this->assertSame([502, 'zammad_error'], [($r = $this->controller->listTickets('state.name:open'))->getStatus(), $r->getData()['error']]);
-		$this->assertSame(502, $this->controller->listTickets('state.name:open')->getStatus());
+		$results = [];
+		for ($i = 0; $i < 7; $i++) {
+			$response = $this->controller->listTickets('state.name:open', sort_by: 'created_at');
+			$results[] = [$response->getStatus(), $response->getData()['error']];
+		}
+		$this->assertSame([
+			[400, 'search_failed'],
+			[400, 'search_failed'],
+			[403, 'forbidden'],
+			[412, 'bad_credentials'],
+			[502, 'zammad_error'],
+			[502, 'zammad_error'],
+			[502, 'zammad_error'],
+		], $results);
 	}
 
 	public function testListRefusesBadSortParameters(): void {
@@ -107,8 +122,14 @@ class TicketApiControllerTest extends TestCase {
 	}
 
 	public function testTicketErrors(): void {
-		$this->api->method('request')->willReturn(['error' => 'Not found', 'error-code' => 404]);
+		$this->api->method('request')->willReturnOnConsecutiveCalls(
+			['error' => 'Not found', 'error-code' => 404],
+			['error' => 'Forbidden', 'error-code' => 403],
+			['error' => 'Server error', 'error-code' => 500],
+		);
 		$this->assertSame(404, $this->controller->getTicket('42')->getStatus());
+		$this->assertSame(404, $this->controller->getTicket('42')->getStatus());
+		$this->assertSame([502, 'zammad_error'], [($r = $this->controller->getTicket('42'))->getStatus(), $r->getData()['error']]);
 		$this->assertSame('wrong_host', $this->controller->getTicket('https://other.example.com/#ticket/zoom/42')->getData()['error']);
 		$this->assertSame(400, $this->controller->getTicket('hello')->getStatus());
 	}

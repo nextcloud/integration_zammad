@@ -68,12 +68,13 @@ class TicketApiController extends OCSController {
 	 * @param int<1, 20> $limit Number of tickets
 	 * @param string|null $sort_by Ticket attribute to sort by, e.g. created_at
 	 * @param string|null $order_by Sort direction, asc or desc
-	 * @return DataResponse<Http::STATUS_OK, ZammadTicketList, array{}>|DataResponse<Http::STATUS_BAD_REQUEST|Http::STATUS_PRECONDITION_FAILED|Http::STATUS_BAD_GATEWAY, ZammadError, array{}>
+	 * @return DataResponse<Http::STATUS_OK, ZammadTicketList, array{}>|DataResponse<Http::STATUS_BAD_REQUEST|Http::STATUS_FORBIDDEN|Http::STATUS_PRECONDITION_FAILED|Http::STATUS_BAD_GATEWAY, ZammadError, array{}>
 	 *
 	 * 200: Tickets returned
 	 * 400: Invalid parameters, or Zammad could not run the query
+	 * 403: The user's Zammad account is not allowed to search tickets
 	 * 412: The user is not connected to Zammad
-	 * 502: Zammad could not be reached
+	 * 502: Zammad could not be reached or answered with another error
 	 */
 	#[NoAdminRequired]
 	#[ApiRoute(verb: 'GET', url: '/api/v1/tickets')]
@@ -118,15 +119,7 @@ class TicketApiController extends OCSController {
 		try {
 			$result = $this->zammadAPIService->request((string)$this->userId, 'tickets/search', $params);
 			if (isset($result['error'])) {
-				$code = $result['error-code'] ?? null;
-				if ($code === Http::STATUS_UNAUTHORIZED) {
-					return $this->badCredentials();
-				}
-				// only a refused query is the caller's to fix; server errors and timeouts are not
-				if (!is_int($code) || $code >= 500) {
-					return self::error(Http::STATUS_BAD_GATEWAY, 'zammad_error', $this->l10n->t('Zammad answered with an error.'));
-				}
-				return self::error(Http::STATUS_BAD_REQUEST, 'search_failed', $this->l10n->t('Zammad could not run this search. Check the query syntax.'));
+				return $this->searchError($result);
 			}
 			$states = $this->zammadAPIService->getTicketStateNames((string)$this->userId);
 			$priorities = $this->zammadAPIService->getPriorityNames((string)$this->userId);
@@ -171,14 +164,10 @@ class TicketApiController extends OCSController {
 			return $this->notConnected();
 		}
 		$parsed = TicketText::parseTicketReference($zammadUrl, $ticket);
-		if (!isset($parsed['id'])) {
-			return $parsed['error'] === 'wrong_host'
-				? self::error(Http::STATUS_BAD_REQUEST, 'wrong_host',
-					$this->l10n->t('This ticket link points to a different Zammad server than the one your account is connected to (%s).', [$zammadUrl]))
-				: self::error(Http::STATUS_BAD_REQUEST, 'invalid_ticket',
-					$this->l10n->t('Give a ticket ID or a ticket link like %s/#ticket/zoom/123.', [$zammadUrl]));
+		$ticketId = $parsed['id'] ?? null;
+		if ($ticketId === null) {
+			return $this->invalidTicket($zammadUrl, $ticket);
 		}
-		$ticketId = $parsed['id'];
 
 		try {
 			// full: the ticket with its users and organization, the same assets a search returns
@@ -192,12 +181,7 @@ class TicketApiController extends OCSController {
 		}
 		foreach ([$info, $articles] as $response) {
 			if (isset($response['error'])) {
-				return match ($response['error-code'] ?? null) {
-					Http::STATUS_UNAUTHORIZED => $this->badCredentials(),
-					Http::STATUS_FORBIDDEN, Http::STATUS_NOT_FOUND => self::error(Http::STATUS_NOT_FOUND, 'not_found',
-						$this->l10n->t('Ticket %s does not exist, or your Zammad account has no access to it.', [(string)$ticketId])),
-					default => self::error(Http::STATUS_BAD_GATEWAY, 'zammad_error', $this->l10n->t('Zammad answered with an error.')),
-				};
+				return $this->zammadError($response, $ticketId);
 			}
 		}
 
@@ -315,6 +299,62 @@ class TicketApiController extends OCSController {
 		$token = $this->userConfig->getValueString((string)$this->userId, Application::APP_ID, 'token', lazy: true);
 		$zammadUrl = rtrim(trim($this->zammadAPIService->getZammadUrl((string)$this->userId)), '/');
 		return $token === '' || $zammadUrl === '' ? null : $zammadUrl;
+	}
+
+	/**
+	 * @return DataResponse<Http::STATUS_BAD_REQUEST, ZammadError, array{}>
+	 */
+	private function invalidTicket(string $zammadUrl, string $ticket): DataResponse {
+		return TicketText::parseTicketReference($zammadUrl, $ticket)['error'] === 'wrong_host'
+			? self::error(Http::STATUS_BAD_REQUEST, 'wrong_host',
+				$this->l10n->t('This ticket link points to a different Zammad server than the one your account is connected to (%s).', [$zammadUrl]))
+			: self::error(Http::STATUS_BAD_REQUEST, 'invalid_ticket',
+				$this->l10n->t('Give a ticket ID or a ticket link like %s/#ticket/zoom/123.', [$zammadUrl]));
+	}
+
+	/**
+	 * The answer to an error of Zammad for a request about one ticket
+	 *
+	 * @param array $response a Zammad response with an 'error' key
+	 * @return DataResponse<Http::STATUS_NOT_FOUND|Http::STATUS_PRECONDITION_FAILED|Http::STATUS_BAD_GATEWAY, ZammadError, array{}>
+	 */
+	private function zammadError(array $response, int $ticketId): DataResponse {
+		return match ($response['error-code'] ?? null) {
+			Http::STATUS_UNAUTHORIZED => $this->badCredentials(),
+			// Zammad answers 403 for tickets the user cannot see, which is the same as not existing for them
+			Http::STATUS_FORBIDDEN, Http::STATUS_NOT_FOUND => self::error(Http::STATUS_NOT_FOUND, 'not_found',
+				$this->l10n->t('Ticket %s does not exist, or your Zammad account has no access to it.', [(string)$ticketId])),
+			default => $this->otherError($response),
+		};
+	}
+
+	/**
+	 * The answer to an error of Zammad for a ticket search
+	 *
+	 * @param array $response a Zammad response with an 'error' key
+	 * @return DataResponse<Http::STATUS_BAD_REQUEST|Http::STATUS_FORBIDDEN|Http::STATUS_PRECONDITION_FAILED|Http::STATUS_BAD_GATEWAY, ZammadError, array{}>
+	 */
+	private function searchError(array $response): DataResponse {
+		return match ($response['error-code'] ?? null) {
+			Http::STATUS_UNAUTHORIZED => $this->badCredentials(),
+			Http::STATUS_FORBIDDEN => self::error(Http::STATUS_FORBIDDEN, 'forbidden',
+				$this->l10n->t('Your Zammad account is not allowed to search tickets.')),
+			// Zammad refuses a search it cannot run with 422, e.g. for an unknown sort_by attribute
+			Http::STATUS_BAD_REQUEST, Http::STATUS_UNPROCESSABLE_ENTITY => self::error(Http::STATUS_BAD_REQUEST, 'search_failed',
+				$this->l10n->t('Zammad could not run this search. Check the query and sort_by.')),
+			default => $this->otherError($response),
+		};
+	}
+
+	/**
+	 * @param array $response a Zammad response with an 'error' key
+	 * @return DataResponse<Http::STATUS_BAD_GATEWAY, ZammadError, array{}>
+	 */
+	private function otherError(array $response): DataResponse {
+		$code = $response['error-code'] ?? null;
+		return self::error(Http::STATUS_BAD_GATEWAY, 'zammad_error', is_int($code)
+			? $this->l10n->t('Zammad answered with error %s.', [(string)$code])
+			: $this->l10n->t('Zammad could not be reached.'));
 	}
 
 	/**

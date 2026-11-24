@@ -454,6 +454,36 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "The user's Zammad account is not allowed to search tickets",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "ocs"
+                                    ],
+                                    "properties": {
+                                        "ocs": {
+                                            "type": "object",
+                                            "required": [
+                                                "meta",
+                                                "data"
+                                            ],
+                                            "properties": {
+                                                "meta": {
+                                                    "$ref": "#/components/schemas/OCSMeta"
+                                                },
+                                                "data": {
+                                                    "$ref": "#/components/schemas/Error"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
                     "412": {
                         "description": "The user is not connected to Zammad",
                         "content": {
@@ -485,7 +515,7 @@
                         }
                     },
                     "502": {
-                        "description": "Zammad could not be reached",
+                        "description": "Zammad could not be reached or answered with another error",
                         "content": {
                             "application/json": {
                                 "schema": {
