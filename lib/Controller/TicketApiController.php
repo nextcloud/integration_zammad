@@ -238,7 +238,7 @@ class TicketApiController extends OCSController {
 				return null;
 			}
 			$user = $users[$id];
-			return trim(($user['firstname'] ?? '') . ' ' . ($user['lastname'] ?? '')) ?: self::stringOrNull($user['email'] ?? $user['login'] ?? null);
+			return trim(($user['firstname'] ?? '') . ' ' . ($user['lastname'] ?? '')) ?: self::stringOrNull($user['email'] ?: $user['login'] ?: null);
 		};
 		$id = (int)($ticket['id'] ?? 0);
 		return [
