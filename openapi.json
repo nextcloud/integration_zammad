@@ -156,6 +156,9 @@
                     "tags",
                     "created_at",
                     "updated_at",
+                    "last_contact_customer_at",
+                    "last_contact_agent_at",
+                    "escalation_at",
                     "url",
                     "article_count",
                     "truncated",
@@ -203,6 +206,18 @@
                         "nullable": true
                     },
                     "updated_at": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "last_contact_customer_at": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "last_contact_agent_at": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "escalation_at": {
                         "type": "string",
                         "nullable": true
                     },

@@ -96,7 +96,8 @@ class TicketApiControllerTest extends TestCase {
 
 	public function testTicketKeepsInternalNotesAndDropsTheOldestArticles(): void {
 		$this->api->method('request')->with('alice', 'tickets/42', ['full' => 'true'])->willReturn(['id' => 42, 'assets' => [
-			'Ticket' => [42 => ['id' => 42, 'number' => '31042', 'title' => 'Sync', 'state_id' => 2, 'owner_id' => 1, 'customer_id' => 9, 'organization_id' => 3]],
+			'Ticket' => [42 => ['id' => 42, 'number' => '31042', 'title' => 'Sync', 'state_id' => 2, 'owner_id' => 1, 'customer_id' => 9, 'organization_id' => 3,
+				'last_contact_customer_at' => '2026-06-01T10:00:00.000Z']],
 			'User' => [9 => ['firstname' => 'Eve', 'lastname' => 'Customer', 'email' => 'eve@example.com']],
 			'Organization' => [3 => ['name' => 'Acme']],
 		]]);
@@ -120,6 +121,8 @@ class TicketApiControllerTest extends TestCase {
 		$this->assertSame(['sync'], $data['tags']);
 		// names the same way a list gives them
 		$this->assertSame(['31042', 'open', null, 'Eve Customer', 'Acme'], [$data['number'], $data['state'], $data['owner'], $data['customer'], $data['organization']]);
+		// the Assistant's check for an earlier note compares with the customer's last message
+		$this->assertSame(['2026-06-01T10:00:00.000Z', null, null], [$data['last_contact_customer_at'], $data['last_contact_agent_at'], $data['escalation_at']]);
 	}
 
 	public function testTicketErrors(): void {
