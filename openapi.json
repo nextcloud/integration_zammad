@@ -319,7 +319,7 @@
             "get": {
                 "operationId": "ticket_api-list-tickets",
                 "summary": "List tickets found with a Zammad search query",
-                "description": "The query is passed to Zammad's ticket search unchanged, with the same syntax as Zammad's search bar, e.g. `state.name:(new OR open) AND priority.name:\"3 high\"`.",
+                "description": "The query is passed to Zammad's ticket search unchanged, with the same syntax as Zammad's search bar, e.g. `state.name:(new OR open) AND priority.name:\"3 high\"`. Field syntax needs Elasticsearch on the Zammad server: without it, Zammad matches the query as plain text against ticket title, number and articles. A query Zammad cannot parse finds no tickets rather than giving an error.",
                 "tags": [
                     "ticket_api"
                 ],

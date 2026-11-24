@@ -61,7 +61,9 @@ class TicketApiController extends OCSController {
 	 * List tickets found with a Zammad search query
 	 *
 	 * The query is passed to Zammad's ticket search unchanged, with the same syntax as Zammad's search bar,
-	 * e.g. `state.name:(new OR open) AND priority.name:"3 high"`.
+	 * e.g. `state.name:(new OR open) AND priority.name:"3 high"`. Field syntax needs Elasticsearch on the Zammad
+	 * server: without it, Zammad matches the query as plain text against ticket title, number and articles.
+	 * A query Zammad cannot parse finds no tickets rather than giving an error.
 	 *
 	 * @param string $query Query in Zammad's search syntax. Empty lists all tickets the user can see
 	 * @param bool $mine Only tickets owned by the user
@@ -98,7 +100,6 @@ class TicketApiController extends OCSController {
 				return self::error(Http::STATUS_PRECONDITION_FAILED, 'not_connected',
 					$this->l10n->t('Your Zammad account is not known yet. Please disconnect and connect it again in the Connected accounts settings.'));
 			}
-			$query = $query === '' ? 'owner_id:' . $zammadUserId : '(' . $query . ') AND owner_id:' . $zammadUserId;
 		}
 		$limit = max(1, min($limit, self::LIST_MAX_LIMIT));
 		$params = [
@@ -109,6 +110,11 @@ class TicketApiController extends OCSController {
 			// required for Zammad 6.5+ compatibility, see ZammadAPIService::search()
 			'full' => 'true',
 		];
+		if ($mine) {
+			// a condition, not query syntax: Zammad applies conditions with and without Elasticsearch
+			$params['condition[ticket.owner_id][operator]'] = 'is';
+			$params['condition[ticket.owner_id][value]'] = $zammadUserId;
+		}
 		if ($sort_by !== null && $sort_by !== '') {
 			$params['sort_by'] = $sort_by;
 		}

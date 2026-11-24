@@ -44,7 +44,8 @@ class TicketApiControllerTest extends TestCase {
 
 	public function testListPassesTheQueryAndMapsNames(): void {
 		$this->api->expects($this->once())->method('request')
-			->with('alice', 'tickets/search', $this->callback(fn (array $p) => $p['query'] === '(state.name:open) AND owner_id:7' && $p['limit'] === 20))
+			->with('alice', 'tickets/search', $this->callback(fn (array $p) => $p['query'] === 'state.name:open' && $p['limit'] === 20
+				&& $p['condition[ticket.owner_id][operator]'] === 'is' && $p['condition[ticket.owner_id][value]'] === '7'))
 			->willReturn([
 				'tickets' => [5],
 				'assets' => [
