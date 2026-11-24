@@ -25,6 +25,7 @@ class TicketApiControllerTest extends TestCase {
 	private ZammadAPIService&MockObject $api;
 	private IUserConfig&MockObject $userConfig;
 	private TicketApiController $controller;
+	private string $writtenBody = '';
 
 	protected function setUp(): void {
 		$this->api = $this->createMock(ZammadAPIService::class);
@@ -161,5 +162,48 @@ class TicketApiControllerTest extends TestCase {
 			$userConfig, $this->createMock(IL10N::class), $this->createMock(LoggerInterface::class), 'alice');
 		$this->assertSame(412, $controller->listTickets()->getStatus());
 		$this->assertSame(412, $controller->getTicket('42')->getStatus());
+		$this->assertSame(412, $controller->addNote('42', 'Text')->getStatus());
+	}
+
+	private function ticketForNote(): void {
+		$this->api->method('request')->willReturnCallback(function (string $userId, string $endPoint, array $params = [], string $method = 'GET') {
+			if ($method === 'POST') {
+				$this->assertSame(['ticket_articles', 42, 'note', true, 'text/plain'], [$endPoint, $params['ticket_id'], $params['type'], $params['internal'], $params['content_type']]);
+				$this->writtenBody = $params['body'];
+				return ['id' => 7, 'created_at' => '2026-06-02T10:00:00Z'];
+			}
+			return ['id' => 42, 'number' => '31042', 'title' => 'Sync'];
+		});
+	}
+
+	public function testNoteIsStoredAsGiven(): void {
+		$this->ticketForNote();
+		$response = $this->controller->addNote('42', "  Proxy blocks sync.\n- check the settings\n\n---\nSigned by someone\n", '#31042');
+		$this->assertSame(201, $response->getStatus());
+		$this->assertSame(self::ZAMMAD . '/#ticket/zoom/42/7', $response->getData()['url']);
+		// no footer added or removed, only the surrounding whitespace trimmed
+		$this->assertSame("Proxy blocks sync.\n- check the settings\n\n---\nSigned by someone", $this->writtenBody);
+	}
+
+	public function testNoteForAnotherTicketNumberIsRefused(): void {
+		$this->ticketForNote();
+		$response = $this->controller->addNote('42', 'Text', '31043');
+		$this->assertSame([400, 'ticket_mismatch'], [$response->getStatus(), $response->getData()['error']]);
+		$this->assertSame('', $this->writtenBody);
+	}
+
+	public function testNoteErrors(): void {
+		$this->api->method('request')->willReturnOnConsecutiveCalls(
+			['error' => 'Forbidden', 'error-code' => 403],
+			['id' => 42, 'number' => '31042', 'title' => 'Sync'],
+			['error' => 'Unprocessable', 'error-code' => 422],
+		);
+		$this->assertSame(404, $this->controller->addNote('42', 'Text')->getStatus());
+		$this->assertSame([502, 'zammad_error'], [($r = $this->controller->addNote('42', 'Text'))->getStatus(), $r->getData()['error']]);
+	}
+
+	public function testEmptyOrTooLongNotesAreRefused(): void {
+		$this->assertSame(400, $this->controller->addNote('42', "  \n ")->getStatus());
+		$this->assertSame(400, $this->controller->addNote('42', str_repeat('a', TicketApiController::NOTE_MAX_CHARS + 1))->getStatus());
 	}
 }

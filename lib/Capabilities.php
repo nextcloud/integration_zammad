@@ -17,8 +17,11 @@ use OCP\Capabilities\ICapability;
  */
 class Capabilities implements ICapability {
 
-	/** Raised when the ticket API changes in a way clients have to know about */
-	public const TICKET_API_VERSION = 1;
+	/**
+	 * Raised when the ticket API changes in a way clients have to know about.
+	 * 1: list and read tickets. 2: add internal notes.
+	 */
+	public const TICKET_API_VERSION = 2;
 
 	/**
 	 * @return array{integration_zammad: array{ticket_api: int}}

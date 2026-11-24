@@ -32,6 +32,7 @@ use Psr\Log\LoggerInterface;
  *
  * @psalm-import-type ZammadArticle from ResponseDefinitions
  * @psalm-import-type ZammadError from ResponseDefinitions
+ * @psalm-import-type ZammadNote from ResponseDefinitions
  * @psalm-import-type ZammadTicket from ResponseDefinitions
  * @psalm-import-type ZammadTicketList from ResponseDefinitions
  * @psalm-import-type ZammadTicketListEntry from ResponseDefinitions
@@ -40,6 +41,8 @@ class TicketApiController extends OCSController {
 
 	public const LIST_MAX_LIMIT = 20;
 	public const ARTICLES_MAX_LIMIT = 50;
+
+	public const NOTE_MAX_CHARS = 20000;
 
 	public function __construct(
 		string $appName,
@@ -213,6 +216,77 @@ class TicketApiController extends OCSController {
 			'older_articles' => $olderArticles,
 			'articles' => $articleList,
 		]);
+	}
+
+	/**
+	 * Add an internal note to a ticket
+	 *
+	 * The note is written with the user's own Zammad token, so it shows the user as its author, and Zammad
+	 * decides whether the user may add notes to the ticket. The note is plain text and is stored as given.
+	 *
+	 * @param string $ticket Ticket ID or ticket link
+	 * @param string $text Text of the note, plain text
+	 * @param string|null $ticket_number Number of the ticket the note is meant for. The note is refused if the ticket has another number
+	 * @return DataResponse<Http::STATUS_CREATED, ZammadNote, array{}>|DataResponse<Http::STATUS_BAD_REQUEST|Http::STATUS_NOT_FOUND|Http::STATUS_PRECONDITION_FAILED|Http::STATUS_BAD_GATEWAY, ZammadError, array{}>
+	 *
+	 * 201: Note added
+	 * 400: The text is empty or too long, the ticket is not an ID or a link, or the ticket number does not match
+	 * 404: The ticket does not exist, or the user may not add notes to it
+	 * 412: The user is not connected to Zammad
+	 * 502: Zammad could not be reached or answered with another error
+	 */
+	#[NoAdminRequired]
+	#[ApiRoute(verb: 'POST', url: '/api/v1/ticket/notes')]
+	public function addNote(string $ticket, string $text, ?string $ticket_number = null): DataResponse {
+		$zammadUrl = $this->getZammadUrl();
+		if ($zammadUrl === null) {
+			return $this->notConnected();
+		}
+		$ticketId = TicketText::parseTicketReference($zammadUrl, $ticket)['id'] ?? null;
+		if ($ticketId === null) {
+			return $this->invalidTicket($zammadUrl, $ticket);
+		}
+		$text = trim($text);
+		if ($text === '' || mb_strlen($text) > self::NOTE_MAX_CHARS) {
+			return self::error(Http::STATUS_BAD_REQUEST, 'invalid_parameter',
+				$this->l10n->t('The note has to have between 1 and %s characters.', [(string)self::NOTE_MAX_CHARS]));
+		}
+
+		try {
+			$info = $this->zammadAPIService->request((string)$this->userId, 'tickets/' . $ticketId);
+			if (isset($info['error'])) {
+				return $this->zammadError($info, $ticketId);
+			}
+			$number = (string)($info['number'] ?? '');
+			$title = (string)($info['title'] ?? '');
+			$expected = ltrim(trim((string)$ticket_number), '#');
+			if ($expected !== '' && $expected !== $number) {
+				return self::error(Http::STATUS_BAD_REQUEST, 'ticket_mismatch',
+					$this->l10n->t('Ticket %1$s is number %2$s ("%3$s"), not number %4$s. Check that the note goes to the right ticket.',
+						[(string)$ticketId, $number, $title, $expected]));
+			}
+			$article = $this->zammadAPIService->request((string)$this->userId, 'ticket_articles', [
+				'ticket_id' => $ticketId,
+				'body' => $text,
+				'content_type' => 'text/plain',
+				'type' => 'note',
+				'internal' => true,
+			], 'POST');
+		} catch (Exception $e) {
+			return $this->unreachable($e);
+		}
+		if (isset($article['error'])) {
+			return $this->zammadError($article, $ticketId);
+		}
+		$articleId = (int)($article['id'] ?? 0);
+		return new DataResponse([
+			'id' => $articleId,
+			'ticket_id' => $ticketId,
+			'number' => $number,
+			'title' => $title,
+			'created_at' => self::stringOrNull($article['created_at'] ?? null),
+			'url' => $zammadUrl . '/#ticket/zoom/' . $ticketId . ($articleId > 0 ? '/' . $articleId : ''),
+		], Http::STATUS_CREATED);
 	}
 
 	/**
