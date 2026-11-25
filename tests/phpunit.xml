@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  - SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+  - SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+<phpunit bootstrap="bootstrap.php" colors="true" failOnWarning="true">
+	<testsuites>
+		<testsuite name="integration_zammad unit tests">
+			<directory suffix="Test.php">unit</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>
