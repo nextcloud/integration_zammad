@@ -25,6 +25,7 @@ namespace OCA\Zammad\Reference;
 
 use Exception;
 use OCA\Zammad\AppInfo\Application;
+use OCA\Zammad\Service\TicketText;
 use OCA\Zammad\Service\ZammadAPIService;
 use OCP\Collaboration\Reference\ADiscoverableReferenceProvider;
 use OCP\Collaboration\Reference\IReference;
@@ -127,7 +128,7 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 		$adminZammadOauthUrl = $this->appConfig->getValueString(Application::APP_ID, 'oauth_instance_url');
 		$zammadUrl = $this->userConfig->getValueString($this->userId, Application::APP_ID, 'url') ?: $adminZammadOauthUrl;
 		if ($zammadUrl !== '') {
-			$parts = $this->getLinkParts($zammadUrl, $referenceText);
+			$parts = TicketText::getLinkParts($zammadUrl, $referenceText);
 			if ($parts !== null) {
 				[$ticketId, $end] = $parts;
 				//				$projectLabels = $this->zammadAPIService->getProjectLabels($this->userId, $projectInfo['id']);
@@ -178,16 +179,6 @@ class ZammadReferenceProvider extends ADiscoverableReferenceProvider implements 
 		}
 
 		return null;
-	}
-
-	/**
-	 * @param string $zammadUrl
-	 * @param string $url
-	 * @return array|null
-	 */
-	private function getLinkParts(string $zammadUrl, string $url): ?array {
-		preg_match('/^' . preg_quote($zammadUrl, '/') . '\/#ticket\/zoom\/([0-9]+)(.*$)/', $url, $matches);
-		return count($matches) > 2 ? [$matches[1], $matches[2]] : null;
 	}
 
 	/**

@@ -16,6 +16,16 @@ A link to the "Connected accounts" user settings section will be displayed in th
 
 There also is a "Connected accounts" **admin** settings section if you want to allow your Nextcloud users to use OAuth to authenticate to a specific Zammad instance.
 
+## 🤖 Using Zammad with the Assistant
+
+With this app and the [Context Agent](https://github.com/nextcloud/context_agent), the Nextcloud Assistant can list Zammad tickets and read a ticket with its whole conversation. It works with each user's own Zammad connection (see "User settings" above): the Assistant never handles a Zammad token, and it only sees what the user can see in Zammad, internal notes included if their Zammad account can see them.
+
+- **Token permissions:** users need a Zammad personal access token with agent access to tickets (`ticket.agent`). Users connected with OAuth have the permissions of their Zammad account.
+- **Ticket lists** use Zammad's ticket search with its query syntax (`state.name:new`, `priority.name:"3 high"`, custom fields by their internal name). Zammad needs Elasticsearch for field queries; without it, a query is matched as plain text.
+- **One ticket** comes with its articles as plain text, without quoted mail history. Long tickets are cut to what the Context Agent has room for, keeping the newest articles. Attachments are listed, not downloaded.
+
+The same data is available to other clients through the OCS API (`/ocs/v2.php/apps/integration_zammad/api/v1/tickets` and `.../ticket?ticket=<ID or link>`), described in [openapi.json](openapi.json).
+
 ## **🛠️ State of maintenance**
 
 While there are many things that could be done to further improve this app, the app is currently maintained with **limited effort**. This means:
