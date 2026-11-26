@@ -72,6 +72,15 @@ namespace OCA\Zammad;
  *     tickets: list<ZammadTicketListEntry>,
  *     count: int,
  * }
+ *
+ * @psalm-type ZammadNote = array{
+ *     id: int,
+ *     ticket_id: int,
+ *     number: string,
+ *     title: string,
+ *     created_at: ?string,
+ *     url: string,
+ * }
  */
 class ResponseDefinitions {
 }
