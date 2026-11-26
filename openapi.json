@@ -161,7 +161,7 @@
                     "escalation_at",
                     "url",
                     "article_count",
-                    "truncated",
+                    "older_articles",
                     "articles"
                 ],
                 "properties": {
@@ -228,8 +228,9 @@
                         "type": "integer",
                         "format": "int64"
                     },
-                    "truncated": {
-                        "type": "boolean"
+                    "older_articles": {
+                        "type": "integer",
+                        "format": "int64"
                     },
                     "articles": {
                         "type": "array",
@@ -594,7 +595,7 @@
             "get": {
                 "operationId": "ticket_api-get-ticket",
                 "summary": "Get a ticket with its conversation",
-                "description": "The articles come as plain text, emails without quoted earlier messages, newest last. When they do not fit into max_chars, the oldest ones are left out and `truncated` is true. Attachments are listed, not downloaded.",
+                "description": "The articles come as plain text, emails without quoted earlier messages: the newest ones, newest last. `older_articles` counts the articles before them; to read those, call again with `before` set to the ID of the first article returned. Attachments are listed, not downloaded.",
                 "tags": [
                     "ticket_api"
                 ],
@@ -617,9 +618,21 @@
                         }
                     },
                     {
-                        "name": "max_chars",
+                        "name": "limit",
                         "in": "query",
-                        "description": "How large the answer may get, e.g. what a language model client has room for",
+                        "description": "Number of articles",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "default": 10,
+                            "minimum": 1,
+                            "maximum": 50
+                        }
+                    },
+                    {
+                        "name": "before",
+                        "in": "query",
+                        "description": "Only articles before the one with this ID",
                         "schema": {
                             "type": "integer",
                             "format": "int64",

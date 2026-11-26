@@ -39,11 +39,7 @@ use Psr\Log\LoggerInterface;
 class TicketApiController extends OCSController {
 
 	public const LIST_MAX_LIMIT = 20;
-	public const DEFAULT_MAX_CHARS = 40000;
-	private const MIN_MAX_CHARS = 2000;
-	private const MAX_MAX_CHARS = 200000;
-	/** The rest of max_chars is left for the ticket's fields and the JSON around the text */
-	private const TEXT_SHARE_OF_MAX_CHARS = 0.75;
+	public const ARTICLES_MAX_LIMIT = 50;
 
 	public function __construct(
 		string $appName,
@@ -149,11 +145,13 @@ class TicketApiController extends OCSController {
 	/**
 	 * Get a ticket with its conversation
 	 *
-	 * The articles come as plain text, emails without quoted earlier messages, newest last. When they do not fit into
-	 * max_chars, the oldest ones are left out and `truncated` is true. Attachments are listed, not downloaded.
+	 * The articles come as plain text, emails without quoted earlier messages: the newest ones, newest last.
+	 * `older_articles` counts the articles before them; to read those, call again with `before` set to the ID of the
+	 * first article returned. Attachments are listed, not downloaded.
 	 *
 	 * @param string $ticket Ticket ID, or a ticket link of the user's Zammad server
-	 * @param int|null $max_chars How large the answer may get, e.g. what a language model client has room for
+	 * @param int<1, 50> $limit Number of articles
+	 * @param int|null $before Only articles before the one with this ID
 	 * @return DataResponse<Http::STATUS_OK, ZammadTicket, array{}>|DataResponse<Http::STATUS_BAD_REQUEST|Http::STATUS_NOT_FOUND|Http::STATUS_PRECONDITION_FAILED|Http::STATUS_BAD_GATEWAY, ZammadError, array{}>
 	 *
 	 * 200: Ticket returned
@@ -164,7 +162,7 @@ class TicketApiController extends OCSController {
 	 */
 	#[NoAdminRequired]
 	#[ApiRoute(verb: 'GET', url: '/api/v1/ticket')]
-	public function getTicket(string $ticket, ?int $max_chars = null): DataResponse {
+	public function getTicket(string $ticket, int $limit = 10, ?int $before = null): DataResponse {
 		$zammadUrl = $this->getZammadUrl();
 		if ($zammadUrl === null) {
 			return $this->notConnected();
@@ -191,8 +189,7 @@ class TicketApiController extends OCSController {
 			}
 		}
 
-		$maxChars = max(self::MIN_MAX_CHARS, min($max_chars ?? self::DEFAULT_MAX_CHARS, self::MAX_MAX_CHARS));
-		[$articleList, $truncated] = self::articles($articles, (int)($maxChars * self::TEXT_SHARE_OF_MAX_CHARS));
+		[$articleList, $olderArticles] = self::articles($articles, max(1, min($limit, self::ARTICLES_MAX_LIMIT)), $before);
 		$assets = is_array($info['assets'] ?? null) ? $info['assets'] : [];
 		$ticketData = $assets['Ticket'][$ticketId] ?? [];
 		$entry = self::listEntry(is_array($ticketData) ? $ticketData : [], $assets, $states, $priorities, $zammadUrl);
@@ -213,7 +210,7 @@ class TicketApiController extends OCSController {
 			'escalation_at' => $entry['escalation_at'],
 			'url' => $zammadUrl . '/#ticket/zoom/' . $ticketId,
 			'article_count' => count(array_filter($articles, 'is_array')),
-			'truncated' => $truncated,
+			'older_articles' => $olderArticles,
 			'articles' => $articleList,
 		]);
 	}
@@ -252,31 +249,22 @@ class TicketApiController extends OCSController {
 	}
 
 	/**
-	 * The articles that fit into the text budget, newest last. A cut drops the oldest.
+	 * The newest $limit articles, of those before the article with ID $before if given, newest last
 	 *
-	 * @return array{0: list<ZammadArticle>, 1: bool}
+	 * @return array{0: list<ZammadArticle>, 1: int} the articles and the number of older ones
 	 */
-	private static function articles(array $articles, int $budget): array {
+	private static function articles(array $articles, int $limit, ?int $before): array {
+		$articles = array_values(array_filter($articles,
+			static fn (mixed $article): bool => is_array($article) && ($before === null || (int)($article['id'] ?? 0) < $before)));
+		$page = array_slice($articles, -$limit);
 		$kept = [];
-		$used = 0;
-		$truncated = false;
-		foreach (array_reverse(array_values(array_filter($articles, 'is_array'))) as $article) {
-			$remaining = $budget - $used;
-			if ($remaining <= 0) {
-				$truncated = true;
-				break;
-			}
+		foreach ($page as $article) {
 			$body = (string)($article['body'] ?? '');
 			$contentType = (string)($article['content_type'] ?? '');
 			// only mails carry quoted history; a note, phone or chat article is kept whole
 			$text = ($article['type'] ?? null) === 'email'
 				? TicketText::articleText($body, $contentType)
 				: TicketText::articleBodyToText($body, $contentType);
-			if (mb_strlen($text) > $remaining) {
-				$text = mb_substr($text, 0, $remaining) . ' […]';
-				$truncated = true;
-			}
-			$used += mb_strlen($text);
 			$attachments = [];
 			foreach (is_array($article['attachments'] ?? null) ? $article['attachments'] : [] as $attachment) {
 				if (is_array($attachment)) {
@@ -294,7 +282,7 @@ class TicketApiController extends OCSController {
 				'attachments' => $attachments,
 			];
 		}
-		return [array_reverse($kept), $truncated];
+		return [$kept, count($articles) - count($page)];
 	}
 
 	private static function stringOrNull(mixed $value): ?string {

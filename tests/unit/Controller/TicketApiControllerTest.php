@@ -94,7 +94,7 @@ class TicketApiControllerTest extends TestCase {
 		$this->assertSame(400, $this->controller->listTickets('', false, 10, 'created_at', 'sideways')->getStatus());
 	}
 
-	public function testTicketKeepsInternalNotesAndDropsTheOldestArticles(): void {
+	public function testTicketKeepsInternalNotesAndReturnsTheNewestArticles(): void {
 		$this->api->method('request')->with('alice', 'tickets/42', ['full' => 'true'])->willReturn(['id' => 42, 'assets' => [
 			'Ticket' => [42 => ['id' => 42, 'number' => '31042', 'title' => 'Sync', 'state_id' => 2, 'owner_id' => 1, 'customer_id' => 9, 'organization_id' => 3,
 				'last_contact_customer_at' => '2026-06-01T10:00:00.000Z']],
@@ -110,19 +110,35 @@ class TicketApiControllerTest extends TestCase {
 			['id' => 4, 'type' => 'note', 'sender' => 'Agent', 'internal' => true, 'content_type' => 'text/plain', 'body' => "Config:\n> proxy on\n--\nend"],
 		]);
 
-		$data = $this->controller->getTicket(self::ZAMMAD . '/#ticket/zoom/42', 2000)->getData();
+		$data = $this->controller->getTicket(self::ZAMMAD . '/#ticket/zoom/42', 3)->getData();
 
-		$this->assertSame([42, 4, true], [$data['id'], $data['article_count'], $data['truncated']]);
-		$this->assertSame([1, 2, 3, 4], array_column($data['articles'], 'id'));
-		$this->assertStringEndsWith('[…]', $data['articles'][0]['text']);
-		$this->assertSame(['Proxy?', true], [$data['articles'][1]['text'], $data['articles'][1]['internal']]);
-		$this->assertSame(['Still broken.', [['filename' => 'log.txt', 'size' => 12]]], [$data['articles'][2]['text'], $data['articles'][2]['attachments']]);
-		$this->assertSame("Config:\n> proxy on\n--\nend", $data['articles'][3]['text']);
+		$this->assertSame([42, 4, 1], [$data['id'], $data['article_count'], $data['older_articles']]);
+		$this->assertSame([2, 3, 4], array_column($data['articles'], 'id'));
+		$this->assertSame(['Proxy?', true], [$data['articles'][0]['text'], $data['articles'][0]['internal']]);
+		$this->assertSame(['Still broken.', [['filename' => 'log.txt', 'size' => 12]]], [$data['articles'][1]['text'], $data['articles'][1]['attachments']]);
+		$this->assertSame("Config:\n> proxy on\n--\nend", $data['articles'][2]['text']);
+		// the older ones are read with before, and long articles come whole
+		$older = $this->controller->getTicket('42', 3, 2)->getData();
+		$this->assertSame([[1], 0], [array_column($older['articles'], 'id'), $older['older_articles']]);
+		$this->assertSame(trim(str_repeat('old ', 2000)), $older['articles'][0]['text']);
 		$this->assertSame(['sync'], $data['tags']);
 		// names the same way a list gives them
 		$this->assertSame(['31042', 'open', null, 'Eve Customer', 'Acme'], [$data['number'], $data['state'], $data['owner'], $data['customer'], $data['organization']]);
 		// the Assistant's check for an earlier note compares with the customer's last message
 		$this->assertSame(['2026-06-01T10:00:00.000Z', null, null], [$data['last_contact_customer_at'], $data['last_contact_agent_at'], $data['escalation_at']]);
+	}
+
+	public function testTicketArticleLimit(): void {
+		$this->api->method('request')->willReturn(['id' => 42, 'assets' => []]);
+		$this->api->method('getTickettags')->willReturn(['tags' => []]);
+		$this->api->method('getArticlesByTicket')->willReturn(array_map(fn (int $id) => ['id' => $id, 'body' => 'a'], range(1, 60)));
+
+		$pages = array_map(function (array $args) {
+			$data = $this->controller->getTicket('42', ...$args)->getData();
+			return [count($data['articles']), $data['articles'][0]['id'], $data['older_articles']];
+		}, [[], [500], [0], [10, 20]]);
+
+		$this->assertSame([[10, 51, 50], [50, 11, 10], [1, 60, 59], [10, 10, 9]], $pages);
 	}
 
 	public function testTicketErrors(): void {

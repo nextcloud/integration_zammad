@@ -48,7 +48,7 @@ namespace OCA\Zammad;
  *     escalation_at: ?string,
  *     url: string,
  *     article_count: int,
- *     truncated: bool,
+ *     older_articles: int,
  *     articles: list<ZammadArticle>,
  * }
  *
